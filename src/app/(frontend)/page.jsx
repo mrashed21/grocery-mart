@@ -1,11 +1,11 @@
 import Contain from "@/components/common/Contain";
 import Home from "@/components/frontend/Home/Home";
-import NavMenu from "@/components/shared/NavMenu";
+import TopNavBar from "@/components/shared/TopNavBar";
 
 const HomePage = () => {
   return (
     <Contain>
-      <NavMenu />
+      <TopNavBar />
       <Home />
     </Contain>
   );
