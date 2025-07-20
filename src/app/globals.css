@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+@theme {
+  --font-nunito: "nunito", "sans-serif";
+  --font-manrope: "manrope", "sans-serif";
+  --font-abhaya: "abhaya", "sans-serif";
+}
 :root {
   --background: #ffffff;
   --foreground: #171717;
