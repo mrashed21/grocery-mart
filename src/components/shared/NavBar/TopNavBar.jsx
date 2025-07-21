@@ -18,7 +18,7 @@ const TopNavBar = () => {
 
   return (
     <Contain>
-      <div className="flex items-center justify-between lg:py-4">
+      <div className="flex items-center justify-between">
         {/* right section */}
         <div className="flex items-center gap-4 lg:gap-10">
           {/* logo */}
@@ -78,9 +78,9 @@ const TopNavBar = () => {
 
           {/* Wishlist, Bag, User icons for desktop */}
           <div className="hidden lg:flex items-center gap-3">
-            <button>
+            {/* <button>
               <CiHeart className="text-[#385C5D] text-3xl" />
-            </button>
+            </button> */}
             <button>
               <IoBagHandleOutline className="text-[#385C5D] text-3xl" />
             </button>
@@ -123,9 +123,9 @@ const TopNavBar = () => {
                 <IoIosArrowDown className="text-[#5E8B8C] text-sm" />
               </span>
             </div>
-            <button className="flex items-center gap-2 text-[#385C5D] text-lg hover:text-[#5E8B8C]">
+            {/* <button className="flex items-center gap-2 text-[#385C5D] text-lg hover:text-[#5E8B8C]">
               <CiHeart className="text-2xl" /> Wishlist
-            </button>
+            </button> */}
             <button className="flex items-center gap-2 text-[#385C5D] text-lg hover:text-[#5E8B8C]">
               <IoBagHandleOutline className="text-2xl" /> My Bag
             </button>

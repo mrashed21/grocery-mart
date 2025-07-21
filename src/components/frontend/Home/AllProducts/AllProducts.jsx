@@ -1,5 +1,6 @@
 "use client";
 import Contain from "@/components/common/Contain";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import productData from "./../../../../../public/productData.json";
 import ProductCard from "./ProductCard";
@@ -11,6 +12,7 @@ const AllProducts = ({ selectedCategory }) => {
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [displayCount, setDisplayCount] = useState(INITIAL_DISPLAY_COUNT);
   const [isLoading, setIsLoading] = useState(false);
+  const [cart, setCart] = useState({});
 
   useEffect(() => {
     const shuffled = [...productData].sort(() => Math.random() - 0.5);
@@ -49,6 +51,33 @@ const AllProducts = ({ selectedCategory }) => {
   };
 
   const allShown = displayCount >= filteredProducts.length;
+  const addToCart = (productId) => {
+    setCart((prevCart) => ({
+      ...prevCart,
+      [productId]: (prevCart[productId] || 0) + 1,
+    }));
+  };
+
+  const incrementQuantity = (productId) => {
+    setCart((prevCart) => ({
+      ...prevCart,
+      [productId]: prevCart[productId] + 1,
+    }));
+  };
+
+  const decrementQuantity = (productId) => {
+    setCart((prevCart) => {
+      const newQuantity = (prevCart[productId] || 0) - 1;
+      if (newQuantity <= 0) {
+        const { [productId]: _, ...rest } = prevCart; 
+        return rest;
+      }
+      return {
+        ...prevCart,
+        [productId]: newQuantity,
+      };
+    });
+  };
 
   return (
     <div>
@@ -62,7 +91,16 @@ const AllProducts = ({ selectedCategory }) => {
 
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 lg:gap-6">
             {filteredProducts.slice(0, displayCount).map((product) => (
-              <ProductCard key={product.id} product={product} />
+              <Link href={`/product/${product?.slug}`} key={product.id}>
+              
+                <ProductCard
+                  product={product}
+                  cartQuantity={cart[product.id] || 0} 
+                  onAddToCart={addToCart}
+                  onIncrement={incrementQuantity}
+                  onDecrement={decrementQuantity}
+                />
+              </Link>
             ))}
           </div>
         </Contain>

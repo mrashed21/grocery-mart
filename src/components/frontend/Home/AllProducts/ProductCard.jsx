@@ -1,18 +1,25 @@
+"use client";
+import { IoAdd, IoRemove } from "react-icons/io5";
 import { TbCurrencyTaka } from "react-icons/tb";
 
-const ProductCard = ({ product }) => {
+const ProductCard = ({
+  product,
+  cartQuantity,
+  onAddToCart,
+  onIncrement,
+  onDecrement,
+}) => {
   return (
-    <div className="border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300">
+    <div className="border border-gray-200 rounded-[10px] shadow-sm hover:shadow-md transition-shadow duration-300">
       <div className="lg:p-4 pt-2 p-2">
         {/* Product Image */}
         <div className="relative">
           <img
             src={product.image || "https://via.placeholder.com/200"}
             alt={product.name}
+            width={200}
+            height={200}
             className="w-full h-28 lg:h-56 object-cover rounded-md mb-3"
-            onError={(e) => {
-              e.target.src = "https://i.ibb.co/Gv2QLxnQ/image-2963.png";
-            }}
           />
 
           {/* Offer Badge (if applicable) */}
@@ -30,23 +37,20 @@ const ProductCard = ({ product }) => {
             {product.name}
           </h3>
 
-          <div className="flex mt-2 justify-between in-checked:">
+          <div className="flex mt-2 justify-between">
             {product.is_offer ? (
               <div className="flex items-center gap-1 lg:gap-3">
                 <span className="font-semibold text-[#414141] text-sm lg:text-[18px] flex">
-                  {" "}
                   <TbCurrencyTaka className="text-sm lg:text-xl" />{" "}
                   {product.discountedPrice}
                 </span>
                 <span className="line-through text-[#41414199] flex text-xs ">
-                  {" "}
                   <TbCurrencyTaka className="text-sm lg:text-xl" />{" "}
                   {product.price}
                 </span>
               </div>
             ) : (
               <span className="font-semibold text-[#414141] text-sm lg:text-[18px] flex gap-1">
-                {" "}
                 <TbCurrencyTaka className="text-sm lg:text-xl" />{" "}
                 {product.price}
               </span>
@@ -56,13 +60,55 @@ const ProductCard = ({ product }) => {
           </div>
         </div>
       </div>
-
-      {/* Add to Bag Button */}
-      <button
-        className={`w-full py-2 cursor-pointer rounded-b-lg text-base font-medium  bg-[#084C4EA6] text-white`}
-      >
-        Add to Bag
-      </button>
+      {/* Add to Cart / Quantity Controls */}
+      <div className=" pt-0 bg-white">
+        {cartQuantity === 0 ? (
+          <button
+            onClick={(e) => {
+              onAddToCart(product.id);
+              e.stopPropagation();
+              e.preventDefault();
+            }}
+            className="w-full flex items-center justify-center gap-2 bg-[#5E8B8C] hover:bg-[#4f7a7b] text-white font-semibold py-2 rounded-b-lg transition-colors duration-200"
+          >
+            Add to Bag
+          </button>
+        ) : (
+          <div
+            className={`w-full flex items-center cursor-pointer rounded-b-lg text-base font-medium  bg-[#084C4E4D] text-white`}
+            onClick={(e) => {
+              e.stopPropagation();
+              e.preventDefault();
+            }}
+          >
+            <button
+              onClick={(e) => {
+                onDecrement(product.id);
+                e.stopPropagation();
+                e.preventDefault();
+              }}
+              className="flex-shrink-0 cursor-pointer text-white p-2 rounded-full transition-colors duration-200"
+              aria-label="Decrease quantity "
+            >
+              <IoRemove className="text-xl lg:text-2xl" />
+            </button>
+            <span className="flex-grow text-center text-white border-l-2 border-r-2 lg:mx-5 font-bold lg:text-lg">
+              {cartQuantity} in Bag
+            </span>
+            <button
+              onClick={(e) => {
+                onIncrement(product.id);
+                e.stopPropagation();
+                e.preventDefault();
+              }}
+              className="flex-shrink-0 cursor-pointer text-white p-2 rounded-full transition-colors duration-200"
+              aria-label="Increase quantity"
+            >
+              <IoAdd className="text-xl lg:text-2xl" />
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
