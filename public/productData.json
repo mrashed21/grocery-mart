@@ -1,0 +1,523 @@
+[
+  {
+    "id": 1,
+    "category": "Vegetables",
+    "name": "Potato",
+    "price": 30,
+    "quantity": "1 kg",
+    "is_offer": false,
+    "offer": null,
+    "image": "https://i.ibb.co/Cpbqfgkg/image-2865.png"
+  },
+  {
+    "id": 2,
+    "category": "Vegetables",
+    "name": "Tomato",
+    "price": 60,
+    "discountedPrice": 54,
+    "quantity": "1 kg",
+    "is_offer": true,
+    "offer": "10% off",
+    "image": "https://i.ibb.co/Cpbqfgkg/image-2865.png"
+  },
+  {
+    "id": 3,
+    "category": "Vegetables",
+    "name": "Onion",
+    "price": 45,
+    "quantity": "1 kg",
+    "is_offer": false,
+    "offer": null,
+    "image": "https://i.ibb.co/Cpbqfgkg/image-2865.png"
+  },
+  {
+    "id": 4,
+    "category": "Vegetables",
+    "name": "Cucumber",
+    "price": 40,
+    "discountedPrice": 34,
+    "quantity": "1 kg",
+    "is_offer": true,
+    "offer": "15% off",
+    "image": "https://i.ibb.co/Cpbqfgkg/image-2865.png"
+  },
+  {
+    "id": 5,
+    "category": "Vegetables",
+    "name": "Carrot",
+    "price": 80,
+    "quantity": "1 kg",
+    "is_offer": false,
+    "offer": null,
+    "image": "https://i.ibb.co/Cpbqfgkg/image-2865.png"
+  },
+  {
+    "id": 6,
+    "category": "Vegetables",
+    "name": "Capsicum",
+    "price": 120,
+    "discountedPrice": 114,
+    "quantity": "1 kg",
+    "is_offer": true,
+    "offer": "5% off",
+    "image": "https://i.ibb.co/Cpbqfgkg/image-2865.png"
+  },
+  {
+    "id": 7,
+    "category": "Vegetables",
+    "name": "Brinjal",
+    "price": 50,
+    "quantity": "1 kg",
+    "is_offer": false,
+    "offer": null,
+    "image": "https://i.ibb.co/Cpbqfgkg/image-2865.png"
+  },
+  {
+    "id": 8,
+    "category": "Vegetables",
+    "name": "Pumpkin",
+    "price": 35,
+    "quantity": "1 kg",
+    "is_offer": false,
+    "offer": null,
+    "image": "https://i.ibb.co/Cpbqfgkg/image-2865.png"
+  },
+  {
+    "id": 9,
+    "category": "Vegetables",
+    "name": "Beans",
+    "price": 90,
+    "discountedPrice": 72,
+    "quantity": "1 kg",
+    "is_offer": true,
+    "offer": "20% off",
+    "image": "https://i.ibb.co/Cpbqfgkg/image-2865.png"
+  },
+  {
+    "id": 10,
+    "category": "Vegetables",
+    "name": "Cauliflower",
+    "price": 55,
+    "quantity": "1 kg",
+    "is_offer": false,
+    "offer": null,
+    "image": "https://i.ibb.co/Cpbqfgkg/image-2865.png"
+  },
+  {
+    "id": 11,
+    "category": "Fruits",
+    "name": "Apple",
+    "price": 200,
+    "discountedPrice": 180,
+    "quantity": "1 kg",
+    "is_offer": true,
+    "offer": "10% off",
+    "image": "https://i.ibb.co/hJ4C5ZKG/image-2866.png"
+  },
+  {
+    "id": 12,
+    "category": "Fruits",
+    "name": "Banana",
+    "price": 80,
+    "quantity": "1 kg",
+    "is_offer": false,
+    "offer": null,
+    "image": "https://i.ibb.co/hJ4C5ZKG/image-2866.png"
+  },
+  {
+    "id": 13,
+    "category": "Fruits",
+    "name": "Orange",
+    "price": 120,
+    "discountedPrice": 105.6,
+    "quantity": "1 kg",
+    "is_offer": true,
+    "offer": "12% off",
+    "image": "https://i.ibb.co/hJ4C5ZKG/image-2866.png"
+  },
+  {
+    "id": 14,
+    "category": "Fruits",
+    "name": "Mango",
+    "price": 100,
+    "discountedPrice": 90,
+    "quantity": "1 kg",
+    "is_offer": true,
+    "offer": "10% off",
+    "image": "https://i.ibb.co/hJ4C5ZKG/image-2866.png"
+  },
+  {
+    "id": 15,
+    "category": "Fruits",
+    "name": "Pineapple",
+    "price": 70,
+    "quantity": "1 kg",
+    "is_offer": false,
+    "offer": null,
+    "image": "https://i.ibb.co/hJ4C5ZKG/image-2866.png"
+  },
+  {
+    "id": 16,
+    "category": "Fruits",
+    "name": "Papaya",
+    "price": 50,
+    "discountedPrice": 46,
+    "quantity": "1 kg",
+    "is_offer": true,
+    "offer": "8% off",
+    "image": "https://i.ibb.co/hJ4C5ZKG/image-2866.png"
+  },
+  {
+    "id": 17,
+    "category": "Fruits",
+    "name": "Guava",
+    "price": 90,
+    "quantity": "1 kg",
+    "is_offer": false,
+    "offer": null,
+    "image": "https://i.ibb.co/hJ4C5ZKG/image-2866.png"
+  },
+  {
+    "id": 18,
+    "category": "Fruits",
+    "name": "Watermelon",
+    "price": 40,
+    "quantity": "1 kg",
+    "is_offer": false,
+    "offer": null,
+    "image": "https://i.ibb.co/hJ4C5ZKG/image-2866.png"
+  },
+  {
+    "id": 19,
+    "category": "Fruits",
+    "name": "Grapes",
+    "price": 250,
+    "discountedPrice": 212.5,
+    "quantity": "1 kg",
+    "is_offer": true,
+    "offer": "15% off",
+    "image": "https://i.ibb.co/hJ4C5ZKG/image-2866.png"
+  },
+  {
+    "id": 20,
+    "category": "Fruits",
+    "name": "Strawberry",
+    "price": 300,
+    "quantity": "1 kg",
+    "is_offer": false,
+    "offer": null,
+    "image": "https://i.ibb.co/hJ4C5ZKG/image-2866.png"
+  },
+  {
+    "id": 21,
+    "category": "Fish",
+    "name": "Rui Fish",
+    "price": 350,
+    "quantity": "1 kg",
+    "is_offer": false,
+    "offer": null,
+    "image": "https://i.ibb.co/Gv2QLxnQ/image-2963.png"
+  },
+  {
+    "id": 22,
+    "category": "Fish",
+    "name": "Katla Fish",
+    "price": 300,
+    "discountedPrice": 285,
+    "quantity": "1 kg",
+    "is_offer": true,
+    "offer": "5% off",
+    "image": "https://i.ibb.co/Gv2QLxnQ/image-2963.png"
+  },
+  {
+    "id": 23,
+    "category": "Fish",
+    "name": "Pangas Fish",
+    "price": 200,
+    "quantity": "1 kg",
+    "is_offer": false,
+    "offer": null,
+    "image": "https://i.ibb.co/Gv2QLxnQ/image-2963.png"
+  },
+  {
+    "id": 24,
+    "category": "Fish",
+    "name": "Ilish Fish",
+    "price": 1200,
+    "quantity": "1 kg",
+    "is_offer": false,
+    "offer": null,
+    "image": "https://i.ibb.co/Gv2QLxnQ/image-2963.png"
+  },
+  {
+    "id": 25,
+    "category": "Fish",
+    "name": "Shrimp",
+    "price": 600,
+    "discountedPrice": 540,
+    "quantity": "1 kg",
+    "is_offer": true,
+    "offer": "10% off",
+    "image": "https://i.ibb.co/Gv2QLxnQ/image-2963.png"
+  },
+  {
+    "id": 26,
+    "category": "Fish",
+    "name": "Koi Fish",
+    "price": 400,
+    "quantity": "1 kg",
+    "is_offer": false,
+    "offer": null,
+    "image": "https://i.ibb.co/Gv2QLxnQ/image-2963.png"
+  },
+  {
+    "id": 27,
+    "category": "Fish",
+    "name": "Tilapia",
+    "price": 250,
+    "quantity": "1 kg",
+    "is_offer": false,
+    "offer": null,
+    "image": "https://i.ibb.co/Gv2QLxnQ/image-2963.png"
+  },
+  {
+    "id": 28,
+    "category": "Fish",
+    "name": "Bhetki",
+    "price": 500,
+    "discountedPrice": 410,
+    "quantity": "1 kg",
+    "is_offer": true,
+    "offer": "18% off",
+    "image": "https://i.ibb.co/Gv2QLxnQ/image-2963.png"
+  },
+  {
+    "id": 29,
+    "category": "Fish",
+    "name": "Chingri",
+    "price": 800,
+    "quantity": "1 kg",
+    "is_offer": false,
+    "offer": null,
+    "image": "https://i.ibb.co/Gv2QLxnQ/image-2963.png"
+  },
+  {
+    "id": 30,
+    "category": "Fish",
+    "name": "Puti Fish",
+    "price": 180,
+    "quantity": "1 kg",
+    "is_offer": false,
+    "offer": null,
+    "image": "https://i.ibb.co/Gv2QLxnQ/image-2963.png"
+  },
+  {
+    "id": 31,
+    "category": "Meat",
+    "name": "Chicken",
+    "price": 180,
+    "discountedPrice": 167.4,
+    "quantity": "1 kg",
+    "is_offer": true,
+    "offer": "7% off",
+    "image": "https://i.ibb.co/twWMK876/image-2875.png"
+  },
+  {
+    "id": 32,
+    "category": "Meat",
+    "name": "Beef",
+    "price": 600,
+    "quantity": "1 kg",
+    "is_offer": false,
+    "offer": null,
+    "image": "https://i.ibb.co/twWMK876/image-2875.png"
+  },
+  {
+    "id": 33,
+    "category": "Meat",
+    "name": "Mutton",
+    "price": 900,
+    "quantity": "1 kg",
+    "is_offer": false,
+    "offer": null,
+    "image": "https://i.ibb.co/twWMK876/image-2875.png"
+  },
+  {
+    "id": 34,
+    "category": "Meat",
+    "name": "Duck",
+    "price": 400,
+    "discountedPrice": 352,
+    "quantity": "1 kg",
+    "is_offer": true,
+    "offer": "12% off",
+    "image": "https://i.ibb.co/twWMK876/image-2875.png"
+  },
+  {
+    "id": 35,
+    "category": "Meat",
+    "name": "Turkey",
+    "price": 500,
+    "quantity": "1 kg",
+    "is_offer": false,
+    "offer": null,
+    "image": "https://i.ibb.co/twWMK876/image-2875.png"
+  },
+  {
+    "id": 36,
+    "category": "Meat",
+    "name": "Chicken Liver",
+    "price": 250,
+    "quantity": "1 kg",
+    "is_offer": false,
+    "offer": null,
+    "image": "https://i.ibb.co/twWMK876/image-2875.png"
+  },
+  {
+    "id": 37,
+    "category": "Meat",
+    "name": "Chicken Leg",
+    "price": 220,
+    "discountedPrice": 198,
+    "quantity": "1 kg",
+    "is_offer": true,
+    "offer": "10% off",
+    "image": "https://i.ibb.co/twWMK876/image-2875.png"
+  },
+  {
+    "id": 38,
+    "category": "Meat",
+    "name": "Chicken Wing",
+    "price": 200,
+    "quantity": "1 kg",
+    "is_offer": false,
+    "offer": null,
+    "image": "https://i.ibb.co/twWMK876/image-2875.png"
+  },
+  {
+    "id": 39,
+    "category": "Meat",
+    "name": "Sausage",
+    "price": 350,
+    "quantity": "1 kg",
+    "is_offer": false,
+    "offer": null,
+    "image": "https://i.ibb.co/twWMK876/image-2875.png"
+  },
+  {
+    "id": 40,
+    "category": "Meat",
+    "name": "Mince Meat",
+    "price": 450,
+    "discountedPrice": 382.5,
+    "quantity": "1 kg",
+    "is_offer": true,
+    "offer": "15% off",
+    "image": "https://i.ibb.co/twWMK876/image-2875.png"
+  },
+  {
+    "id": 41,
+    "category": "Bakery",
+    "name": "White Bread",
+    "price": 50,
+    "quantity": "1 pcs",
+    "is_offer": false,
+    "offer": null,
+    "image": "https://i.ibb.co/cS0xztq0/image-2896.png"
+  },
+  {
+    "id": 42,
+    "category": "Bakery",
+    "name": "Brown Bread",
+    "price": 60,
+    "discountedPrice": 57,
+    "quantity": "1 pcs",
+    "is_offer": true,
+    "offer": "5% off",
+    "image": "https://i.ibb.co/cS0xztq0/image-2896.png"
+  },
+  {
+    "id": 43,
+    "category": "Bakery",
+    "name": "Bun",
+    "price": 15,
+    "quantity": "1 pcs",
+    "is_offer": false,
+    "offer": null,
+    "image": "https://i.ibb.co/cS0xztq0/image-2896.png"
+  },
+  {
+    "id": 44,
+    "category": "Bakery",
+    "name": "Cake",
+    "price": 300,
+    "discountedPrice": 240,
+    "quantity": "1 pcs",
+    "is_offer": true,
+    "offer": "20% off",
+    "image": "https://i.ibb.co/cS0xztq0/image-2896.png"
+  },
+  {
+    "id": 45,
+    "category": "Bakery",
+    "name": "Biscuit",
+    "price": 200,
+    "quantity": "1 kg",
+    "is_offer": false,
+    "offer": null,
+    "image": "https://i.ibb.co/cS0xztq0/image-2896.png"
+  },
+  {
+    "id": 46,
+    "category": "Bakery",
+    "name": "Toast",
+    "price": 70,
+    "quantity": "1 pcs",
+    "is_offer": false,
+    "offer": null,
+    "image": "https://i.ibb.co/cS0xztq0/image-2896.png"
+  },
+  {
+    "id": 47,
+    "category": "Bakery",
+    "name": "Croissant",
+    "price": 80,
+    "discountedPrice": 72,
+    "quantity": "1 pcs",
+    "is_offer": true,
+    "offer": "10% off",
+    "image": "https://i.ibb.co/cS0xztq0/image-2896.png"
+  },
+  {
+    "id": 48,
+    "category": "Bakery",
+    "name": "Donut",
+    "price": 40,
+    "discountedPrice": 36,
+    "quantity": "1 pcs",
+    "is_offer": true,
+    "offer": "10% off",
+    "image": "https://i.ibb.co/cS0xztq0/image-2896.png"
+  },
+  {
+    "id": 49,
+    "category": "Bakery",
+    "name": "Pie",
+    "price": 120,
+    "quantity": "1 pcs",
+    "is_offer": false,
+    "offer": null,
+    "image": "https://i.ibb.co/cS0xztq0/image-2896.png"
+  },
+  {
+    "id": 50,
+    "category": "Bakery",
+    "name": "Bagel",
+    "price": 50,
+    "discountedPrice": 46,
+    "quantity": "1 pcs",
+    "is_offer": true,
+    "offer": "8% off",
+    "image": "https://i.ibb.co/cS0xztq0/image-2896.png"
+  }
+]
