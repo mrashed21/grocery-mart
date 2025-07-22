@@ -125,7 +125,7 @@ const DeliveryInformation = ({
             )}
           </div>
 
-          {/* division */}
+          {/* Zone */}
           <div>
             <label
               htmlFor="zone"
@@ -134,8 +134,6 @@ const DeliveryInformation = ({
               Zone
             </label>
             <Select
-              id="zone"
-              name="zone"
               // defaultValue={
               //   userInfo?.data?.user_division
               //     ? divisionOptions.find(
@@ -143,8 +141,6 @@ const DeliveryInformation = ({
               //       )
               //     : null
               // }
-              className="mt-1"
-              aria-label="Select a Zone"
               // options={divisionOptions}
               // getOptionLabel={(x) => x?.name}
               // getOptionValue={(x) => x?.id}
@@ -157,12 +153,59 @@ const DeliveryInformation = ({
               //     setIsOpenDistrict(true);
               //   }, 100);
               // }}
+
+              id="zone"
+              name="zone"
+              className="mt-1"
+              aria-label="Select a Zone"
               menuPortalTarget={document.body}
               styles={{
+                control: (base, state) => ({
+                  ...base,
+                  borderColor: state.isFocused ? "#e5e7eb" : base.borderColor,
+                  boxShadow: "none",
+                  padding: "2px",
+                  borderRadius: "6px",
+                  "&:hover": {
+                    borderColor: "#e5e7eb",
+                  },
+                  outline: "none !important",
+                }),
+                input: (base) => ({
+                  ...base,
+                  outline: "none !important",
+                  boxShadow: "none !important",
+                }),
+
+                indicatorSeparator: (base) => ({
+                  ...base,
+                  display: "none",
+                }),
+
+                dropdownIndicator: (base, state) => ({
+                  ...base,
+                  outline: "none !important",
+                  boxShadow: "none !important",
+                }),
+
+                option: (base, state) => ({
+                  ...base,
+                  outline: "none !important",
+                  boxShadow: "none !important",
+                  backgroundColor: state.isFocused
+                    ? "#f0f0f0"
+                    : state.isSelected
+                    ? "#0d4a42"
+                    : null,
+                  color: state.isSelected ? "white" : "inherit",
+                  "&:active": {
+                    backgroundColor: "#0d4a42",
+                  },
+                }),
                 menuPortal: (base) => ({
                   ...base,
                   zIndex: 999,
-                }), // Set a high z-index
+                }),
               }}
             ></Select>
           </div>
