@@ -3,7 +3,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import {
-  Autoplay,
+  // Autoplay,
   Keyboard,
   Mousewheel,
   Navigation,
@@ -137,7 +137,7 @@ const Categories = ({ onCategorySelect, selectedCategory }) => {
                 centeredSlides
                 grabCursor
                 loop
-                autoplay={{ delay: 3000, disableOnInteraction: false }}
+                // autoplay={{ delay: 3000, disableOnInteraction: false }}
                 navigation={{
                   nextEl: ".swiper-button-next",
                   prevEl: ".swiper-button-prev",
@@ -146,7 +146,7 @@ const Categories = ({ onCategorySelect, selectedCategory }) => {
                 modules={[
                   Navigation,
                   Pagination,
-                  Autoplay,
+                  // Autoplay,
                   Mousewheel,
                   Keyboard,
                 ]}

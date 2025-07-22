@@ -1,26 +1,24 @@
-import { Geist, Geist_Mono } from "next/font/google";
+import { Abhaya_Libre, Manrope, Nunito } from "next/font/google";
+import { Slide, ToastContainer } from "react-toastify";
 import "./globals.css";
-import { Nunito, Manrope, Abhaya_Libre } from 'next/font/google';
-
 
 const nunito = Nunito({
-  subsets: ['latin'],
-  weight: ['400', '700'],
-  variable: '--font-nunito',
+  subsets: ["latin"],
+  weight: ["400", "700"],
+  variable: "--font-nunito",
 });
 
 const manrope = Manrope({
-  subsets: ['latin'],
-  weight: ['400', '700'],
-  variable: '--font-manrope',
+  subsets: ["latin"],
+  weight: ["400", "700"],
+  variable: "--font-manrope",
 });
 
 const abhayaLibre = Abhaya_Libre({
-  subsets: ['latin'],
-  weight: ['400', '700'],
-  variable: '--font-abhaya',
+  subsets: ["latin"],
+  weight: ["400", "700"],
+  variable: "--font-abhaya",
 });
-
 
 export const metadata = {
   title: "Grocery Mart",
@@ -31,9 +29,15 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body
-       className={`${nunito.variable} ${manrope.variable} ${abhayaLibre.variable}`}
+        className={`${nunito.variable} ${manrope.variable} ${abhayaLibre.variable}`}
       >
         {children}
+        <ToastContainer
+          position="bottom-right"
+          autoClose={1500}
+          transition={Slide}
+          closeOnClick
+        />
       </body>
     </html>
   );

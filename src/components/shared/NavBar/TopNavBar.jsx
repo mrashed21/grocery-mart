@@ -10,6 +10,7 @@ import { RxCross1 } from "react-icons/rx";
 import { TbUser } from "react-icons/tb";
 import Contain from "../../common/Contain";
 import logo from "./../../../../public/image/logo.png";
+import Link from "next/link";
 const TopNavBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const toggleMenu = () => {
@@ -22,7 +23,7 @@ const TopNavBar = () => {
         {/* right section */}
         <div className="flex items-center gap-4 lg:gap-10">
           {/* logo */}
-          <div className="flex items-center shrink-0 gap-1">
+          <Link href={"/"} className="flex items-center shrink-0 gap-1">
             <Image
               src={logo}
               width={40}
@@ -33,7 +34,7 @@ const TopNavBar = () => {
             <h2 className="text-[#385C5D] font-abhaya text-[20px] lg:text-2xl">
               Grocery Mart
             </h2>
-          </div>
+          </Link>
           {/* location */}
           <div className="hidden lg:flex flex-col">
             <p className="text-[#084C4E] text-sm font-nunito">Location</p>
