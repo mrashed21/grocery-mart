@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import productData from "./../../../../../public/productData.json";
 import ProductCard from "./ProductCard";
+import { useDispatch, useSelector } from "react-redux";
+import { addToCart, decrementQuantity, incrementQuantity } from "@/redux/feature/cart/cartSlice";
 
 const AllProducts = ({ selectedCategory }) => {
   const INITIAL_DISPLAY_COUNT = 20;
@@ -12,8 +14,8 @@ const AllProducts = ({ selectedCategory }) => {
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [displayCount, setDisplayCount] = useState(INITIAL_DISPLAY_COUNT);
   const [isLoading, setIsLoading] = useState(false);
-  const [cart, setCart] = useState({});
-
+  // const [cart, setCart] = useState({});
+const cart = useSelector((state) => state.grocery_mart.products);
   useEffect(() => {
     const shuffled = [...productData].sort(() => Math.random() - 0.5);
 
@@ -51,34 +53,54 @@ const AllProducts = ({ selectedCategory }) => {
   };
 
   const allShown = displayCount >= filteredProducts.length;
-  const addToCart = (productId) => {
-    setCart((prevCart) => ({
-      ...prevCart,
-      [productId]: (prevCart[productId] || 0) + 1,
-    }));
+
+  // const addToCart = (productId) => {
+  //   setCart((prevCart) => ({
+  //     ...prevCart,
+  //     [productId]: (prevCart[productId] || 0) + 1,
+  //   }));
+  // };
+
+  // const incrementQuantity = (productId) => {
+  //   setCart((prevCart) => ({
+  //     ...prevCart,
+  //     [productId]: prevCart[productId] + 1,
+  //   }));
+  // };
+
+  // const decrementQuantity = (productId) => {
+  //   setCart((prevCart) => {
+  //     const newQuantity = (prevCart[productId] || 0) - 1;
+  //     if (newQuantity <= 0) {
+  //       const { [productId]: _, ...rest } = prevCart; 
+  //       return rest;
+  //     }
+  //     return {
+  //       ...prevCart,
+  //       [productId]: newQuantity,
+  //     };
+  //   });
+  // };
+
+  const dispatch = useDispatch();
+  
+
+  const getCartQuantity = (productId) => {
+    const item = cart.find((p) => p.productId === productId);
+    return item?.quantity || 0;
   };
 
-  const incrementQuantity = (productId) => {
-    setCart((prevCart) => ({
-      ...prevCart,
-      [productId]: prevCart[productId] + 1,
-    }));
+  const handleAddToCart = (productId) => {
+    dispatch(addToCart({ productId, quantity: 1 }));
   };
 
-  const decrementQuantity = (productId) => {
-    setCart((prevCart) => {
-      const newQuantity = (prevCart[productId] || 0) - 1;
-      if (newQuantity <= 0) {
-        const { [productId]: _, ...rest } = prevCart; 
-        return rest;
-      }
-      return {
-        ...prevCart,
-        [productId]: newQuantity,
-      };
-    });
+  const handleIncrement = (productId) => {
+    dispatch(incrementQuantity({ productId, product_quantity: 50 })); // assuming 50 is max stock
   };
 
+  const handleDecrement = (productId) => {
+    dispatch(decrementQuantity({ productId }));
+  };
   return (
     <div>
       <div className="bg-[#084C4E0F] py-8 lg:py-14">
@@ -95,10 +117,10 @@ const AllProducts = ({ selectedCategory }) => {
               
                 <ProductCard
                   product={product}
-                  cartQuantity={cart[product.id] || 0} 
-                  onAddToCart={addToCart}
-                  onIncrement={incrementQuantity}
-                  onDecrement={decrementQuantity}
+                  cartQuantity={getCartQuantity(product.id)} 
+                  onAddToCart={handleAddToCart}
+                  onIncrement={handleIncrement}
+                  onDecrement={handleDecrement}
                 />
               </Link>
             ))}

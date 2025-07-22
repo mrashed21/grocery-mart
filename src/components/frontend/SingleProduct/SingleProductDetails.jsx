@@ -1,18 +1,25 @@
 "use client";
+import {
+  addToCart,
+  decrementQuantity,
+  incrementQuantity,
+} from "@/redux/feature/cart/cartSlice";
+
 import { useState } from "react";
 import { BsChevronDown, BsChevronUp } from "react-icons/bs";
 import { IoAdd, IoRemove } from "react-icons/io5";
 import { RxCross2 } from "react-icons/rx";
 import { SlCheck } from "react-icons/sl";
 import { TbCurrencyTaka } from "react-icons/tb";
+import { useDispatch, useSelector } from "react-redux";
 import ProductCheckout from "../Home/ProductCheckOut/ProductCheckout";
 import SimilarProducts from "./SimilarProducts/SimilarProducts";
 
 const SingleProductDetails = ({ product }) => {
   const [isDescriptioOpen, setIsDescriptioOpen] = useState(true);
   const [selectedImage, setSelectedImage] = useState(product?.image);
-  const [cart, setCart] = useState({});
-
+  // const [cart, setCart] = useState({});
+  const cart = useSelector((state) => state.grocery_mart.products);
   const handleDescriptionToggle = () => {
     setIsDescriptioOpen((prev) => !prev);
   };
@@ -21,25 +28,23 @@ const SingleProductDetails = ({ product }) => {
     setSelectedImage(image);
   };
 
-  const incrementQuantity = (productId) => {
-    setCart((prevCart) => ({
-      ...prevCart,
-      [productId]: (prevCart[productId] || 0) + 1,
-    }));
+  const dispatch = useDispatch();
+
+  const getCartQuantity = (productId) => {
+    const item = cart.find((p) => p.productId === productId);
+    return item?.quantity || 1;
   };
 
-  const decrementQuantity = (productId) => {
-    setCart((prevCart) => {
-      const newQuantity = (prevCart[productId] || 0) - 1;
-      if (newQuantity <= 0) {
-        const { [productId]: _, ...rest } = prevCart;
-        return rest;
-      }
-      return {
-        ...prevCart,
-        [productId]: newQuantity,
-      };
-    });
+  const handleAddToCart = (productId) => {
+    dispatch(addToCart({ productId, quantity: 1 }));
+  };
+
+  const handleIncrement = (productId) => {
+    dispatch(incrementQuantity({ productId, product_quantity: 50 })); // assuming 50 is max stock
+  };
+
+  const handleDecrement = (productId) => {
+    dispatch(decrementQuantity({ productId }));
   };
 
   return (
@@ -168,7 +173,7 @@ const SingleProductDetails = ({ product }) => {
               <div className="flex items-center">
                 <button
                   onClick={(e) => {
-                    decrementQuantity(product.id);
+                    handleDecrement(product.id);
                     e.stopPropagation();
                     e.preventDefault();
                   }}
@@ -178,13 +183,13 @@ const SingleProductDetails = ({ product }) => {
                   <IoRemove className="text-xl" />
                 </button>
 
-                <span className="px-4 py-[1px]  font-bold bg-[#084C4E14]">
-                  {cart[product.id] || 1}
+                <span className="px-4 py-[1px] font-bold bg-[#084C4E14]">
+                  {getCartQuantity(product.id)}
                 </span>
 
                 <button
                   onClick={(e) => {
-                    incrementQuantity(product.id);
+                    handleIncrement(product.id);
                     e.stopPropagation();
                     e.preventDefault();
                   }}
@@ -197,7 +202,7 @@ const SingleProductDetails = ({ product }) => {
 
               <button
                 onClick={(e) => {
-                  onAddToCart(product.id);
+                  handleAddToCart(product.id);
                   e.stopPropagation();
                   e.preventDefault();
                 }}

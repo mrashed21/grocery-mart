@@ -1,3 +1,4 @@
+import Providers from "@/providers/Providers";
 import { Abhaya_Libre, Manrope, Nunito } from "next/font/google";
 import { Slide, ToastContainer } from "react-toastify";
 import "./globals.css";
@@ -31,13 +32,15 @@ export default function RootLayout({ children }) {
       <body
         className={`${nunito.variable} ${manrope.variable} ${abhayaLibre.variable}`}
       >
-        {children}
-        <ToastContainer
-          position="bottom-right"
-          autoClose={1500}
-          transition={Slide}
-          closeOnClick
-        />
+        <Providers>
+          {children}
+          <ToastContainer
+            position="bottom-right"
+            autoClose={1500}
+            transition={Slide}
+            closeOnClick
+          />
+        </Providers>
       </body>
     </html>
   );
