@@ -1,9 +1,4 @@
 "use client";
-import {
-  addToCart,
-  decrementQuantity,
-  incrementQuantity,
-} from "@/redux/feature/cart/cartSlice";
 
 import CheckoutSkeleton from "@/components/Skeleton/CheckoutSkeleton";
 import { useState } from "react";
@@ -12,15 +7,13 @@ import { IoAdd, IoRemove } from "react-icons/io5";
 import { RxCross2 } from "react-icons/rx";
 import { SlCheck } from "react-icons/sl";
 import { TbCurrencyTaka } from "react-icons/tb";
-import { useDispatch, useSelector } from "react-redux";
 import ProductCheckout from "../Home/ProductCheckOut/ProductCheckout";
 import SimilarProducts from "./SimilarProducts/SimilarProducts";
 
 const SingleProductDetails = ({ product }) => {
   const [isDescriptioOpen, setIsDescriptioOpen] = useState(true);
   const [selectedImage, setSelectedImage] = useState(product?.image);
-  // const [cart, setCart] = useState({});
-  const cart = useSelector((state) => state.grocery_mart.products);
+  const [quantity, setQuantity] = useState(1);
   const handleDescriptionToggle = () => {
     setIsDescriptioOpen((prev) => !prev);
   };
@@ -29,23 +22,12 @@ const SingleProductDetails = ({ product }) => {
     setSelectedImage(image);
   };
 
-  const dispatch = useDispatch();
-
-  const getCartQuantity = (productId) => {
-    const item = cart.find((p) => p.productId === productId);
-    return item?.quantity || 1;
+  const handleIncrement = () => {
+    setQuantity((prev) => prev + 1);
   };
 
-  const handleAddToCart = (productId) => {
-    dispatch(addToCart({ productId, quantity: 1 }));
-  };
-
-  const handleIncrement = (productId) => {
-    dispatch(incrementQuantity({ productId, product_quantity: 50 })); // assuming 50 is max stock
-  };
-
-  const handleDecrement = (productId) => {
-    dispatch(decrementQuantity({ productId }));
+  const handleDecrement = () => {
+    setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
   };
 
   return (
@@ -185,13 +167,9 @@ const SingleProductDetails = ({ product }) => {
                         e.stopPropagation();
                         e.preventDefault();
                       }}
-                      disabled={getCartQuantity(product.id) == 1}
+                      disabled={quantity == 1}
                       className={`px-2 py-1 bg-[#084C4EA6] text-white rounded
-    ${
-      getCartQuantity(product.id) === 1
-        ? "cursor-not-allowed opacity-50"
-        : "cursor-pointer"
-    }
+    ${quantity === 1 ? "cursor-not-allowed opacity-50" : "cursor-pointer"}
   `}
                       aria-label="Decrease quantity"
                     >
@@ -199,7 +177,7 @@ const SingleProductDetails = ({ product }) => {
                     </button>
 
                     <span className="px-4 py-[1px] font-bold bg-[#084C4E14]">
-                      {getCartQuantity(product.id)}
+                      {quantity}
                     </span>
 
                     <button
@@ -208,7 +186,7 @@ const SingleProductDetails = ({ product }) => {
                         e.stopPropagation();
                         e.preventDefault();
                       }}
-                      className="px-2 py-1 bg-[#084C4EA6] text-white rounded"
+                      className="px-2 py-1 bg-[#084C4EA6] text-white rounded cursor-pointer"
                       aria-label="Increase quantity"
                     >
                       <IoAdd className="text-xl" />
