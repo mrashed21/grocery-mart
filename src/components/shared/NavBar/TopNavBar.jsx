@@ -2,7 +2,7 @@
 import UserAuthModal from "@/components/Auth/UserAuthModal";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react"; // Import useState
+import { useEffect, useState } from "react"; // Import useState
 import { CiLocationOn } from "react-icons/ci";
 import { FiSearch } from "react-icons/fi";
 import { HiOutlineBars3BottomRight } from "react-icons/hi2";
@@ -10,11 +10,15 @@ import { IoIosArrowDown } from "react-icons/io";
 import { IoBagHandleOutline } from "react-icons/io5";
 import { RxCross1 } from "react-icons/rx";
 import { TbUser } from "react-icons/tb";
+import { useSelector } from "react-redux";
 import Contain from "../../common/Contain";
 import logo from "./../../../../public/image/logo.png";
 const TopNavBar = () => {
   const [isUserAuthOpen, setIsUserAuthOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const cartProducts = useSelector((state) => state.grocery_mart.products);
+  const [cartLength, setCartLength] = useState(cartProducts.length);
 
   const handleAuthModal = () => {
     setIsUserAuthOpen(true);
@@ -23,6 +27,27 @@ const TopNavBar = () => {
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
+
+  useEffect(() => {
+    const updateWishlistAndCart = () => {
+      try {
+        const cart = JSON.parse(localStorage.getItem("grocery_mart")) || {};
+        setCartLength(cart?.products?.length || 0);
+      } catch (error) {
+        console.error("Error reading localStorage", error);
+      }
+    };
+
+    updateWishlistAndCart();
+
+    window.addEventListener("localStorageUpdated", updateWishlistAndCart);
+    window.addEventListener("storage", updateWishlistAndCart);
+
+    return () => {
+      window.removeEventListener("localStorageUpdated", updateWishlistAndCart);
+      window.removeEventListener("storage", updateWishlistAndCart);
+    };
+  }, []);
 
   return (
     <div className="pt-3 lg:pt-6 pb-3.5  z-90 bg-[#084C4E0A] ">
@@ -82,7 +107,7 @@ const TopNavBar = () => {
             <div className="lg:hidden">
               <button
                 onClick={toggleMenu}
-                className="focus:outline-none cursor-pointer"
+                className="focus:outline-none cursor-pointer "
               >
                 <HiOutlineBars3BottomRight className="text-3xl text-[#385C5D]" />
               </button>
@@ -93,9 +118,13 @@ const TopNavBar = () => {
               {/* <button>
               <CiHeart className="text-[#385C5D] text-3xl" />
             </button> */}
-              <button>
+              <Link href={"/checkout"} className="relative">
                 <IoBagHandleOutline className="text-[#385C5D] text-3xl" />
-              </button>
+
+                <span className="text-xs bg-[#5E8B8C] text-white rounded-full w-5 h-5 flex items-center justify-center absolute -bottom-2 -right-2">
+                  {cartLength}
+                </span>
+              </Link>
               <button onClick={handleAuthModal}>
                 <TbUser className="text-[#385C5D] text-3xl cursor-pointer" />
               </button>
@@ -135,12 +164,20 @@ const TopNavBar = () => {
                   <IoIosArrowDown className="text-[#5E8B8C] text-sm" />
                 </span>
               </div>
-              {/* <button className="flex items-center gap-2 text-[#385C5D] text-lg hover:text-[#5E8B8C]">
-              <CiHeart className="text-2xl" /> Wishlist
-            </button> */}
-              <button className="flex items-center gap-2 text-[#385C5D] text-lg hover:text-[#5E8B8C]">
-                <IoBagHandleOutline className="text-2xl" /> My Bag
-              </button>
+
+              <Link href={"checkout"} className=" relative">
+                <button
+                  onClick={() => {
+                    toggleMenu();
+                  }}
+                  className="flex items-center gap-2 text-[#385C5D] text-lg hover:text-[#5E8B8C]"
+                >
+                  <IoBagHandleOutline className="text-2xl" /> My Bag
+                  <span className="text-[10px] bg-[#5E8B8C] text-white rounded-full w-4 h-4 flex items-center justify-center absolute -bottom-2 left-3">
+                    {cartLength}
+                  </span>
+                </button>
+              </Link>
               <button
                 onClick={() => {
                   handleAuthModal();

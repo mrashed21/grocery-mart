@@ -60,22 +60,23 @@ const ProductCard = ({
           </div>
         </div>
       </div>
+
       {/* Add to Cart / Quantity Controls */}
-      <div className=" pt-0 bg-white">
+      <div className="">
         {cartQuantity === 0 ? (
           <button
             onClick={(e) => {
-              onAddToCart(product.id);
               e.stopPropagation();
               e.preventDefault();
+              onAddToCart(product.id);
             }}
-            className="w-full flex items-center justify-center gap-2 bg-[#5E8B8C] hover:bg-[#4f7a7b] text-white font-semibold py-2 rounded-b-lg transition-colors duration-200"
+            className="w-full flex items-center justify-center gap-2 bg-[#5E8B8C] hover:bg-[#4f7a7b] text-white font-semibold py-2 rounded-b-[10px] transition-colors duration-200"
           >
             Add to Bag
           </button>
         ) : (
           <div
-            className={`w-full flex items-center cursor-pointer rounded-b-lg text-base font-medium  bg-[#084C4E4D] text-white`}
+            className={`w-full flex items-center cursor-pointer rounded-b-[10px] text-base font-medium  bg-[#084C4E4D] text-white`}
             onClick={(e) => {
               e.stopPropagation();
               e.preventDefault();
@@ -83,9 +84,9 @@ const ProductCard = ({
           >
             <button
               onClick={(e) => {
-                onDecrement(product.id);
                 e.stopPropagation();
                 e.preventDefault();
+                onDecrement(product.id);
               }}
               className="flex-shrink-0 cursor-pointer text-white p-2 rounded-full transition-colors duration-200"
               aria-label="Decrease quantity "
@@ -97,9 +98,9 @@ const ProductCard = ({
             </span>
             <button
               onClick={(e) => {
-                onIncrement(product.id);
                 e.stopPropagation();
                 e.preventDefault();
+                onIncrement(product.id);
               }}
               className="flex-shrink-0 cursor-pointer text-white p-2 rounded-full transition-colors duration-200"
               aria-label="Increase quantity"

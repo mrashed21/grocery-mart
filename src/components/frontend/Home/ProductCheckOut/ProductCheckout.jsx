@@ -26,66 +26,12 @@ const ProductCheckout = ({
   const navigate = useRouter();
 
   const [loading, setLoading] = useState(false);
-  const [districtsData, setDistrictsData] = useState([]);
-  const [districtId, setDistrictId] = useState("");
 
-  const [division, setDivision] = useState(
-    userInfo?.data?.user_division || null
-  );
-  const [district, setDistrict] = useState(
-    userInfo?.data?.user_district || null
-  );
-  const [isOpenDistrict, setIsOpenDistrict] = useState(true);
-  const shippingCharge = division === "Dhaka" ? ` 100` : `150 `;
+  const shippingCharge = 100;
 
   let total = productPrice * quantity;
   let grandToal = productPrice * quantity + parseInt(shippingCharge);
 
-  const getSelectedVariation = (product, selectedVariations) => {
-    if (
-      !product ||
-      !product.variations ||
-      Object.keys(selectedVariations).length === 0
-    ) {
-      return null;
-    }
-    const selectedAttributeNames = Object.keys(selectedVariations)
-      .map((key) => selectedVariations[key].attribute_value_name?.trim())
-      .filter(Boolean)
-      .sort();
-    if (selectedAttributeNames.length === 0) {
-      return null;
-    }
-
-    for (const variation of product.variations) {
-      if (variation.variation_name) {
-        const variationNameParts = variation.variation_name
-          .split("-")
-          .map((part) => part.trim());
-        const matches = selectedAttributeNames.every((selectedName) =>
-          variationNameParts.some((part) => part === selectedName)
-        );
-
-        if (
-          matches &&
-          selectedAttributeNames.length === variationNameParts.length
-        ) {
-          return variation;
-        }
-      }
-    }
-
-    return null;
-  };
-
-  useEffect(() => {
-    if (districtId) {
-      const districtData = districtOptions.filter(
-        (district) => district?.division_id === districtId
-      );
-      setDistrictsData(districtData);
-    }
-  }, [districtId]);
 
   useEffect(() => {
     if (userInfo?.data) {
@@ -121,29 +67,6 @@ const ProductCheckout = ({
           ? ` Inside Dhaka ${settingData?.data[0]?.inside_dhaka_shipping_days} Days`
           : `Outside Dhaka ${settingData?.data[0]?.outside_dhaka_shipping_days} Days`,
 
-      order_products: [
-        (() => {
-          const selectedVar = getSelectedVariation(
-            singleProduct,
-            selectedVariations
-          );
-          const variationId = selectedVar?._id || null;
-          const variation_name = selectedVar?.variation_name || null;
-          const actual_product_price =
-            selectedVar?.variation_discount_price ||
-            selectedVar?.variation_price ||
-            productPrice;
-
-          return {
-            order_product_id: singleProduct?._id,
-            is_variation: singleProduct?.is_variation,
-            variation_id: variationId,
-            variation_name: variation_name,
-            order_product_price: actual_product_price,
-            order_product_quantity: quantity,
-          };
-        })(),
-      ],
       sub_total_amount: total ? total : 0,
       discount_amount: 0,
       shipping_cost: parseInt(shippingCharge) || 0,
@@ -201,12 +124,6 @@ const ProductCheckout = ({
                 register={register}
                 userInfo={userInfo}
                 errors={errors}
-                setDivision={setDivision}
-                setDistrictId={setDistrictId}
-                setDistrict={setDistrict}
-                setIsOpenDistrict={setIsOpenDistrict}
-                isOpenDistrict={isOpenDistrict}
-                districtsData={districtsData}
                 setValue={setValue}
               />
               {/* {orderData && <OrderSummaryTable orderData={orderData} />} */}

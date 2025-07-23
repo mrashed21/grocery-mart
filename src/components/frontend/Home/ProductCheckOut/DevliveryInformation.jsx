@@ -5,18 +5,7 @@ import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import Select from "react-select";
 
-const DeliveryInformation = ({
-  register,
-  userInfo,
-  errors,
-  setDivision,
-  setDistrictId,
-  setDistrict,
-  setIsOpenDistrict,
-  isOpenDistrict,
-  districtsData,
-  setValue,
-}) => {
+const DeliveryInformation = ({ register, userInfo, errors, setValue }) => {
   const [deliveryInformationOpen, setDeliveryInformationOpen] = useState(true);
   const [localCustomerPhone, setLocalCustomerPhone] = useState("");
 
