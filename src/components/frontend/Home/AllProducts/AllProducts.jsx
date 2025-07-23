@@ -1,11 +1,16 @@
 "use client";
 import Contain from "@/components/common/Contain";
+import ProductSkeleton from "@/components/Skeleton/ProductSkeleton";
+import {
+  addToCart,
+  decrementQuantity,
+  incrementQuantity,
+} from "@/redux/feature/cart/cartSlice";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import productData from "./../../../../../public/productData.json";
 import ProductCard from "./ProductCard";
-import { useDispatch, useSelector } from "react-redux";
-import { addToCart, decrementQuantity, incrementQuantity } from "@/redux/feature/cart/cartSlice";
 
 const AllProducts = ({ selectedCategory }) => {
   const INITIAL_DISPLAY_COUNT = 20;
@@ -14,7 +19,7 @@ const AllProducts = ({ selectedCategory }) => {
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [displayCount, setDisplayCount] = useState(INITIAL_DISPLAY_COUNT);
   const [isLoading, setIsLoading] = useState(false);
-const cart = useSelector((state) => state.grocery_mart.products);
+  const cart = useSelector((state) => state.grocery_mart.products);
 
   useEffect(() => {
     const shuffled = [...productData].sort(() => Math.random() - 0.5);
@@ -55,7 +60,6 @@ const cart = useSelector((state) => state.grocery_mart.products);
   const allShown = displayCount >= filteredProducts.length;
 
   const dispatch = useDispatch();
-  
 
   const getCartQuantity = (productId) => {
     const item = cart.find((p) => p.productId === productId);
@@ -84,18 +88,29 @@ const cart = useSelector((state) => state.grocery_mart.products);
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 lg:gap-6">
-            {filteredProducts.slice(0, displayCount).map((product) => (
-              <Link href={`/product/${product?.slug}`} key={product.id}>
-              
-                <ProductCard
-                  product={product}
-                  cartQuantity={getCartQuantity(product.id)} 
-                  onAddToCart={handleAddToCart}
-                  onIncrement={handleIncrement}
-                  onDecrement={handleDecrement}
-                />
-              </Link>
-            ))}
+            {filteredProducts.length === 0 ? (
+              <>
+                {Array(5)
+                  .fill(0)
+                  .map((_, i) => (
+                    <ProductSkeleton />
+                  ))}
+              </>
+            ) : (
+              <>
+                {filteredProducts.slice(0, displayCount).map((product) => (
+                  <Link href={`/product/${product?.slug}`} key={product.id}>
+                    <ProductCard
+                      product={product}
+                      cartQuantity={getCartQuantity(product.id)}
+                      onAddToCart={handleAddToCart}
+                      onIncrement={handleIncrement}
+                      onDecrement={handleDecrement}
+                    />
+                  </Link>
+                ))}
+              </>
+            )}
           </div>
         </Contain>
       </div>

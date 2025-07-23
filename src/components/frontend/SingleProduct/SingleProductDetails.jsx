@@ -5,6 +5,7 @@ import {
   incrementQuantity,
 } from "@/redux/feature/cart/cartSlice";
 
+import CheckoutSkeleton from "@/components/Skeleton/CheckoutSkeleton";
 import { useState } from "react";
 import { BsChevronDown, BsChevronUp } from "react-icons/bs";
 import { IoAdd, IoRemove } from "react-icons/io5";
@@ -49,198 +50,203 @@ const SingleProductDetails = ({ product }) => {
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 lg:gap-10">
-      <div className="grid-cols-12 lg:col-span-8">
-        <div className="flex flex-col lg:flex-row gap-2 font-nunito">
-          <div className="">
-            {/* Image or Video preview */}
-            <div className="relative overflow-hidden group w-full">
-              <div className="relative w-full h-full overflow-hidden">
-                <img
-                  src={selectedImage}
-                  alt="Main Preview"
-                  className={`w-[420px] h-[280px]  transition-transform duration-300`}
-                />
-              </div>
-            </div>
-
-            {/* Thumbnail list */}
-            <div className="flex flex-row gap-3 overflow-y-auto scrollbar-thin h-[90px] w-full lg:w-[420px] mt-5">
-              {/* Main image thumbnail */}
-              <img
-                src={product?.image}
-                alt="Main Image"
-                onClick={() => handleMainImageClick(product?.image)}
-                className={`h-16 w-16  cursor-pointer rounded ${
-                  selectedImage === product?.image
-                    ? "ring-2 ring-[#977b63]"
-                    : ""
-                }`}
-              />
-
-              {/* Other thumbnails */}
-              {product?.other_image?.map((img, index) => (
-                <img
-                  key={index}
-                  src={img}
-                  alt={`Thumbnail ${index + 1}`}
-                  onClick={() => handleMainImageClick(img)}
-                  className={`h-16 w-16 cursor-pointer rounded ${
-                    selectedImage === img ? "ring-2 ring-[#977b63]" : ""
-                  }`}
-                />
-              ))}
-            </div>
-          </div>
-
-          {/* details */}
-          <div className="p-4 flex flex-col  ">
-            <div className="flex items-center justify-between">
-              <h2 className="text-3xl lg:text-2xl font-bold text-[#3A3A3AFA]">
-                {product.name}
-              </h2>
-              {/* stock */}
-              <div className="lg:hidden">
-                {product.stock && product.stock_quantity > 0 ? (
-                  <p className="flex items-center gap-1 ">
-                    {" "}
-                    <span className="p-0.5 rounded-full  text-[#25AE6C] font-bold">
-                      <SlCheck />
-                    </span>{" "}
-                    In-stock{" "}
-                  </p>
-                ) : (
-                  <p className="flex items-center gap-1">
-                    <span className=" rounded-full border text-sm text-red-500 font-bold">
-                      {" "}
-                      <RxCross2 />
-                    </span>{" "}
-                    Out of stock
-                  </p>
-                )}
-              </div>
-            </div>
-
-            <p className="text-[#3A3A3AFA]  mt-4 mb-2">
-              Product Tags:
-              <span className=""> {product.category}</span>
-            </p>
-
-            <div className="flex justify-between my-2 lg:my-3">
-              {product.is_offer ? (
-                <div className="flex items-center lg:gap-3">
-                  <span className="font-semibold text-[#FF6B4F] lg:text-[18px] flex">
-                    <TbCurrencyTaka className=" lg:text-xl" />{" "}
-                    {product.discountedPrice}
-                  </span>
-                  <span className="line-through text-[#16161680] flex ">
-                    <TbCurrencyTaka className=" lg:text-xl" /> {product.price}
-                  </span>
+      {!product ? (
+        <div className=" col-span-8 ">
+          <CheckoutSkeleton />
+        </div>
+      ) : (
+        <>
+          <div className=" lg:col-span-8">
+            <div className="flex flex-col lg:flex-row gap-2 font-nunito">
+              <div className="">
+                {/* Image or Video preview */}
+                <div className="relative overflow-hidden group w-full">
+                  <div className="relative w-full h-full overflow-hidden">
+                    <img
+                      src={selectedImage}
+                      alt="Main Preview"
+                      className={`w-[420px] h-[280px]  transition-transform duration-300`}
+                    />
+                  </div>
                 </div>
-              ) : (
-                <span className="font-semibold text-[#FF6B4F] lg:text-[22px] flex">
-                  <TbCurrencyTaka className=" lg:text-xl" /> {product.price}
-                </span>
-              )}
-            </div>
-            {/* quantity */}
-            <p className=" text-[#3A3A3AFA] font-nunito">
-              {" "}
-              Quantity: {product.quantity}
-            </p>
 
-            {/* stock */}
-            <div className="mt-2 hidden lg:flex">
-              {product.stock && product.stock_quantity > 0 ? (
-                <p className="flex items-center gap-1 ">
+                {/* Thumbnail list */}
+                <div className="flex flex-row gap-3 overflow-y-auto scrollbar-thin h-[90px] w-full lg:w-[420px] mt-5">
+                  {/* Main image thumbnail */}
+                  <img
+                    src={product?.image}
+                    alt="Main Image"
+                    onClick={() => handleMainImageClick(product?.image)}
+                    className={`h-16 w-16  cursor-pointer rounded ${
+                      selectedImage === product?.image
+                        ? "ring-2 ring-[#977b63]"
+                        : ""
+                    }`}
+                  />
+
+                  {/* Other thumbnails */}
+                  {product?.other_image?.map((img, index) => (
+                    <img
+                      key={index}
+                      src={img}
+                      alt={`Thumbnail ${index + 1}`}
+                      onClick={() => handleMainImageClick(img)}
+                      className={`h-16 w-16 cursor-pointer rounded ${
+                        selectedImage === img ? "ring-2 ring-[#977b63]" : ""
+                      }`}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              {/* details */}
+              <div className="p-4 flex flex-col  ">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-3xl lg:text-2xl font-bold text-[#3A3A3AFA]">
+                    {product.name}
+                  </h2>
+                  {/* stock */}
+                  <div className="lg:hidden">
+                    {product.stock && product.stock_quantity > 0 ? (
+                      <p className="flex items-center gap-1 ">
+                        {" "}
+                        <span className="p-0.5 rounded-full  text-[#25AE6C] font-bold">
+                          <SlCheck />
+                        </span>{" "}
+                        In-stock{" "}
+                      </p>
+                    ) : (
+                      <p className="flex items-center gap-1">
+                        <span className=" rounded-full border text-sm text-red-500 font-bold">
+                          {" "}
+                          <RxCross2 />
+                        </span>{" "}
+                        Out of stock
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                <p className="text-[#3A3A3AFA]  mt-4 mb-2">
+                  Product Tags:
+                  <span className=""> {product.category}</span>
+                </p>
+
+                <div className="flex justify-between my-2 lg:my-3">
+                  {product.is_offer ? (
+                    <div className="flex items-center lg:gap-3">
+                      <span className="font-semibold text-[#FF6B4F] lg:text-[18px] flex">
+                        <TbCurrencyTaka className=" lg:text-xl" />{" "}
+                        {product.discountedPrice}
+                      </span>
+                      <span className="line-through text-[#16161680] flex ">
+                        <TbCurrencyTaka className=" lg:text-xl" />{" "}
+                        {product.price}
+                      </span>
+                    </div>
+                  ) : (
+                    <span className="font-semibold text-[#FF6B4F] lg:text-[22px] flex">
+                      <TbCurrencyTaka className=" lg:text-xl" /> {product.price}
+                    </span>
+                  )}
+                </div>
+                {/* quantity */}
+                <p className=" text-[#3A3A3AFA] font-nunito">
                   {" "}
-                  <span className="p-0.5 rounded-full  text-[#25AE6C] font-bold">
-                    <SlCheck />
-                  </span>{" "}
-                  In-stock{" "}
+                  Quantity: {product.quantity}
                 </p>
-              ) : (
-                <p className="flex items-center gap-1">
-                  <span className=" rounded-full border text-sm text-red-500 font-bold">
-                    {" "}
-                    <RxCross2 />
-                  </span>{" "}
-                  Out of stock
-                </p>
-              )}
-            </div>
 
-            <div className="flex gap-4 mt-4">
-              <div className="flex items-center">
-                <button
-                  onClick={(e) => {
-                    handleDecrement(product.id);
-                    e.stopPropagation();
-                    e.preventDefault();
-                  }}
-                  disabled={getCartQuantity(product.id) == 1}
-                  className={`px-2 py-1 bg-[#084C4EA6] text-white rounded
+                {/* stock */}
+                <div className="mt-2 hidden lg:flex">
+                  {product.stock && product.stock_quantity > 0 ? (
+                    <p className="flex items-center gap-1 ">
+                      {" "}
+                      <span className="p-0.5 rounded-full  text-[#25AE6C] font-bold">
+                        <SlCheck />
+                      </span>{" "}
+                      In-stock{" "}
+                    </p>
+                  ) : (
+                    <p className="flex items-center gap-1">
+                      <span className=" rounded-full border text-sm text-red-500 font-bold">
+                        {" "}
+                        <RxCross2 />
+                      </span>{" "}
+                      Out of stock
+                    </p>
+                  )}
+                </div>
+
+                <div className="flex gap-4 mt-4">
+                  <div className="flex items-center">
+                    <button
+                      onClick={(e) => {
+                        handleDecrement(product.id);
+                        e.stopPropagation();
+                        e.preventDefault();
+                      }}
+                      disabled={getCartQuantity(product.id) == 1}
+                      className={`px-2 py-1 bg-[#084C4EA6] text-white rounded
     ${
       getCartQuantity(product.id) === 1
         ? "cursor-not-allowed opacity-50"
         : "cursor-pointer"
     }
   `}
-                  aria-label="Decrease quantity"
-                >
-                  <IoRemove className="text-xl" />
-                </button>
+                      aria-label="Decrease quantity"
+                    >
+                      <IoRemove className="text-xl" />
+                    </button>
 
-                <span className="px-4 py-[1px] font-bold bg-[#084C4E14]">
-                  {getCartQuantity(product.id)}
-                </span>
+                    <span className="px-4 py-[1px] font-bold bg-[#084C4E14]">
+                      {getCartQuantity(product.id)}
+                    </span>
 
-                <button
-                  onClick={(e) => {
-                    handleIncrement(product.id);
-                    e.stopPropagation();
-                    e.preventDefault();
-                  }}
-                  className="px-2 py-1 bg-[#084C4EA6] text-white rounded"
-                  aria-label="Increase quantity"
-                >
-                  <IoAdd className="text-xl" />
-                </button>
+                    <button
+                      onClick={(e) => {
+                        handleIncrement(product.id);
+                        e.stopPropagation();
+                        e.preventDefault();
+                      }}
+                      className="px-2 py-1 bg-[#084C4EA6] text-white rounded"
+                      aria-label="Increase quantity"
+                    >
+                      <IoAdd className="text-xl" />
+                    </button>
+                  </div>
+                </div>
               </div>
-
-             
             </div>
-          </div>
-        </div>
 
-        {/* description  */}
+            {/* description  */}
 
-        {product.description && (
-          <div className=" mt-5">
-            <div
-              onClick={handleDescriptionToggle}
-              className="flex items-center justify-between cursor-pointer"
-            >
-              <h2 className="text-[20px] font-nunito text-black">
-                Description
-              </h2>
-              <p className=" cursor-pointer text-base ">
-                {isDescriptioOpen ? <BsChevronUp /> : <BsChevronDown />}
-              </p>
-            </div>
-            <hr className="border-t border-gray-200 my-3" />
-            {isDescriptioOpen && (
-              <p className="text-[#00000099] font-nunito text-justify">
-                {product.description}
-              </p>
+            {product.description && (
+              <div className=" mt-5">
+                <div
+                  onClick={handleDescriptionToggle}
+                  className="flex items-center justify-between cursor-pointer"
+                >
+                  <h2 className="text-[20px] font-nunito text-black">
+                    Description
+                  </h2>
+                  <p className=" cursor-pointer text-base ">
+                    {isDescriptioOpen ? <BsChevronUp /> : <BsChevronDown />}
+                  </p>
+                </div>
+                <hr className="border-t border-gray-200 my-3" />
+                {isDescriptioOpen && (
+                  <p className="text-[#00000099] font-nunito text-justify">
+                    {product.description}
+                  </p>
+                )}
+              </div>
             )}
           </div>
-        )}
-      </div>
-
+        </>
+      )}
       <div className="grid-cols-12 lg:col-span-4 mt-8 lg:mt-0">
         <ProductCheckout />
       </div>
-
       {/* similar Products */}
       <div className="lg:col-span-12">
         <div className="">
