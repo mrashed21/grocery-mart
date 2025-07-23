@@ -56,7 +56,7 @@ const ProductCard = ({
               </span>
             )}
 
-            <p className="text-sm text-[#9C9C9C]">{product.quantity}</p>
+            <p className="text-sm text-[#9C9C9C]">{product.unit}</p>
           </div>
         </div>
       </div>
@@ -70,7 +70,7 @@ const ProductCard = ({
               e.preventDefault();
               onAddToCart(product.id);
             }}
-            className="w-full flex items-center justify-center gap-2 bg-[#5E8B8C] hover:bg-[#4f7a7b] text-white font-semibold py-2 rounded-b-[10px] transition-colors duration-200"
+            className="w-full flex items-center justify-center gap-2 bg-[#5E8B8C] hover:bg-[#4f7a7b] text-white font-semibold py-2 rounded-b-[10px] transition-colors duration-200 cursor-pointer"
           >
             Add to Bag
           </button>

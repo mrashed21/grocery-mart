@@ -147,7 +147,7 @@ const DeliveryInformation = ({ register, userInfo, errors, setValue }) => {
               name="zone"
               className="mt-1"
               aria-label="Select a Zone"
-              menuPortalTarget={document.body}
+              // menuPortalTarget={document.body}
               styles={{
                 control: (base, state) => ({
                   ...base,

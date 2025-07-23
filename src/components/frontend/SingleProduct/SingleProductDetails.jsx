@@ -177,7 +177,14 @@ const SingleProductDetails = ({ product }) => {
                     e.stopPropagation();
                     e.preventDefault();
                   }}
-                  className="px-2 py-1 bg-[#084C4EA6] text-white rounded"
+                  disabled={getCartQuantity(product.id) == 1}
+                  className={`px-2 py-1 bg-[#084C4EA6] text-white rounded
+    ${
+      getCartQuantity(product.id) === 1
+        ? "cursor-not-allowed opacity-50"
+        : "cursor-pointer"
+    }
+  `}
                   aria-label="Decrease quantity"
                 >
                   <IoRemove className="text-xl" />
@@ -200,16 +207,7 @@ const SingleProductDetails = ({ product }) => {
                 </button>
               </div>
 
-              <button
-                onClick={(e) => {
-                  handleAddToCart(product.id);
-                  e.stopPropagation();
-                  e.preventDefault();
-                }}
-                className=" flex items-center justify-center gap-2 bg-[#5E8B8C] hover:bg-[#4f7a7b] text-white font-semibold px-3 py-1 rounded-lg transition-colors duration-200"
-              >
-                Add to Bag
-              </button>
+             
             </div>
           </div>
         </div>
