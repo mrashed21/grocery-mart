@@ -193,7 +193,7 @@ const CheckOutTable = ({ cartItems }) => {
 
                 <div className="flex flex-col items-center ">
                   <h2 className="text-[#084C4E] text-lg font-medium">Price</h2>
-                  <p className="text-[#FF6B4F] text-sm flex items-center font-bold ">
+                  <p className="text-[#FF6B4F] text-sm flex items-center font-bold">
                     {product.is_offer ? (
                       <span className="flex items-center">
                         <TbCurrencyTaka size={18} />
