@@ -122,7 +122,7 @@ const Categories = ({ onCategorySelect, selectedCategory }) => {
                   <SwiperSlide key={`${category.name}-${i}`}>
                     <div
                       onClick={() => onCategorySelect(category.name)}
-                      className={`cursor-pointer rounded-lg shadow border w-[150px] ${
+                      className={`cursor-pointer rounded-lg shadow border w-[150px]     lg:w-auto ${
                         selectedCategory === category.name
                           ? "border-[#FF6B4F] border-2"
                           : "border-[#00000014]"
