@@ -53,7 +53,7 @@ const SingleProductDetails = ({ product }) => {
                 </div>
 
                 {/* Thumbnail list */}
-                <div className="flex flex-row gap-3 overflow-y-auto scrollbar-thin h-[90px] w-full lg:w-[420px] mt-5 p-2">
+                <div className="flex flex-row gap-3 overflow-y-auto scrollbar-thin h-[95px] w-full lg:w-[420px] mt-5 p-2">
                   {/* Main image thumbnail */}
                   <img
                     src={product?.image}
