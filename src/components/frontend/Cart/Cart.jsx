@@ -64,7 +64,7 @@ const Cart = () => {
             {cartItems?.length} items
           </p>
         </div>
-        <div className="bg-white shadow flex items-center rounded-b-lg justify-center  p-1">
+        <div className="bg-white shadow flex items-center rounded-b-lg justify-center p-1">
           <TbCoinTaka className="" />{" "}
           <p className=" text-center text-sm ml-1 font-bold">{totalPrice}</p>
         </div>
