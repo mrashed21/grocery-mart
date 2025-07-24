@@ -59,7 +59,7 @@ const MobileCart = () => {
       >
         <div className="bg-[#084C4E] text-white w-[95vw] mx-auto h-12 shadow flex gap-1 items-center rounded-t-lg justify-center ">
           <p className=" text-center text-sm font-bold">
-            View Your Cart (<span className="mr-1">BDT </span>
+            View Your Bag (<span className="mr-1">BDT </span>
             {totalPrice})
           </p>
         </div>
