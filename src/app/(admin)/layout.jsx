@@ -1,10 +1,38 @@
+"use client";
+import AdminNavbar from "@/components/adminDashboard/AdminNavbar/AdminNavbar";
 import AdminSidebar from "@/components/adminDashboard/AdminSidebar/AdminSidebar";
+import { useState } from "react";
 
 const MainLayout = ({ children }) => {
+  const [isCollapsed, setIsCollapsed] = useState(false);
+
   return (
-    <div className="grid grid-cols-5">
-      <div className="col-span-1">   <AdminSidebar /></div>
-      <div className="min-h-screen col-span-4">{children}</div>
+    <div className="min-h-screen ">
+      <div className="grid grid-cols-6">
+        {" "}
+        {/* Sidebar */}
+        <div
+          className={`${
+            isCollapsed ? "hidden" : "col-span-1"
+          } transition-all duration-300 z-30`}
+        >
+          <AdminSidebar />
+        </div>
+        {/* Main content area */}
+        <div
+          className={`${
+            isCollapsed ? "col-span-6" : "col-span-5"
+          } transition-all duration-300 z-30`}
+        >
+          <div>
+            <AdminNavbar
+              isCollapsed={isCollapsed}
+              setIsCollapsed={setIsCollapsed}
+            />
+          </div>
+          <div>{children}</div>
+        </div>
+      </div>
     </div>
   );
 };

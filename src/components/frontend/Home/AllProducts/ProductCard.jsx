@@ -15,16 +15,16 @@ const ProductCard = ({
         {/* Product Image */}
         <div className="relative">
           <img
-            src={product.image || "https://via.placeholder.com/200"}
+            src={product.image }
             alt={product.name}
             width={200}
             height={200}
-            className="w-full h-28 lg:h-56 object-cover rounded-md mb-3"
+            className="w-full h-24 lg:h-56 object-cover rounded-md mb-3"
           />
 
           {/* Offer Badge (if applicable) */}
           {product.is_offer && (
-            <span className="absolute top-0 left-0 bg-[#FF6B4F] text-white px-2 py-1 rounded-l-md rounded-r-[15px] text-sm font-bold">
+            <span className="absolute top-0 left-0 bg-[#FF6B4F] text-white px-2 py-1 rounded-l-md rounded-r-[15px] text-[10px] lg:text-sm font-bold">
               {product.offer}
             </span>
           )}

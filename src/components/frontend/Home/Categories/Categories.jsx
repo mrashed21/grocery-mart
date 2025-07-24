@@ -14,6 +14,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import Contain from "@/components/common/Contain";
 import CategorySkeleton from "@/components/Skeleton/CategorySkeleton";
 import { useRef, useState } from "react";
+import ProductSearch from "../ProductSearch/ProductSearch";
 
 const Categories = ({ onCategorySelect, selectedCategory }) => {
   // Fetch category data
@@ -81,6 +82,10 @@ const Categories = ({ onCategorySelect, selectedCategory }) => {
   return (
     <Contain>
       <div className="lg:mb-28">
+        <div className="lg:hidden mt-5 z-50">
+          <ProductSearch />
+        </div>
+        {/* start category section */}
         <div>
           <h2 className="text-xl lg:text-4xl text-[#084C4E] font-nunito font-semibold my-3 lg:my-10">
             Featured Categories
@@ -93,10 +98,10 @@ const Categories = ({ onCategorySelect, selectedCategory }) => {
           ) : (
             <div className="relative">
               {/* Buttons */}
-              <div className="absolute left-[-20px] top-1/2 -translate-y-1/2 z-10">
+              <div className="absolute left-[-20px] top-1/2 -translate-y-1/2 ">
                 <div className="swiper-button-prev !w-9 !h-9 after:!text-xl font-extrabold after:!text-[#084C4E]" />
               </div>
-              <div className="absolute right-[-20px] top-1/2 -translate-y-1/2 z-10">
+              <div className="absolute right-[-20px] top-1/2 -translate-y-1/2">
                 <div className="swiper-button-next !w-9 !h-9 after:!text-xl font-extrabold after:!text-[#084C4E]" />
               </div>
 
@@ -128,7 +133,7 @@ const Categories = ({ onCategorySelect, selectedCategory }) => {
                           : "border-[#00000014]"
                       }`}
                     >
-                      <div className="h-[80px] lg:h-[180px]">
+                      <div className="h-[80px] lg:h-[150px]">
                         <img
                           src={category.image}
                           alt={`Category ${i}`}

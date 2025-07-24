@@ -1,11 +1,10 @@
-import AdminSidebar from "@/components/adminDashboard/AdminSidebar/AdminSidebar";
-import Contain from "@/components/common/Contain";
+import AdminCategory from "@/components/adminDashboard/AdminCategory/AdminCategory";
 
 const AdminHome = () => {
   return (
-    <Contain>
-    
-    </Contain>
+    <div className="">
+      <AdminCategory />
+    </div>
   );
 };
 

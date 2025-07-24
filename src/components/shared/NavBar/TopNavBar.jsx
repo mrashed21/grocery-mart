@@ -1,10 +1,10 @@
 "use client";
 import UserAuthModal from "@/components/Auth/UserAuthModal";
+import ProductSearch from "@/components/frontend/Home/ProductSearch/ProductSearch";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react"; // Import useState
 import { CiLocationOn } from "react-icons/ci";
-import { FiSearch } from "react-icons/fi";
 import { HiOutlineBars3BottomRight } from "react-icons/hi2";
 import { IoIosArrowDown } from "react-icons/io";
 import { IoBagHandleOutline } from "react-icons/io5";
@@ -53,7 +53,7 @@ const TopNavBar = () => {
     <div className="pt-3 lg:pt-6 pb-3.5  z-90 bg-[#084C4E0A] ">
       <Contain>
         <div className="flex items-center justify-between ">
-          {/* right section */}
+          {/* left section */}
           <div className="flex items-center gap-4 lg:gap-10">
             {/* logo */}
             <Link href={"/"} className="flex items-center shrink-0 gap-1">
@@ -84,23 +84,12 @@ const TopNavBar = () => {
               </div>
             </div>
           </div>
-          {/* left section */}
+
+          {/* right section */}
           <div className="flex items-center gap-1 lg:gap-10">
             {/* search option */}
-            <div className="relative hidden lg:flex flex-grow w-[110px] lg:w-96">
-              <input
-                type="text"
-                placeholder="Search..."
-                className="outline-none bg-white border border-[#0000001A] text-[#0000004D] py-2 px-3 lg:py-3 lg:px-[18px] rounded-[5px] lg:rounded-[10px] text-sm w-full"
-              />
-              <span className="absolute inset-y-0 end-0 grid w-8 h-full rounded-r-[5px] lg:w-12 place-content-center">
-                <button
-                  type="button"
-                  className="bg-[#5E8B8C] text-white p-1 lg:p-[13px] rounded-[5px] lg:rounded-[10px] cursor-pointer"
-                >
-                  <FiSearch className="text-base lg:text-lg text-white" />
-                </button>
-              </span>
+            <div className="hidden lg:flex z-50">
+              <ProductSearch />
             </div>
 
             {/* Hamburger menu icon for mobile */}
@@ -132,23 +121,6 @@ const TopNavBar = () => {
           </div>
         </div>
 
-        <div className="lg:hidden mt-2">
-          <div className="relative flex flex-grow w-full">
-            <input
-              type="text"
-              placeholder="Search..."
-              className="outline-none bg-white border border-[#0000001A] text-[#0000004D] py-2 px-3 lg:py-3 lg:px-[18px] rounded-[5px] lg:rounded-[10px] text-sm w-full"
-            />
-            <span className="absolute inset-y-0 end-0 grid w-8 h-full rounded-r-[5px] lg:w-12 place-content-center">
-              <button
-                type="button"
-                className="bg-[#5E8B8C] text-white p-1 lg:p-[13px] rounded-[5px] lg:rounded-[10px] cursor-pointer"
-              >
-                <FiSearch className="text-base lg:text-lg text-white" />
-              </button>
-            </span>
-          </div>
-        </div>
         {/* Mobile Menu Overlay and Content */}
         <div
           className={`fixed inset-0 z-50 lg:hidden transform transition-all duration-300 ease-in-out
