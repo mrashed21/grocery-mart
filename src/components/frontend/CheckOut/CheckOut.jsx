@@ -18,7 +18,7 @@ const CheckOut = () => {
   const userInfo = false;
   const isLoding = false;
   const [cartItems, setCartItems] = useState([]);
-
+  console.log(cartItems);
   useEffect(() => {
     const syncCart = () => {
       try {

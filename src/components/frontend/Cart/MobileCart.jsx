@@ -1,10 +1,9 @@
 "use client";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { MdOutlineShoppingBag } from "react-icons/md";
-import { TbCoinTaka } from "react-icons/tb";
 import productData from "./../../../../public/productData.json";
-const Cart = () => {
+
+const MobileCart = () => {
   const [cartItems, setCartItems] = useState([]);
   useEffect(() => {
     const syncCart = () => {
@@ -56,21 +55,17 @@ const Cart = () => {
     <Link href={"/checkout"}>
       <div
         onClick={() => setIsCartOpen(true)}
-        className="fixed right-1 top-1/2 -translate-y-1/2 z-30 hidden lg:block cursor-pointer "
+        className="fixed bottom-0 left-0 right-0 z-30 block lg:hidden  cursor-pointer "
       >
-        <div className="bg-[#084C4E] flex flex-col items-center p-1.5 rounded-md">
-          <MdOutlineShoppingBag className="text-3xl text-white" />
-          <p className="text-white text-sm font-bold">
-            {cartItems?.length} items
+        <div className="bg-[#084C4E] text-white w-[95vw] mx-auto h-12 shadow flex gap-1 items-center rounded-t-lg justify-center ">
+          <p className=" text-center text-sm font-bold">
+            View Your Cart (<span className="mr-1">BDT </span>
+            {totalPrice})
           </p>
-        </div>
-        <div className="bg-white shadow flex items-center rounded-b-lg justify-center  p-1">
-          <TbCoinTaka className="" />{" "}
-          <p className=" text-center text-sm ml-1 font-bold">{totalPrice}</p>
         </div>
       </div>
     </Link>
   );
 };
 
-export default Cart;
+export default MobileCart;

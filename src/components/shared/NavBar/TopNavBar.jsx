@@ -92,18 +92,8 @@ const TopNavBar = () => {
               <ProductSearch />
             </div>
 
-            {/* Hamburger menu icon for mobile */}
-            <div className="lg:hidden">
-              <button
-                onClick={toggleMenu}
-                className="focus:outline-none cursor-pointer "
-              >
-                <HiOutlineBars3BottomRight className="text-3xl text-[#385C5D]" />
-              </button>
-            </div>
-
             {/* Wishlist, Bag, User icons for desktop */}
-            <div className="hidden lg:flex items-center gap-3">
+            <div className="flex items-center gap-3">
               {/* <button>
               <CiHeart className="text-[#385C5D] text-3xl" />
             </button> */}
@@ -121,64 +111,7 @@ const TopNavBar = () => {
           </div>
         </div>
 
-        {/* Mobile Menu Overlay and Content */}
-        <div
-          className={`fixed inset-0 z-50 lg:hidden transform transition-all duration-300 ease-in-out
-          ${isMenuOpen ? " bg-opacity-50 visible" : "bg-opacity-0 invisible"}`}
-          onClick={toggleMenu}
-        >
-          <div
-            className={`fixed right-0 top-0 h-screen w-64 bg-white shadow-lg p-5
-            transform transition-transform duration-300 ease-in-out
-            ${isMenuOpen ? "translate-x-0" : "translate-x-full"}`}
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Close button */}
-            <button
-              onClick={toggleMenu}
-              className="absolute top-4 right-4 text-gray-600 hover:text-gray-900 focus:outline-none"
-            >
-              <RxCross1 className="text-xl" />{" "}
-              {/* Use RxCross1 for the close button */}
-            </button>
-
-            {/* Mobile menu items */}
-            <div className="mt-10 flex flex-col space-y-4">
-              <div className="flex items-center gap-2 text-[#2C2C2C] font-nunito font-medium">
-                <span>
-                  <CiLocationOn className="text-[#5E8B8C] text-xl" />
-                </span>
-                <p>Road-3, Uttara, Dhaka</p>
-                <span>
-                  <IoIosArrowDown className="text-[#5E8B8C] text-sm" />
-                </span>
-              </div>
-
-              <Link href={"checkout"} className=" relative">
-                <button
-                  onClick={() => {
-                    toggleMenu();
-                  }}
-                  className="flex items-center gap-2 text-[#385C5D] text-lg hover:text-[#5E8B8C]"
-                >
-                  <IoBagHandleOutline className="text-2xl" /> My Bag
-                  <span className="text-[10px] bg-[#5E8B8C] text-white rounded-full w-4 h-4 flex items-center justify-center absolute -bottom-2 left-3">
-                    {cartLength}
-                  </span>
-                </button>
-              </Link>
-              <button
-                onClick={() => {
-                  handleAuthModal();
-                  toggleMenu();
-                }}
-                className="flex items-center gap-2 text-[#385C5D] text-lg hover:text-[#5E8B8C]"
-              >
-                <TbUser className="text-2xl" /> Account
-              </button>
-            </div>
-          </div>
-        </div>
+       
       </Contain>
 
       {isUserAuthOpen && (

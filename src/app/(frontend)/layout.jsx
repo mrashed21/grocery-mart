@@ -1,4 +1,5 @@
 import Cart from "@/components/frontend/Cart/Cart";
+import MobileCart from "@/components/frontend/Cart/MobileCart";
 import Footer from "@/components/shared/Footer/Footer";
 import TopNavBar from "@/components/shared/NavBar/TopNavBar";
 
@@ -9,6 +10,7 @@ const MainLayout = ({ children }) => {
         <TopNavBar />
       </div>
       <Cart />
+      <MobileCart />
       <div className="min-h-screen">{children}</div>
       <Footer />
     </div>

@@ -172,7 +172,7 @@ const Footer = () => {
         </div>
 
         <div className="mt-10 pt-8 border-t border-gray-600 ">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center flex-col lg:flex-row justify-between">
             {/* Newsletter Signup */}
             <div className="mb-4 sm:mb-0">
               <p className="text-sm">Sign up for our Newsletter</p>
@@ -201,7 +201,7 @@ const Footer = () => {
           </div>
 
           {/* Copyright */}
-          <div className="text-sm text-gray-400 text-center mt-3">
+          <div className="text-sm text-gray-400 text-center mt-3 pb-5 lg:pb-0">
             &copy; {currentYear} Grocery Mart Company Bangladesh ltd. All rights
             reserved.
           </div>
