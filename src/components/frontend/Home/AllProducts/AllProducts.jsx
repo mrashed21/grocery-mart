@@ -79,9 +79,9 @@ const AllProducts = ({ selectedCategory }) => {
   };
   return (
     <div>
-      <div className="bg-[#084C4E0F] py-8 lg:py-14">
+      <div className="bg-[#084C4E0F] py-4 lg:py-8">
         <Contain>
-          <div className="lg:my-14">
+          <div className="">
             <h1 className="text-xl lg:text-4xl mb-3 text-[#084C4E] font-nunito font-bold">
               {selectedCategory}
             </h1>

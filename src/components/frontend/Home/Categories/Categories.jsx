@@ -81,7 +81,7 @@ const Categories = ({ onCategorySelect, selectedCategory }) => {
   const totalSlides = categoryData.length;
   return (
     <Contain>
-      <div className="lg:mb-28">
+      <div className="lg:mb-8">
         <div className="lg:hidden mt-5 z-50">
           <ProductSearch />
         </div>
@@ -92,7 +92,7 @@ const Categories = ({ onCategorySelect, selectedCategory }) => {
           </h2>
         </div>
 
-        <div className="sm:mx-10 relative mb-20">
+        <div className="sm:mx-10 relative mb-10">
           {!isLoading ? (
             <CategorySkeleton />
           ) : (
