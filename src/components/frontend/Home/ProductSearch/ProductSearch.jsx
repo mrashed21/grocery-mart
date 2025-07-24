@@ -79,6 +79,9 @@ const ProductSearch = () => {
           {displayedProducts.length > 0 ? (
             displayedProducts.map((product) => (
               <Link
+                onClick={(e) => {
+                  setShowResults(false);
+                }}
                 key={product.id}
                 href={`/product/${product?.slug}`}
                 className="flex items-center p-2 border-b border-gray-100 last:border-b-0 hover:bg-gray-50 cursor-pointer"

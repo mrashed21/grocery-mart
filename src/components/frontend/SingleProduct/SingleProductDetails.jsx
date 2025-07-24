@@ -1,12 +1,14 @@
 "use client";
 
 import CheckoutSkeleton from "@/components/Skeleton/CheckoutSkeleton";
-import { useState } from "react";
+import { addToCart, removeFromCart } from "@/redux/feature/cart/cartSlice";
+import { useEffect, useState } from "react";
 import { BsChevronDown, BsChevronUp } from "react-icons/bs";
 import { IoAdd, IoRemove } from "react-icons/io5";
 import { RxCross2 } from "react-icons/rx";
 import { SlCheck } from "react-icons/sl";
 import { TbCurrencyTaka } from "react-icons/tb";
+import { useDispatch, useSelector } from "react-redux";
 import ProductCheckout from "../Home/ProductCheckOut/ProductCheckout";
 import SimilarProducts from "./SimilarProducts/SimilarProducts";
 
@@ -14,8 +16,29 @@ const SingleProductDetails = ({ product }) => {
   const [isDescriptioOpen, setIsDescriptioOpen] = useState(true);
   const [selectedImage, setSelectedImage] = useState(product?.image);
   const [quantity, setQuantity] = useState(1);
+
   const handleDescriptionToggle = () => {
     setIsDescriptioOpen((prev) => !prev);
+  };
+  const cartItems = useSelector((state) => state.grocery_mart.products);
+  const dispatch = useDispatch();
+
+  const isProductInCart = cartItems.some(
+    (item) => item.productId === product?.id
+  );
+  useEffect(() => {
+    if (product?.image) {
+      setSelectedImage(product.image);
+    }
+    setQuantity(1);
+  }, [product]);
+
+  const handleAddToCart = (productId) => {
+    dispatch(addToCart({ productId, quantity: 1 }));
+  };
+
+  const handleRemove = (productId, quantity) => {
+    dispatch(removeFromCart({ productId, product_quantity: quantity }));
   };
 
   const handleMainImageClick = (image) => {
@@ -159,7 +182,7 @@ const SingleProductDetails = ({ product }) => {
                   )}
                 </div>
 
-                <div className="flex gap-4 mt-4">
+                <div className="flex flex-col lg:flex-row items-center w-full mt-4">
                   <div className="flex items-center">
                     <button
                       onClick={(e) => {
@@ -191,6 +214,39 @@ const SingleProductDetails = ({ product }) => {
                     >
                       <IoAdd className="text-xl" />
                     </button>
+
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        onIncrement(product.id);
+                      }}
+                      className="flex-shrink-0 cursor-pointer text-white p-2 rounded-full transition-colors duration-200"
+                      aria-label="Increase quantity"
+                    >
+                      <IoAdd className="text-xl lg:text-2xl" />
+                    </button>
+                  </div>
+                  <div className="mt-2 lg:mt-0">
+                    {isProductInCart ? (
+                      <button
+                        onClick={() => {
+                          handleRemove(product.id, product.quantity);
+                        }}
+                        className=" flex items-center justify-center gap-2 bg-[#FF6B4F]  text-white font-semibold py-1 px-5 rounded-sm transition-colors duration-200 cursor-pointer text-sm"
+                      >
+                        Remove from Bag
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => {
+                          handleAddToCart(product.id);
+                        }}
+                        className=" flex items-center justify-center gap-2 bg-[#5E8B8C]  text-white font-semibold py-1 px-5 rounded-sm transition-colors duration-200 cursor-pointer  text-sm"
+                      >
+                        Add to Bag
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>

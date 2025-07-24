@@ -19,7 +19,7 @@ const ProductCard = ({
             alt={product.name}
             width={200}
             height={200}
-            className="w-full h-24 lg:h-56 object-cover rounded-md mb-3"
+            className="w-full h-24 lg:h-52 object-cover rounded-md mb-3"
           />
 
           {/* Offer Badge (if applicable) */}
