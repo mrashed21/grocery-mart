@@ -33,7 +33,7 @@ const Cart = () => {
     <Link href={"/checkout"}>
       <div
         onClick={() => setIsCartOpen(true)}
-        className="fixed right-1 top-1/2 -translate-y-1/2 z-30 hidden md:block cursor-pointer "
+        className="fixed right-1 top-1/2 -translate-y-1/2 z-30 block cursor-pointer "
       >
         <div className="bg-[#084C4E] flex flex-col items-center p-1.5 rounded-md">
           <MdOutlineShoppingBag className="text-3xl text-white" />
