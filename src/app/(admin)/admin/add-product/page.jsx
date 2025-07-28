@@ -3,7 +3,7 @@ import AddProduct from "@/components/adminDashboard/Product/AddProduct/AddProduc
 const AddCategoryPage = () => {
   return (
     <div>
-      <AddProduct />
+      {/* <AddProduct /> */}
     </div>
   );
 };
