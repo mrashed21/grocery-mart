@@ -333,13 +333,13 @@ const AddProductImageDes = ({
           {/* Product Return */}
           <div className="">
             <label htmlFor="product_return" className="font-medium">
-              Product Return Policy
+              Product Quantity
             </label>
             <input
               {...register("product_return")}
               id="product_return"
               type="text"
-              placeholder="Enter Return Policy"
+              placeholder='Enter Quantiy Like "30 kg", "50 Box", "50 Lit" etc.'
               className="block w-full p-2.5 outline-primaryColor text-gray-800 bg-white border border-gray-300 rounded-lg mt-2"
             />
           </div>
@@ -376,94 +376,7 @@ const AddProductImageDes = ({
               ></Select>
             </div> */}
         </div>
-
-        {/* meta */}
-        <div className="mt-8">
-          <div className="flex flex-col gap-2 mt-4">
-            <label htmlFor="fname" className="text-base font-medium">
-              Meta Keyword
-            </label>
-            {keywords?.length > 0 && (
-              <div className="flex flex-wrap gap-1 bg-white mb-3 rounded-lg py-1 min-h-[50px] items-center">
-                {keywords?.map((keyword, index) => (
-                  <div
-                    key={index}
-                    className="bg-gray-300 text-black py-1 px-2 mx-1 rounded-full flex item-center justify-center h-auto"
-                  >
-                    <span>{keyword?.keyword}</span>
-                    <div
-                      className="ml-2 w-6 h-6 cursor-pointer bg-gray-400 rounded-full px-2 flex item-center justify-center"
-                      onClick={() => removeKeyword(keyword?.keyword)}
-                    >
-                      X
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-            <input
-              type="text"
-              className="bg-bgray-50 border border-gray-300 p-4 rounded-lg h-14 focus:border focus:border-success-300 focus:ring-0"
-              name="fname"
-              value={inputKeyword}
-              onChange={handleKeywordChange}
-              onKeyDown={handleKeyPress}
-            />
-          </div>
-
-          <div className="mt-4">
-            <label htmlFor="meta_title" className="font-medium">
-              Meta Title
-            </label>
-            <input
-              {...register("meta_title")}
-              id="meta_title"
-              type="text"
-              className="block w-full px-2 py-2 text-gray-700 bg-white border border-gray-200 rounded-xl mt-2"
-            />
-          </div>
-
-          <div className="mt-4">
-            <label htmlFor="meta_description" className="font-medium">
-              Meta Description
-            </label>
-            <textarea
-              cols={5}
-              {...register("meta_description")}
-              id="meta_description"
-              type="text"
-              className="block w-full px-2 py-2 text-gray-700 bg-white border border-gray-200 rounded-xl mt-2"
-            />
-          </div>
-
-          {/* Product Status */}
-          <div className=" space-y-2 mt-4">
-            <label htmlFor="product_status" className="font-medium">
-              Product Status
-            </label>
-
-            <Select
-              id="product_status"
-              name="product_status"
-              isClearable
-              isSearchable
-              placeholder="-Select Product Status-"
-              required
-              aria-label="Select a Status"
-              options={productStatusOptions}
-              value={
-                productStatusOptions.find(
-                  (opt) => opt.value === product_status
-                ) || null
-              }
-              getOptionLabel={(x) => x?.label}
-              getOptionValue={(x) => x?.value}
-              onChange={(selectedOption) => {
-                setProduct_status(selectedOption?.value || "");
-              }}
-            />
-          </div>
-        </div>
+      
       </section>
     </div>
   );

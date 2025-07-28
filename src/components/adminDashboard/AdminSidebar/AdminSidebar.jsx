@@ -7,7 +7,9 @@ import { BiCategory } from "react-icons/bi";
 import { FaBorderAll } from "react-icons/fa";
 import { FaUserPlus, FaUsers } from "react-icons/fa6";
 import { FiChevronDown, FiChevronRight } from "react-icons/fi";
+import { IoSettingsOutline } from "react-icons/io5";
 import { MdOutlineChecklistRtl } from "react-icons/md";
+import { PiFlagBannerBold, PiMapPinArea } from "react-icons/pi";
 import { RiFolderAddLine } from "react-icons/ri";
 
 const AdminSidebar = () => {
@@ -24,6 +26,16 @@ const AdminSidebar = () => {
       label: "Category",
       href: "/admin",
       icon: <BiCategory size={18} />,
+    },
+    {
+      label: "Banner",
+      href: "/admin/banner",
+      icon: <PiFlagBannerBold size={18} />,
+    },
+    {
+      label: "Add Zone",
+      href: "/admin/add-zone",
+      icon: <PiMapPinArea size={18} />,
     },
     {
       label: "Products",
@@ -55,7 +67,7 @@ const AdminSidebar = () => {
       label: "Staff",
       // href: "/admin/staff",
       icon: <FaUserPlus size={18} />,
-       children: [
+      children: [
         {
           label: "Add Staff",
           href: "/admin/add-staff",
@@ -67,6 +79,11 @@ const AdminSidebar = () => {
           icon: <MdOutlineChecklistRtl size={16} />,
         },
       ],
+    },
+    {
+      label: "Setting",
+      href: "/admin/setting",
+      icon: <IoSettingsOutline size={18} />,
     },
   ];
 

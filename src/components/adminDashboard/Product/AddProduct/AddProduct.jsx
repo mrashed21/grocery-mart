@@ -58,7 +58,7 @@ const AddProduct = () => {
           ) : (
             <button
               type="submit"
-              className=" bg-[#5E8A8C] text-white text-lg  py-2.5 px-6 font-semibold  rounded-lg  text-center cursor-pointer"
+              className=" bg-[#5E8A8C] text-white text-lg  py-2 px-6 font-semibold  rounded-lg  text-center cursor-pointer"
             >
               Publish
             </button>

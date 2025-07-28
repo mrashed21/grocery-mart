@@ -172,62 +172,9 @@ const AddCategory = ({ setCategoryCreateModal, user, refetch }) => {
                   </p>
                 )}
               </div>
-              <div>
-                <label className="block text-xs font-medium ">
-                  Category Header Show
-                </label>
-                <div className="whitespace-nowrap px-4 py-2">
-                  <label
-                    htmlFor="Toggle3"
-                    className="inline-flex items-center space-x-4 cursor-pointer dark:text-gray-800"
-                  >
-                    <span className="relative mt-2">
-                      <input
-                        id="Toggle3"
-                        type="checkbox"
-                        className="hidden peer "
-                        {...register("category_header_show")}
-                      />
-                      <div className="w-10 h-4 rounded-full shadow bg-slate-400 peer-checked:bg-[#084C4E] "></div>
-                      <div className="absolute left-0 w-6 h-6 rounded-full shadow -inset-y-1 peer-checked:bg-[#084C4E] peer-checked:left-auto  bg-[#084C4E]"></div>
-                    </span>
-                  </label>
-                </div>
-                {errors.category_header_show && (
-                  <p className="text-red-600">
-                    {errors.category_header_show?.message}
-                  </p>
-                )}
-              </div>
-              <div>
-                <label className="block text-xs font-medium ">
-                  Category Browse Show
-                </label>
-                <div className="whitespace-nowrap px-4 py-2 ">
-                  <label
-                    htmlFor="Toggle4"
-                    className="inline-flex items-center space-x-4 cursor-pointer"
-                  >
-                    <span className="relative mt-2">
-                      <input
-                        id="Toggle4"
-                        type="checkbox"
-                        className="hidden peer"
-                        {...register("category_browse_show")}
-                      />
-                      <div className="w-10 h-4 rounded-full shadow bg-slate-400 peer-checked:bg-[#084C4E] "></div>
-                      <div className="absolute left-0 w-6 h-6 rounded-full shadow -inset-y-1 peer-checked:bg-[#084C4E] peer-checked:left-auto  bg-[#084C4E]"></div>
-                    </span>
-                  </label>
-                </div>
-                {errors.category_browse_show && (
-                  <p className="text-red-600">
-                    {errors.category_browse_show?.message}
-                  </p>
-                )}
-              </div>
             </div>
-            <div className="mt-2">
+
+            <div className="mt-5">
               <label className="block text-xs font-medium text-primaryColor">
                 Upload Category Image
               </label>
