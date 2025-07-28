@@ -2,7 +2,7 @@ import AdminCategory from "@/components/adminDashboard/AdminCategory/AdminCatego
 
 const AdminHome = () => {
   return (
-    <div className="">
+    <div >
       <AdminCategory />
     </div>
   );

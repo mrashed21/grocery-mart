@@ -1,17 +1,40 @@
-
 "use client";
-import { useState } from "react";
+import { useSearch } from "@/context/SearchProvider";
 import Categories from "../Categories/Categories";
+import ProductSearch from "../ProductSearch/ProductSearch";
 import AllProducts from "./AllProducts";
 
-
 const ProductPage = () => {
-  const [selectedCategory, setSelectedCategory] = useState("All Products");
-
+  const {
+    selectedCategory,
+    setSelectedCategory,
+    searchTerm,
+    setSearchTerm,
+    searchResults,
+    setSearchResults,
+  } = useSearch();
   return (
     <>
-      <Categories onCategorySelect={setSelectedCategory} selectedCategory={selectedCategory} />
-      <AllProducts selectedCategory={selectedCategory} />
+      <div className="mt-5 mx-5 lg:hidden">
+        <ProductSearch
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          setDisplayedProducts={setSearchResults}
+        />
+      </div>
+      <Categories
+        selectedCategory={selectedCategory}
+        onCategorySelect={(cat) => {
+          setSelectedCategory(cat);
+          setSearchTerm("");
+          setSearchResults([]);
+        }}
+      />
+      <AllProducts
+        selectedCategory={selectedCategory}
+        searchResults={searchResults}
+        searchTerm={searchTerm}
+      />
     </>
   );
 };

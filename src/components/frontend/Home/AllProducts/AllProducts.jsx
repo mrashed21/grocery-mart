@@ -12,7 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import productData from "./../../../../../public/productData.json";
 import ProductCard from "./ProductCard";
 
-const AllProducts = ({ selectedCategory }) => {
+const AllProducts = ({ selectedCategory, searchResults, searchTerm }) => {
   const INITIAL_DISPLAY_COUNT = 20;
   const INCREMENT = 20;
 
@@ -21,6 +21,21 @@ const AllProducts = ({ selectedCategory }) => {
   const [isLoading, setIsLoading] = useState(false);
   const cart = useSelector((state) => state.grocery_mart.products);
 
+  useEffect(() => {
+    if (searchTerm.trim().length > 0) {
+      setFilteredProducts(searchResults);
+    } else {
+      const shuffled = [...productData].sort(() => Math.random() - 0.5);
+      const filtered =
+        selectedCategory === "All Products"
+          ? shuffled
+          : shuffled.filter((product) => product.category === selectedCategory);
+
+      setFilteredProducts(filtered);
+    }
+
+    setDisplayCount(INITIAL_DISPLAY_COUNT);
+  }, [selectedCategory, searchResults, searchTerm]);
   useEffect(() => {
     const shuffled = [...productData].sort(() => Math.random() - 0.5);
 
@@ -79,7 +94,7 @@ const AllProducts = ({ selectedCategory }) => {
   };
   return (
     <div>
-      <div className="bg-[#084C4E0F] py-4 lg:py-8">
+      <div className="bg-[#084C4E0F] py-2 lg:py-8">
         <Contain>
           <div className="">
             <h1 className="text-xl lg:text-4xl mb-3 text-[#084C4E] font-nunito font-bold">

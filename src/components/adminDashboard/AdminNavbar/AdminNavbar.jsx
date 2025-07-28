@@ -1,4 +1,4 @@
-import { FaBars } from "react-icons/fa";
+import { FaBars, FaUserTie } from "react-icons/fa";
 import { FaXmark } from "react-icons/fa6";
 
 const AdminNavbar = ({ isCollapsed, setIsCollapsed }) => {
@@ -8,14 +8,16 @@ const AdminNavbar = ({ isCollapsed, setIsCollapsed }) => {
 
       <button
         onClick={() => setIsCollapsed(!isCollapsed)}
-        className="h-8 w-8 text-gray-700 cursor-pointer"
+        className="h-12 w-12 text-gray-700 cursor-pointer text-3xl"
       >
         {isCollapsed ? <FaBars /> : <FaXmark />}
       </button>
 
       {/* Other navbar content */}
-      <div>
-        <span className="font-semibold">Admin Dashboard</span>
+      <div className="p-1.5 flex items-center justify-center border-gray-400 rounded-full border w-10 h-10">
+        <span className="font-semibold text-3xl  ">
+          <FaUserTie />
+        </span>
       </div>
     </nav>
   );

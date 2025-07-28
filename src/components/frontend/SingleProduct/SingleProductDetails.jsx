@@ -1,5 +1,4 @@
 "use client";
-
 import CheckoutSkeleton from "@/components/Skeleton/CheckoutSkeleton";
 import { addToCart, removeFromCart } from "@/redux/feature/cart/cartSlice";
 import { useEffect, useState } from "react";
@@ -182,7 +181,7 @@ const SingleProductDetails = ({ product }) => {
                   )}
                 </div>
 
-                <div className="flex flex-col lg:flex-row items-center w-full mt-4">
+                <div className="flex flex-col lg:flex-row items-center w-full gap-2 mt-4">
                   <div className="flex items-center">
                     <button
                       onClick={(e) => {
@@ -214,26 +213,15 @@ const SingleProductDetails = ({ product }) => {
                     >
                       <IoAdd className="text-xl" />
                     </button>
-
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        e.preventDefault();
-                        onIncrement(product.id);
-                      }}
-                      className="flex-shrink-0 cursor-pointer text-white p-2 rounded-full transition-colors duration-200"
-                      aria-label="Increase quantity"
-                    >
-                      <IoAdd className="text-xl lg:text-2xl" />
-                    </button>
                   </div>
+
                   <div className="mt-2 lg:mt-0">
                     {isProductInCart ? (
                       <button
                         onClick={() => {
                           handleRemove(product.id, product.quantity);
                         }}
-                        className=" flex items-center justify-center gap-2 bg-[#FF6B4F]  text-white font-semibold py-1 px-5 rounded-sm transition-colors duration-200 cursor-pointer text-sm"
+                        className=" flex items-center justify-center gap-2 bg-[#FF6B4F]  text-white font-semibold py-1 px-3 shrink-0 rounded-sm transition-colors duration-200 cursor-pointer text-sm"
                       >
                         Remove from Bag
                       </button>

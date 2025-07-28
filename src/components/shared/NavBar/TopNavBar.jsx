@@ -1,24 +1,36 @@
 "use client";
 import UserAuthModal from "@/components/Auth/UserAuthModal";
 import ProductSearch from "@/components/frontend/Home/ProductSearch/ProductSearch";
+import { useSearch } from "@/context/SearchProvider";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react"; // Import useState
 import { CiLocationOn } from "react-icons/ci";
-import { HiOutlineBars3BottomRight } from "react-icons/hi2";
 import { IoIosArrowDown } from "react-icons/io";
 import { IoBagHandleOutline } from "react-icons/io5";
-import { RxCross1 } from "react-icons/rx";
 import { TbUser } from "react-icons/tb";
 import { useSelector } from "react-redux";
 import Contain from "../../common/Contain";
 import logo from "./../../../../public/image/logo.png";
+
 const TopNavBar = () => {
   const [isUserAuthOpen, setIsUserAuthOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
   const cartProducts = useSelector((state) => state.grocery_mart.products);
   const [cartLength, setCartLength] = useState(cartProducts.length);
+  const { searchTerm, setSearchTerm, setSearchResults } = useSearch();
+
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => {
+      setIsScrolled(window.scrollY > 0);
+    };
+
+    window.addEventListener("scroll", onScroll);
+
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   const handleAuthModal = () => {
     setIsUserAuthOpen(true);
@@ -50,7 +62,11 @@ const TopNavBar = () => {
   }, []);
 
   return (
-    <div className="pt-3 lg:pt-6 pb-3.5  z-90 bg-[#084C4E0A] ">
+    <div
+      className={`transition-all duration-300 pt-3 lg:pt-6 pb-3.5  ${
+        isScrolled ? " bg-gray-300 shadow-md" : "bg-[#084C4E0A]"
+      }`}
+    >
       <Contain>
         <div className="flex items-center justify-between ">
           {/* left section */}
@@ -89,7 +105,11 @@ const TopNavBar = () => {
           <div className="flex items-center gap-1 lg:gap-10">
             {/* search option */}
             <div className="hidden lg:flex z-50">
-              <ProductSearch />
+              <ProductSearch
+                searchTerm={searchTerm}
+                setSearchTerm={setSearchTerm}
+                setDisplayedProducts={setSearchResults}
+              />
             </div>
 
             {/* Wishlist, Bag, User icons for desktop */}
@@ -110,8 +130,6 @@ const TopNavBar = () => {
             </div>
           </div>
         </div>
-
-       
       </Contain>
 
       {isUserAuthOpen && (

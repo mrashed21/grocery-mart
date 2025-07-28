@@ -76,7 +76,7 @@ const ProductCard = ({
           </button>
         ) : (
           <div
-            className={`w-full flex items-center cursor-pointer rounded-b-[10px] text-base font-medium  bg-[#084C4E4D] text-white`}
+            className={`w-full flex items-center cursor-pointer rounded-b-[10px] text-base font-medium  bg-[#084C4E] text-white`}
             onClick={(e) => {
               e.stopPropagation();
               e.preventDefault();

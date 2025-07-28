@@ -53,8 +53,20 @@ const AdminSidebar = () => {
     },
     {
       label: "Staff",
-      href: "/admin/staff",
+      // href: "/admin/staff",
       icon: <FaUserPlus size={18} />,
+       children: [
+        {
+          label: "Add Staff",
+          href: "/admin/add-staff",
+          icon: <RiFolderAddLine size={16} />,
+        },
+        {
+          label: "Staff List",
+          href: "/admin/staff-list",
+          icon: <MdOutlineChecklistRtl size={16} />,
+        },
+      ],
     },
   ];
 

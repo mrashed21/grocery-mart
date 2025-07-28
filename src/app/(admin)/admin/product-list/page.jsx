@@ -1,5 +1,7 @@
+import ProductListTable from "@/components/adminDashboard/Product/ProductList/ProductListTable";
+
 const ProductListPage = () => {
-  return <div>ProductListPage</div>;
+  return <div><ProductListTable/></div>;
 };
 
 export default ProductListPage;

@@ -7,7 +7,7 @@ const MainLayout = ({ children }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   return (
-    <div className="min-h-screen ">
+    <div className="min-h-screen font-nunito">
       <div className="grid grid-cols-6">
         {" "}
         {/* Sidebar */}
@@ -30,7 +30,7 @@ const MainLayout = ({ children }) => {
               setIsCollapsed={setIsCollapsed}
             />
           </div>
-          <div>{children}</div>
+          <div className="w-[97%] mx-auto">{children}</div>
         </div>
       </div>
     </div>

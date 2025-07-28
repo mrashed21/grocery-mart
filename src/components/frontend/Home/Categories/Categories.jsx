@@ -82,9 +82,6 @@ const Categories = ({ onCategorySelect, selectedCategory }) => {
   return (
     <Contain>
       <div className="lg:mb-8">
-        <div className="lg:hidden mt-5 z-50">
-          <ProductSearch />
-        </div>
         {/* start category section */}
         <div>
           <h2 className="text-xl lg:text-4xl text-[#084C4E] font-nunito font-semibold my-3 lg:my-10">
@@ -92,7 +89,7 @@ const Categories = ({ onCategorySelect, selectedCategory }) => {
           </h2>
         </div>
 
-        <div className="sm:mx-10 relative mb-10">
+        <div className="sm:mx-10 relative mb-2 lg:mb-10">
           {!isLoading ? (
             <CategorySkeleton />
           ) : (
@@ -110,8 +107,8 @@ const Categories = ({ onCategorySelect, selectedCategory }) => {
                 onSwiper={(swiper) => (swiperRef.current = swiper)}
                 onSlideChange={(swiper) => setActiveIndex(swiper.activeIndex)}
                 breakpoints={{
-                  0: { slidesPerView: 2, spaceBetween: 10 },
-                  768: { slidesPerView: 3, spaceBetween: 20 },
+                  0: { slidesPerView: 4, spaceBetween: 10 },
+                  768: { slidesPerView: 4, spaceBetween: 15 },
                   1024: { slidesPerView: 5, spaceBetween: 30 },
                 }}
                 grabCursor
@@ -127,7 +124,7 @@ const Categories = ({ onCategorySelect, selectedCategory }) => {
                   <SwiperSlide key={`${category.name}-${i}`}>
                     <div
                       onClick={() => onCategorySelect(category.name)}
-                      className={`cursor-pointer rounded-lg shadow border w-[150px]     lg:w-auto ${
+                      className={`cursor-pointer rounded-lg shadow border w-[80px] lg:w-auto ${
                         selectedCategory === category.name
                           ? "border-[#FF6B4F] border-2"
                           : "border-[#00000014]"
@@ -140,7 +137,7 @@ const Categories = ({ onCategorySelect, selectedCategory }) => {
                           className="w-full h-full rounded-md"
                         />
                       </div>
-                      <div className="bg-[#D9D9D94D] py-3.5 w-full text-[#084C4E] text-center font-bold transition-all duration-300">
+                      <div className="bg-[#D9D9D94D] py-0.5 lg:py-3.5 w-full text-[#084C4E] text-center text-[12px] lg:text-base lg:font-bold transition-all duration-300 ">
                         {category.name}
                       </div>
                     </div>

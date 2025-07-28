@@ -1,5 +1,11 @@
+import UserProfileWrapper from "@/components/userProfile/UserProfile/UserProfileWrapper";
+
 const UserProfile = () => {
-  return <div>UserProfile</div>;
+  return (
+    <div>
+      <UserProfileWrapper />
+    </div>
+  );
 };
 
 export default UserProfile;

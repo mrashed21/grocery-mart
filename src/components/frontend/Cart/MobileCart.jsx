@@ -55,7 +55,7 @@ const MobileCart = () => {
     <Link href={"/checkout"}>
       <div
         onClick={() => setIsCartOpen(true)}
-        className="fixed bottom-0 left-0 right-0 z-30 block lg:hidden  cursor-pointer "
+        className="fixed bottom-0 left-0 right-0 z-30 block lg:hidden cursor-pointer "
       >
         <div className="bg-[#084C4E] text-white w-[95vw] mx-auto h-12 shadow flex gap-1 items-center rounded-t-lg justify-center ">
           <p className=" text-center text-sm font-bold">

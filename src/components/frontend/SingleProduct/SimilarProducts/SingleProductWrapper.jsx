@@ -6,10 +6,8 @@ import { useParams } from "next/navigation";
 import { SlArrowRight } from "react-icons/sl";
 import productData from "./../../../../../public/productData.json";
 
-const SingleProductWrapper = () => {
-  const params = useParams();
-  const { slug } = params;
-  const product = productData.find((p) => p.slug === slug);
+const SingleProductWrapper = ({product}) => {
+ 
   return (
     <Contain>
       <div className="py-5">
@@ -37,3 +35,4 @@ const SingleProductWrapper = () => {
 };
 
 export default SingleProductWrapper;
+

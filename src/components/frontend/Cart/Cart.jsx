@@ -55,7 +55,6 @@ const Cart = () => {
   return (
     <Link href={"/checkout"}>
       <div
-        onClick={() => setIsCartOpen(true)}
         className="fixed right-1 top-1/2 -translate-y-1/2 z-30 hidden lg:block cursor-pointer "
       >
         <div className="bg-[#084C4E] flex flex-col items-center p-1.5 rounded-md">
@@ -64,7 +63,7 @@ const Cart = () => {
             {cartItems?.length} items
           </p>
         </div>
-        <div className="bg-white shadow flex items-center rounded-b-lg justify-center p-1">
+        <div className="bg-white shadow flex items-center rounded-b-lg justify-center  p-1">
           <TbCoinTaka className="" />{" "}
           <p className=" text-center text-sm ml-1 font-bold">{totalPrice}</p>
         </div>

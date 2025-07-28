@@ -1,5 +1,7 @@
+import CustomerList from "@/components/adminDashboard/CustomerList/CustomerList";
+
 const CustomerListPage = () => {
-  return <div>CustomerListPage</div>;
+  return <div><CustomerList/></div>;
 };
 
 export default CustomerListPage;
