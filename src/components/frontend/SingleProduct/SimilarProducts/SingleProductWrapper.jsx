@@ -2,19 +2,15 @@
 import Contain from "@/components/common/Contain";
 import SingleProductDetails from "@/components/frontend/SingleProduct/SingleProductDetails";
 import Link from "next/link";
-import { useParams } from "next/navigation";
 import { SlArrowRight } from "react-icons/sl";
-import productData from "./../../../../../public/productData.json";
 
-const SingleProductWrapper = ({product}) => {
- 
+const SingleProductWrapper = ({ product }) => {
   return (
     <Contain>
       <div className="py-5">
         <div className="lg:my-5">
           <h2 className="flex mb-2">
             <Link href={"/"} className="flex items-center">
-              {/* {`Home <span><SlArrowRight /></span> Products >  ${"Category"}`}{" "} */}
               Home
               <span>
                 <SlArrowRight className="text-sm mx-1" />
@@ -35,4 +31,3 @@ const SingleProductWrapper = ({product}) => {
 };
 
 export default SingleProductWrapper;
-

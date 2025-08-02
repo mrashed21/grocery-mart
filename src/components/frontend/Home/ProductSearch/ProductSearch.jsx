@@ -23,7 +23,7 @@ const ProductSearch = ({ searchTerm, setSearchTerm, setDisplayedProducts }) => {
         <input
           type="text"
           placeholder="Search..."
-          className="outline-none bg-white border border-[#0000001A] text-[#000000d1] py-2 px-3 lg:py-3 lg:px-[18px] rounded-[5px] lg:rounded-[10px] text-sm w-full"
+          className="outline-none bg-white border border-[#0000001A] text-[#000000d1] py-2 px-3 lg:py-3 lg:px-[22px] rounded-[5px] lg:rounded-[10px] text-sm w-full"
           value={searchTerm}
           onChange={handleInputChange}
         />

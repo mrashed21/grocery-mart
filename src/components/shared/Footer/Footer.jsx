@@ -181,19 +181,19 @@ const Footer = () => {
             <div className="flex space-x-4 mb-4 sm:mb-0">
               <Link
                 href="/"
-                className="text-gray-400 hover:text-white transition-colors duration-200"
+                className="hover:text-white transition-all duration-200 w-7 h-7 rounded-full bg-gray-300 hover:bg-gray-400   flex items-center justify-center text-gray-600"
               >
                 <FaFacebook className="text-xl" />
               </Link>
               <Link
                 href="#"
-                className="text-gray-400 hover:text-white transition-colors duration-200"
+                className="hover:text-white transition-all duration-200 w-7 h-7 rounded-full bg-gray-300 hover:bg-gray-400   flex items-center justify-center text-gray-600"
               >
                 <FaYoutube className="text-xl" />
               </Link>
               <Link
                 href="/"
-                className="text-gray-400 hover:text-white transition-colors duration-200"
+                className="hover:text-white transition-all duration-200 w-7 h-7 rounded-full bg-gray-300 hover:bg-gray-400   flex items-center justify-center text-gray-600"
               >
                 <FaInstagram className="text-xl" />
               </Link>
@@ -201,7 +201,7 @@ const Footer = () => {
           </div>
 
           {/* Copyright */}
-          <div className="text-sm text-gray-400 text-center mt-3 pb-5 lg:pb-0">
+          <div className="text-sm  text-center mt-3 pb-5 lg:pb-0">
             &copy; {currentYear} Grocery Mart Company Bangladesh ltd. All rights
             reserved.
           </div>

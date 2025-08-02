@@ -92,7 +92,7 @@ const UserLocation = () => {
         <IoIosArrowDown className="text-[#5E8B8C] hidden lg:flex text-lg" />{" "}
         {/* Adjust size as needed */}
       </span>
-      {error && <p className="text-xs text-red-500">{error}</p>}{" "}
+      {/* {error && <p className="text-xs text-red-500">{error}</p>}{" "} */}
       {/* Display error if any */}
     </div>
   );

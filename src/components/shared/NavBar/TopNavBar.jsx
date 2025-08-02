@@ -4,7 +4,7 @@ import ProductSearch from "@/components/frontend/Home/ProductSearch/ProductSearc
 import { useSearch } from "@/context/SearchProvider";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react"; // Import useState
+import { useEffect, useState } from "react";
 import { IoBagHandleOutline } from "react-icons/io5";
 import { TbUser } from "react-icons/tb";
 import { useSelector } from "react-redux";
@@ -13,8 +13,8 @@ import logo from "./../../../../public/image/logo.png";
 import UserLocation from "./UserLocation";
 
 const TopNavBar = () => {
+
   const [isUserAuthOpen, setIsUserAuthOpen] = useState(false);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const cartProducts = useSelector((state) => state.grocery_mart.products);
   const [cartLength, setCartLength] = useState(cartProducts.length);
   const { searchTerm, setSearchTerm, setSearchResults } = useSearch();
@@ -33,10 +33,6 @@ const TopNavBar = () => {
 
   const handleAuthModal = () => {
     setIsUserAuthOpen(true);
-    console.log(isUserAuthOpen);
-  };
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
   };
 
   useEffect(() => {

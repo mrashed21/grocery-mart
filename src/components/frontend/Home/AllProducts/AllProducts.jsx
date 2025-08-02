@@ -25,7 +25,8 @@ const AllProducts = ({ selectedCategory, searchResults, searchTerm }) => {
     if (searchTerm.trim().length > 0) {
       setFilteredProducts(searchResults);
     } else {
-      const shuffled = [...productData].sort(() => Math.random() - 0.5);
+      const shuffled = productData;
+      // const shuffled = [...productData].sort(() => Math.random() - 0.5);
       const filtered =
         selectedCategory === "All Products"
           ? shuffled
@@ -37,7 +38,8 @@ const AllProducts = ({ selectedCategory, searchResults, searchTerm }) => {
     setDisplayCount(INITIAL_DISPLAY_COUNT);
   }, [selectedCategory, searchResults, searchTerm]);
   useEffect(() => {
-    const shuffled = [...productData].sort(() => Math.random() - 0.5);
+    const shuffled = productData;
+    // const shuffled = [...productData].sort(() => Math.random() - 0.5);
 
     const filtered =
       selectedCategory === "All Products"

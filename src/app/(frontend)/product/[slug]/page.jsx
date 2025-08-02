@@ -13,16 +13,16 @@ export async function generateMetadata({ params }) {
       type: "article",
       title: product?.name,
       description: product?.description,
-      url: `https://amarworld.com.bd/product/${slug}`,
-      images: [
-        {
-          url: product?.image,
-          alt: product?.name,
-        },
-      ],
+      // url: `https://amarworld.com.bd/product/${slug}`,
+      // images: [
+      //   {
+      //     url: product?.image,
+      //     alt: product?.name,
+      //   },
+      // ],
     },
-    metadataBase: new URL("https://amarworld.com.bd/"),
-    authors: [{ name: "Amar World" }],
+    // metadataBase: new URL("https://amarworld.com.bd/"),
+    authors: [{ name: "Grocery Mart" }],
   };
 }
 
