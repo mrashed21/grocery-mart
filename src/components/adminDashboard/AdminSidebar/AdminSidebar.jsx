@@ -88,7 +88,7 @@ const AdminSidebar = () => {
   ];
 
   return (
-    <div className="sticky top-0">
+    <div className="sticky top-0 ">
       <ul className="border-r border-gray-200 h-screen  pt-10 space-y-1">
         {/* Desktop Sidebar List */}
         <ul className="">
