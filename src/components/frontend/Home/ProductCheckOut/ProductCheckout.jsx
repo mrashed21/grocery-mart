@@ -1,19 +1,14 @@
 "use client";
 import Contain from "@/components/common/Contain";
 import MiniSpinner from "@/components/Skeleton/MiniSpinner";
-import { districtOptions } from "@/data/district";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { isValidPhoneNumber } from "react-phone-number-input";
 import { toast } from "react-toastify";
 import DeliveryInformation from "./DevliveryInformation";
-const ProductCheckout = ({
-  singleProduct,
-  quantity,
-  selectedVariations,
-  productPrice,
-}) => {
+const ProductCheckout = ({ totalPrice, product, quantity }) => {
+  console.log(product);
   const {
     register,
     handleSubmit,
@@ -24,15 +19,9 @@ const ProductCheckout = ({
   const userInfo = false;
   const settingData = false;
   const navigate = useRouter();
-
   const [loading, setLoading] = useState(false);
-
-  const shippingCharge = 100;
-
-  let total = productPrice * quantity;
-  let grandToal = productPrice * quantity + parseInt(shippingCharge);
-
-
+  const shippingCharge = 80;
+  const grandToal = totalPrice + shippingCharge;
   useEffect(() => {
     if (userInfo?.data) {
       setValue("customer_name", userInfo.data.user_name);
@@ -47,29 +36,27 @@ const ProductCheckout = ({
       new Date().toISOString().split("T")[0] +
       " " +
       new Date().toLocaleTimeString();
-    if (!district || !division)
-      return toast.error("Please select a district and division.");
 
     // Validate phone number if it's coming from react-hook-form
     if (data.customer_phone && !isValidPhoneNumber(data.customer_phone)) {
       return toast.error("Please enter a valid phone number.");
     }
-
     const sendData = {
       ...data,
       order_status: "pending",
       pending_time: today,
       billing_country: "Bangladesh",
-      billing_division: division,
-      billing_district: district,
-      shipping_location:
-        division === "Dhaka"
-          ? ` Inside Dhaka ${settingData?.data[0]?.inside_dhaka_shipping_days} Days`
-          : `Outside Dhaka ${settingData?.data[0]?.outside_dhaka_shipping_days} Days`,
-
-      sub_total_amount: total ? total : 0,
+      sub_total_amount: totalPrice ? totalPrice : 0,
       discount_amount: 0,
       shipping_cost: parseInt(shippingCharge) || 0,
+      orderProduct: [
+        {
+          product_name: product?.name,
+          Product_price: product?.discountedPrice || product?.price,
+          product_quantity: quantity,
+          product_id: product?.id,
+        },
+      ],
       grand_total_amount: grandToal ? grandToal : 0,
     };
     if (userInfo?.data?._id) {
@@ -77,7 +64,8 @@ const ProductCheckout = ({
     } else {
       sendData.need_user_create = true;
     }
-
+    console.log(sendData);
+    return;
     setLoading(true);
     try {
       const response = await fetch(`${BASE_URL}/order`, {
@@ -111,8 +99,6 @@ const ProductCheckout = ({
     }
   };
 
-  // if (userGetLoading || settingLoading) return <MiniSpinner />;
-
   return (
     <Contain>
       <div className="pb-8">
@@ -141,15 +127,15 @@ const ProductCheckout = ({
                     <p className="text-sm text-[#000000CC]">Delivery Charge</p>
                   </div>
                   <div className="flex flex-col text-end space-y-1">
-                    <p className="fo">৳ 640</p>
+                    <p className="fo">৳ {totalPrice}</p>
                     <p className="">৳ 0</p>
-                    <p className="">৳ 80</p>
+                    <p className="">৳ {shippingCharge}</p>
                   </div>
                 </div>
 
                 <div className="flex justify-between mt-4">
                   <p className="text-base font-bold">Total</p>
-                  <p className="font-bold text-[#000000CC]">৳ 520</p>
+                  <p className="font-bold text-[#000000CC]">৳ {grandToal}</p>
                 </div>
               </div>
               <div className="flex py-4 gap-2 mt-4">

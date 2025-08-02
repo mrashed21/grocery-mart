@@ -52,19 +52,23 @@ const MobileCart = () => {
   }, [cartItems]);
 
   return (
-    <Link href={"/checkout"}>
-      <div
-        onClick={() => setIsCartOpen(true)}
-        className="fixed bottom-0 left-0 right-0 z-30 block lg:hidden cursor-pointer "
-      >
-        <div className="bg-[#084C4E] text-white w-[95vw] mx-auto h-12 shadow flex gap-1 items-center rounded-t-lg justify-center ">
-          <p className=" text-center text-sm font-bold">
-            View Your Bag (<span className="mr-1">BDT </span>
-            {totalPrice})
-          </p>
-        </div>
-      </div>
-    </Link>
+    <div className="">
+      {cartItems.length > 0 && (
+        <Link href={"/checkout"}>
+          <div
+            onClick={() => setIsCartOpen(true)}
+            className="fixed bottom-0 left-0 right-0 z-30 block lg:hidden cursor-pointer "
+          >
+            <div className="bg-[#084C4E] text-white w-[95vw] mx-auto h-12 shadow flex gap-1 items-center rounded-t-lg justify-center ">
+              <p className=" text-center text-sm font-bold">
+                View Your Bag (<span className="mr-1">BDT </span>
+                {totalPrice})
+              </p>
+            </div>
+          </div>
+        </Link>
+      )}
+    </div>
   );
 };
 

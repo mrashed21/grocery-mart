@@ -6,7 +6,7 @@ import TopNavBar from "@/components/shared/NavBar/TopNavBar";
 const MainLayout = ({ children }) => {
   return (
     <div>
-      <div className="sticky z-50 top-0">
+      <div className="sticky z-50 -top-2">
         <TopNavBar />
       </div>
       <Cart />

@@ -1,3 +1,4 @@
+"use cliient";
 import { FiSearch } from "react-icons/fi";
 import productData from "./../../../../../public/productData.json";
 

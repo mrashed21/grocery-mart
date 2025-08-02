@@ -5,13 +5,12 @@ import { useSearch } from "@/context/SearchProvider";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react"; // Import useState
-import { CiLocationOn } from "react-icons/ci";
-import { IoIosArrowDown } from "react-icons/io";
 import { IoBagHandleOutline } from "react-icons/io5";
 import { TbUser } from "react-icons/tb";
 import { useSelector } from "react-redux";
 import Contain from "../../common/Contain";
 import logo from "./../../../../public/image/logo.png";
+import UserLocation from "./UserLocation";
 
 const TopNavBar = () => {
   const [isUserAuthOpen, setIsUserAuthOpen] = useState(false);
@@ -85,18 +84,19 @@ const TopNavBar = () => {
               </h2>
             </Link>
             {/* location */}
-            <div className="hidden lg:flex flex-col">
-              <p className="text-[#084C4E] text-sm font-nunito">Location</p>
+            <div className="flex flex-col">
+              <p className="text-[#084C4E] text-sm hidden lg:flex font-nunito">Location</p>
               <div className="flex items-center gap-1">
-                <span>
+                <UserLocation />
+                {/* <span>
                   <CiLocationOn className="text-[#5E8B8C]" />
-                </span>{" "}
+                </span>
                 <p className="text-sm text-[#2C2C2C] font-nunito font-medium">
                   Road-3, Uttara, Dhaka
-                </p>{" "}
+                </p>
                 <span>
                   <IoIosArrowDown className="text-[#5E8B8C]" />
-                </span>{" "}
+                </span> */}
               </div>
             </div>
           </div>

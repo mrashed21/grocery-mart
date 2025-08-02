@@ -1,6 +1,11 @@
 "use client";
 import CheckoutSkeleton from "@/components/Skeleton/CheckoutSkeleton";
-import { addToCart, removeFromCart } from "@/redux/feature/cart/cartSlice";
+import {
+  addToCart,
+  decrementQuantity,
+  incrementQuantity,
+  removeFromCart,
+} from "@/redux/feature/cart/cartSlice";
 import { useEffect, useState } from "react";
 import { BsChevronDown, BsChevronUp } from "react-icons/bs";
 import { IoAdd, IoRemove } from "react-icons/io5";
@@ -16,21 +21,34 @@ const SingleProductDetails = ({ product }) => {
   const [selectedImage, setSelectedImage] = useState(product?.image);
   const [quantity, setQuantity] = useState(1);
 
+  const price = product?.discountedPrice || product?.price;
+  const totalPrice = quantity * price;
   const handleDescriptionToggle = () => {
     setIsDescriptioOpen((prev) => !prev);
   };
   const cartItems = useSelector((state) => state.grocery_mart.products);
   const dispatch = useDispatch();
 
-  const isProductInCart = cartItems.some(
+  const foundCartItem = cartItems.find(
     (item) => item.productId === product?.id
   );
+  const isProductInCart = !!foundCartItem;
+
   useEffect(() => {
     if (product?.image) {
       setSelectedImage(product.image);
     }
-    setQuantity(1);
-  }, [product]);
+
+    const foundCartItem = cartItems.find(
+      (item) => item.productId === product?.id
+    );
+
+    if (foundCartItem) {
+      setQuantity(foundCartItem.quantity);
+    } else {
+      setQuantity(1);
+    }
+  }, [product, cartItems]);
 
   const handleAddToCart = (productId) => {
     dispatch(addToCart({ productId, quantity: 1 }));
@@ -44,12 +62,20 @@ const SingleProductDetails = ({ product }) => {
     setSelectedImage(image);
   };
 
-  const handleIncrement = () => {
-    setQuantity((prev) => prev + 1);
+  const handleIncrement = (productId) => {
+    if (isProductInCart) {
+      dispatch(incrementQuantity({ productId, product_quantity: 50 }));
+    } else {
+      setQuantity((prev) => prev + 1);
+    }
   };
 
-  const handleDecrement = () => {
-    setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
+  const handleDecrement = (productId) => {
+    if (isProductInCart) {
+      dispatch(decrementQuantity({ productId }));
+    } else {
+      setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
+    }
   };
 
   return (
@@ -190,8 +216,11 @@ const SingleProductDetails = ({ product }) => {
                         e.preventDefault();
                       }}
                       disabled={quantity == 1}
-                      className={`px-2 py-1 bg-[#084C4EA6] text-white rounded
-    ${quantity === 1 ? "cursor-not-allowed opacity-50" : "cursor-pointer"}
+                      className={`px-2 py-1 bg-[#084C4EA6] text-white rounded ${
+                        quantity === 1
+                          ? "cursor-not-allowed opacity-50"
+                          : "cursor-pointer"
+                      }
   `}
                       aria-label="Decrease quantity"
                     >
@@ -267,7 +296,11 @@ const SingleProductDetails = ({ product }) => {
         </>
       )}
       <div className="grid-cols-12 lg:col-span-4 mt-8 lg:mt-0">
-        <ProductCheckout />
+        <ProductCheckout
+          totalPrice={totalPrice}
+          product={product}
+          quantity={quantity}
+        />
       </div>
       {/* similar Products */}
       <div className="lg:col-span-12">

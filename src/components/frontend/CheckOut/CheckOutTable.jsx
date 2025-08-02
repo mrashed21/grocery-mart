@@ -111,7 +111,7 @@ const CheckOutTable = ({ cartItems }) => {
                         e.stopPropagation();
                         e.preventDefault();
                       }}
-                      className="px-2 py-1 bg-[#084C4EA6] text-white rounded"
+                      className="px-2 py-1 bg-[#084C4EA6] text-white rounded cursor-pointer"
                       aria-label="Increase quantity"
                     >
                       <IoAdd className="text-xl" />

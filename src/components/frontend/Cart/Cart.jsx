@@ -4,15 +4,16 @@ import { useEffect, useMemo, useState } from "react";
 import { MdOutlineShoppingBag } from "react-icons/md";
 import { TbCoinTaka } from "react-icons/tb";
 import productData from "./../../../../public/productData.json";
+
 const Cart = () => {
+
   const [cartItems, setCartItems] = useState([]);
+
   useEffect(() => {
     const syncCart = () => {
       try {
         const cart = JSON.parse(localStorage.getItem("grocery_mart")) || {};
         const productsInCart = cart.products || [];
-
-        // Merge productData with cart quantity
         const merged = productsInCart
           .filter((item) => item.quantity > 0)
           .map((cartItem) => {
@@ -26,7 +27,7 @@ const Cart = () => {
               quantity: cartItem.quantity,
             };
           })
-          .filter(Boolean); // Remove nulls
+          .filter(Boolean); 
 
         setCartItems(merged);
       } catch (error) {

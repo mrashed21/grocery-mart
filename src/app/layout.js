@@ -1,9 +1,11 @@
-import Providers from "@/providers/Providers";
-import QueryProviders from "@/providers/QueryProviders";
 import { Abhaya_Libre, Manrope, Nunito } from "next/font/google";
 import { Slide, ToastContainer } from "react-toastify";
 import "./globals.css";
+import AuthProviderAdmin from "@/context/AuthProviderAdmin";
+import AuthProviderUser from "@/context/AuthProviderUser";
 import { SearchProvider } from "@/context/SearchProvider";
+import Providers from "@/providers/Providers";
+import QueryProviders from "@/providers/QueryProviders";
 
 const nunito = Nunito({
   subsets: ["latin"],
@@ -34,19 +36,23 @@ export default function RootLayout({ children }) {
       <body
         className={`${nunito.variable} ${manrope.variable} ${abhayaLibre.variable}`}
       >
-        <Providers>
-          <QueryProviders>
-            <SearchProvider> 
-            {children}
-            <ToastContainer
-              position="bottom-right"
-              autoClose={1500}
-              transition={Slide}
-              closeOnClick
-            />
-            </SearchProvider>
-          </QueryProviders>
-        </Providers>
+        <AuthProviderAdmin>
+          <AuthProviderUser>
+            <Providers>
+              <QueryProviders>
+                <SearchProvider>
+                  {children}
+                  <ToastContainer
+                    position="bottom-right"
+                    autoClose={1500}
+                    transition={Slide}
+                    closeOnClick
+                  />
+                </SearchProvider>
+              </QueryProviders>
+            </Providers>
+          </AuthProviderUser>
+        </AuthProviderAdmin>
       </body>
     </html>
   );

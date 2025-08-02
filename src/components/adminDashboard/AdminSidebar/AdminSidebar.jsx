@@ -89,7 +89,7 @@ const AdminSidebar = () => {
 
   return (
     <div className="">
-      <ul className="border-r border-gray-200 h-screen pt-10 space-y-1">
+      <ul className="border-r border-gray-200 h-screen fixed  w-[300px] pt-10 space-y-1">
         {/* Desktop Sidebar List */}
         <ul className="">
           {links.map((link, index) => (

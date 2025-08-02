@@ -1,24 +1,32 @@
-"use client"
+"use client";
 
+import { useForm } from "react-hook-form";
 import MiniSpinner from "@/components/Skeleton/MiniSpinner";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
 import { RiImageAddFill } from "react-icons/ri";
 import { RxCross1 } from "react-icons/rx";
 import { toast } from "react-toastify";
 
-const AddBannerModal = ({ setOpenBannerCreateModal, refetch }) => {
+const UpdateBanner = ({
+  setShowBannerUpdateModal,
+  getBannerUpdateData,
+  refetch,
+}) => {
   const [loading, setLoading] = useState(false);
+
   const imageInputRef = useRef(null);
   const {
     register,
     handleSubmit,
-    setValue,
     formState: { errors },
+    setValue,
   } = useForm();
 
   //Image preview....
-  const [imagePreview, setImagePreview] = useState(null);
+  const [imagePreview, setImagePreview] = useState(
+    getBannerUpdateData?.banner_image
+  );
+
   const handleImageChange = (e) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -26,6 +34,7 @@ const AddBannerModal = ({ setOpenBannerCreateModal, refetch }) => {
       setValue("banner_image", file);
     }
   };
+
   const handleRemoveImage = () => {
     setImagePreview(null);
     setValue("banner_image", null);
@@ -33,51 +42,84 @@ const AddBannerModal = ({ setOpenBannerCreateModal, refetch }) => {
       imageInputRef.current.value = "";
     }
   };
-  //Image preview....
-
+  // Handle Update Banner
   const handleDataPost = async (data) => {
-    setLoading(true);
-    try {
+    if (data?.banner_image) {
+      setLoading(true);
       const formData = new FormData();
       Object.entries(data).forEach(([key, value]) => {
         if (key === "banner_image") {
           formData.append(key, data?.banner_image);
-        } else {
-          formData.append(key, value);
-        }
+        } else formData.append(key, value);
       });
 
+      formData.append(
+        "banner_image_key",
+        getBannerUpdateData?.banner_image_key
+      );
+      formData.append("_id", getBannerUpdateData?._id);
+
       const response = await fetch(`${BASE_URL}/banner`, {
-        method: "POST",
+        method: "PATCH",
         credentials: "include",
         body: formData,
       });
       const result = await response.json();
       if (result?.statusCode === 200 && result?.success === true) {
         toast.success(
-          result?.message ? result?.message : "Banner created successfully",
+          result?.message ? result?.message : "Banner update successfully",
           {
             autoClose: 1000,
           }
         );
         refetch();
         setLoading(false);
-        setOpenBannerCreateModal(false);
+        setShowBannerUpdateModal(false);
       } else {
         toast.error(result?.message || "Something went wrong", {
           autoClose: 1000,
         });
         setLoading(false);
       }
-    } catch (error) {
-      toast.error(error?.message, {
-        autoClose: 1000,
+    } else {
+      setLoading(true);
+      const sendData = {
+        _id: getBannerUpdateData?._id,
+        banner_serial:
+          data?.banner_serial || getBannerUpdateData?.banner_serial,
+        banner_path: data?.banner_path || getBannerUpdateData?.banner_path,
+        banner_status:
+          data?.banner_status || getBannerUpdateData?.banner_status,
+        banner_image_key: getBannerUpdateData?.banner_image_key,
+      };
+      const response = await fetch(`${BASE_URL}/banner`, {
+        method: "PATCH",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(sendData),
       });
-      setLoading(false);
-    } finally {
-      setLoading(false);
+      const result = await response.json();
+      if (result?.statusCode === 200 && result?.success === true) {
+        toast.success(
+          result?.message ? result?.message : "Banner update successfully",
+          {
+            autoClose: 1000,
+          }
+        );
+        refetch();
+        setLoading(false);
+        setShowBannerUpdateModal(false);
+      } else {
+        toast.error(result?.message || "Something went wrong", {
+          autoClose: 1000,
+        });
+        setLoading(false);
+      }
     }
   };
+
   return (
     <div>
       <div>
@@ -88,12 +130,12 @@ const AddBannerModal = ({ setOpenBannerCreateModal, refetch }) => {
                 className="sm:text-[26px] font-bold text-primaryColor"
                 id="modal-title "
               >
-                Create Banner
+                Update Banner
               </h3>
               <button
                 type="button"
                 className="btn text-crossBtnHoverColor  p-1 absolute right-3 rounded-full top-3 hover:bg-crossBtnHoverColor hover:text-crossBtnHovertextColor cursor-pointer transition-all duration-300"
-                onClick={() => setOpenBannerCreateModal(false)}
+                onClick={() => setShowBannerUpdateModal(false)}
               >
                 {" "}
                 <RxCross1 size={20}></RxCross1>
@@ -110,8 +152,9 @@ const AddBannerModal = ({ setOpenBannerCreateModal, refetch }) => {
 
                 <input
                   {...register("banner_path")}
+                  defaultValue={getBannerUpdateData?.banner_path}
                   type="text"
-                  placeholder="BANNER PATH"
+                  placeholder="Banner Path"
                   className="mt-2 w-full rounded-md border-gray-200 shadow-sm sm:text-sm p-2 border-2"
                 />
               </div>
@@ -124,6 +167,7 @@ const AddBannerModal = ({ setOpenBannerCreateModal, refetch }) => {
                     {...register("banner_status", {
                       required: "Banner Status is required",
                     })}
+                    defaultValue={getBannerUpdateData?.banner_status}
                     className="mt-2 rounded-md border-gray-200 shadow-sm sm:text-sm p-2 border-2 w-full"
                   >
                     <option value="active">Active</option>
@@ -155,7 +199,9 @@ const AddBannerModal = ({ setOpenBannerCreateModal, refetch }) => {
                         // }
                       },
                     })}
-                    type="number" onWheel={(e) => e.target.blur()}
+                    type="number"
+                    onWheel={(e) => e.target.blur()}
+                    defaultValue={getBannerUpdateData?.banner_serial}
                     placeholder="BANNER SERIAL"
                     className="mt-2 w-full rounded-md border-gray-200 shadow-sm sm:text-sm p-2 border-2"
                   />
@@ -205,7 +251,6 @@ const AddBannerModal = ({ setOpenBannerCreateModal, refetch }) => {
                 )}
                 <input
                   {...register("banner_image", {
-                    required: "Image is Required",
                     valiDate: {
                       isImage: (value) =>
                         (value[0] && value[0].type.startsWith("image/")) ||
@@ -239,7 +284,7 @@ const AddBannerModal = ({ setOpenBannerCreateModal, refetch }) => {
                     className="rounded-[8px] py-[10px] px-[18px] bg-btnBgColor hover:bg-btnHoverColor  transform hover:translate-y-[-2px] transition duration-200 text-btnTextColor text-sm cursor-pointer uppercase"
                     type="submit"
                   >
-                    Create Banner
+                    Update Banner
                   </button>
                 )}
               </div>
@@ -251,4 +296,4 @@ const AddBannerModal = ({ setOpenBannerCreateModal, refetch }) => {
   );
 };
 
-export default AddBannerModal;
+export default UpdateBanner;
