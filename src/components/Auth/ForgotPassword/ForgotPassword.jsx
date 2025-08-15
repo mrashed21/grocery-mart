@@ -1,6 +1,8 @@
 import MiniSpinner from "@/components/Skeleton/MiniSpinner";
+import { useForgetPasswordMutation } from "@/redux/feature/auth/authApi";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { IoReturnUpBack } from "react-icons/io5";
 import PhoneInput, {
   formatPhoneNumber,
   isPossiblePhoneNumber,
@@ -9,14 +11,12 @@ import PhoneInput, {
 import "react-phone-number-input/style.css";
 import { toast } from "react-toastify";
 import OtpVerifyModal from "./OtpModal";
-import { IoReturnUpBack } from "react-icons/io5";
 
-const ForgotPassword = ({ setIsForgotPasswordOpen, setIsUserLoginOpen }) => {
+const ForgotPassword = ({ setIsForgotPasswordOpen }) => {
   const [user_phone, setUser_phone] = useState("");
   const [user_name, setUser_name] = useState("");
-  // const [forgetPassword, { isLoading }] = useForgetPasswordMutation();
-  const isLoading = false;
-  const forgetPassword = false;
+  const [forgetPassword, { isLoading }] = useForgetPasswordMutation();
+
   const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
   const {
     handleSubmit,
@@ -119,20 +119,21 @@ const ForgotPassword = ({ setIsForgotPasswordOpen, setIsUserLoginOpen }) => {
       {!isChangePasswordOpen ? (
         <div className="w-full bg-[#084C4E26] p-5 lg:p-10 rounded-md font-nunito relative">
           {/* modal */}
-           <button
-              onClick={() => setIsForgotPasswordOpen(false)}
-              className="absolute -top-1 right-3 text-[#084C4E] rounded-md py-3 cursor-pointer font-nunito font-semibold"
-            >
+          <button
+            onClick={() => setIsForgotPasswordOpen(false)}
+            className="absolute -top-1 right-3 text-[#084C4E] rounded-md py-3 cursor-pointer font-nunito font-semibold"
+          >
+            {" "}
+            <span className="flex items-center gap-0.5">
               {" "}
-        <span className="flex items-center gap-0.5">   <IoReturnUpBack size={20} />  Login</span>
-            </button>
+              <IoReturnUpBack size={20} /> Login
+            </span>
+          </button>
           <div className="w-full  ">
-
             <h2 className="text-[#3A3A3A] text-2xl lg:mb-5 font-medium">
               Reset Your Password
             </h2>
 
-           
             {/* login form */}
             <div className="">
               <form onSubmit={handleSubmit(handleReset)} className="space-y-4">
@@ -193,7 +194,7 @@ const ForgotPassword = ({ setIsForgotPasswordOpen, setIsUserLoginOpen }) => {
             user_name={user_name}
             setIsForgotPasswordOpen={setIsForgotPasswordOpen}
             setIsChangePasswordOpen={setIsChangePasswordOpen}
-            setIsUserLoginOpen={setIsUserLoginOpen}
+          
           />
           {/* )} */}
         </>

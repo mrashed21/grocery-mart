@@ -1,15 +1,14 @@
 "use cliient";
 import { FiSearch } from "react-icons/fi";
-import productData from "./../../../../../public/productData.json";
 
-const ProductSearch = ({ searchTerm, setSearchTerm, setDisplayedProducts }) => {
+const ProductSearch = ({ searchTerm, setSearchTerm, setDisplayedProducts ,productData}) => {
   const handleInputChange = (e) => {
     const value = e.target.value;
     setSearchTerm(value);
 
     if (value.trim().length > 0) {
       const filtered = productData.filter((product) =>
-        product.name.toLowerCase().includes(value.toLowerCase())
+        product?.product_name.toLowerCase().includes(value.toLowerCase())
       );
       setDisplayedProducts(filtered);
     } else {

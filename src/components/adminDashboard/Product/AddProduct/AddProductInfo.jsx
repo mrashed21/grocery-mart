@@ -1,42 +1,16 @@
 "use client";
+import { BASE_URL } from "@/utils/baseURL";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
 import Select from "react-select";
 
 const AddProductInfo = ({
-  productInfoData,
-  setProductInfoData,
   register,
   errors,
-  setSub_Category_id,
-  setBrand_id,
-  attributeDataToSubmit,
-  setAttributeDataToSubmit,
-  setShowProductVariation,
-  showProductVariation,
-  variationTableData,
-  setVariationTableData,
+  setCategory_id,
+  setProduct_status,
+  product_status,
+  category_id,
 }) => {
-  // State to manage selected attributes
-  const [selectedAttributes, setSelectedAttributes] = useState([]);
-  // State to manage selected attribute values
-  const [selectedAttributeValues, setSelectedAttributeValues] = useState([]);
-
-  useEffect(() => {
-    if (productInfoData?.variation_details) {
-      setVariationTableData(productInfoData?.variation_details);
-    }
-  }, [productInfoData?.variation_details]);
-
-  const [category_id, setCategory_id] = useState(
-    productInfoData?.category_id ? productInfoData?.category_id : ""
-  );
-  const [isSub_CategoryOpen, setIsSub_CategoryOpen] = useState(true);
-  const [subCategoryData, setSubCategoryData] = useState([]);
-
-  // set  change value state
-  const [isChangeCategory, setIsChangeCategory] = useState(false);
-
   const { data: categories = [], isLoading: categoryLoading } = useQuery({
     queryKey: [`/api/v1/category`],
     queryFn: async () => {
@@ -46,44 +20,12 @@ const AddProductInfo = ({
       const data = await res.json();
       return data;
     },
-  }); // get all category for select
+  });
 
-  const { data: sub_categories = [], isLoading: subCategoryLoading } = useQuery(
-    {
-      queryKey: [`/api/v1/sub_category`],
-      queryFn: async () => {
-        const res = await fetch(`${BASE_URL}/sub_category`, {
-          credentials: "include",
-        });
-        const data = await res.json();
-        return data;
-      },
-    }
-  ); // get all Sub category for select
-
-  const { data: brands = [], isLoading: brandLoading } = useQuery({
-    queryKey: [`/api/v1/brand`],
-    queryFn: async () => {
-      const res = await fetch(`${BASE_URL}/brand`, {
-        credentials: "include",
-      });
-      const data = await res.json();
-      return data;
-    },
-  }); // get all Brand for select
-
-  //   set sub category
-  useEffect(() => {
-    const getSubCategoryData = sub_categories?.data?.filter(
-      (sub_category) => sub_category?.category_id?._id === category_id
-    );
-    setSubCategoryData(getSubCategoryData);
-  }, [sub_categories?.data, category_id]);
-
-  //   // loading set
-  //   if (categoryLoading || subCategoryLoading || brandLoading) {
-  //     return <LoaderOverlay />;
-  //   }
+  const productStatusOptions = [
+    { value: "active", label: "Active" },
+    { value: "in-active", label: "In-Active" },
+  ];
 
   return (
     <div>
@@ -100,7 +42,6 @@ const AddProductInfo = ({
               Product Name<span className="text-red-500">*</span>
             </label>
             <input
-              defaultValue={productInfoData?.product_name}
               {...register("product_name", {
                 required: "Product Name is required",
               })}
@@ -113,6 +54,7 @@ const AddProductInfo = ({
               <p className="text-red-600">{errors.product_name?.message}</p>
             )}
           </div>
+
           {/* Category Name */}
           <div className="">
             <label htmlFor="category_name" className="font-medium">
@@ -128,37 +70,93 @@ const AddProductInfo = ({
               options={categories?.data}
               getOptionLabel={(x) => x?.category_name}
               getOptionValue={(x) => x?._id}
+              value={category_id} // direct object
               onChange={(selectedOption) => {
-                setIsChangeCategory(true);
-                setIsSub_CategoryOpen(false);
-                setCategory_id(selectedOption?._id);
-                setProductInfoData({
-                  ...productInfoData,
-                  category_id: selectedOption?._id,
-                });
-                setSub_Category_id("");
-                setTimeout(() => {
-                  setIsSub_CategoryOpen(true);
-                }, 100);
+                setCategory_id(selectedOption || null);
               }}
-            ></Select>
+            />
+          </div>
+
+          <div className="">
+            <label htmlFor="product_price" className="font-medium">
+              Product Price<span className="text-red-500">*</span>
+            </label>
+            <input
+              {...register("product_price", {
+                required: "Product Price is required",
+              })}
+              id="product_price"
+              type="text"
+              placeholder="Enter Product Price"
+              className="block w-full p-2 text-gray-800 outline-primaryColor bg-white border border-gray-300 rounded-lg "
+            />
+            {errors.product_price && (
+              <p className="text-red-600">{errors.product_price?.message}</p>
+            )}
+          </div>
+          <div className="">
+            <label htmlFor="product_discount_price" className="font-medium">
+              Product Discount
+            </label>
+            <input
+              {...register("product_discount_price")}
+              id="product_discount_price"
+              type="text"
+              placeholder="Enter Product Discount Price"
+              className="block w-full p-2 text-gray-800 outline-primaryColor bg-white border border-gray-300 rounded-lg "
+            />
+            {errors.product_discount_price && (
+              <p className="text-red-600">
+                {errors.product_discount_price?.message}
+              </p>
+            )}
+          </div>
+
+          <div className="">
+            <label htmlFor="product_buying_price" className="font-medium">
+              Product Buying Price
+            </label>
+            <input
+              {...register("product_buying_price")}
+              id="product_buying_price"
+              type="text"
+              placeholder="Enter Product Buying Price"
+              className="block w-full p-2 text-gray-800 outline-primaryColor bg-white border border-gray-300 rounded-lg "
+            />
+            {errors.product_buying_price && (
+              <p className="text-red-600">
+                {errors.product_buying_price?.message}
+              </p>
+            )}
+          </div>
+          <div className=" space-y-2 ">
+            <label htmlFor="product_status" className="font-medium">
+              Product Status
+            </label>
+
+            <Select
+              id="product_status"
+              name="product_status"
+              isClearable
+              isSearchable
+              placeholder="-Select Product Status-"
+              required
+              aria-label="Select a Status"
+              options={productStatusOptions}
+              value={
+                productStatusOptions.find(
+                  (opt) => opt.value === product_status
+                ) || null
+              }
+              getOptionLabel={(x) => x?.label}
+              getOptionValue={(x) => x?.value}
+              onChange={(selectedOption) => {
+                setProduct_status(selectedOption?.value || "");
+              }}
+            />
           </div>
         </div>
       </section>
-
-      {/* Product Price and variation */}
-      {/*      
-        <div>
-          <AddProductInfoPrice
-            productInfoData={productInfoData}
-            register={register}
-            errors={errors}
-          />
-          <AddProductFilter
-            setAttributeDataToSubmit={setAttributeDataToSubmit}
-            attributeDataToSubmit={attributeDataToSubmit}
-          />
-        </div> */}
     </div>
   );
 };

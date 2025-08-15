@@ -5,17 +5,23 @@ import { MdDeleteForever } from "react-icons/md";
 import { toast } from "react-toastify";
 // import Swal from "sweetalert2-optimized";
 import NoDataFound from "@/components/common/NoDataFound";
-import { useState } from "react";
+import TableLoadingSkeleton from "@/components/Skeleton/TableLoadingSkeleton";
+import { AdminAuthContext } from "@/context/AdminProvider";
+import { BASE_URL } from "@/utils/baseURL";
+import { useContext, useState } from "react";
+import Swal from "sweetalert2";
 import UpDateStaffRole from "./UpDateStaffRole";
 
-const StaffRoleTable = ({ user }) => {
+const StaffRoleTable = () => {
   const [updateModal, setUpdateModal] = useState(false);
   const [updateModalValue, setUpdateModalValue] = useState({});
-  //   console.log(roleData);
+  const { admin, adminLoading } = useContext(AdminAuthContext);
+  const user = admin;
   const updateStaffModal = (item) => {
     setUpdateModal(true);
     setUpdateModalValue(item);
   };
+
   const {
     data: roleData,
     isLoading,
@@ -41,7 +47,7 @@ const StaffRoleTable = ({ user }) => {
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!",
+      confirmButtonText: "Yes, Delete it!",
     }).then(async (result) => {
       if (result.isConfirmed) {
         const sendData = {
@@ -57,12 +63,11 @@ const StaffRoleTable = ({ user }) => {
             body: JSON.stringify(sendData),
           });
           const result = await response.json();
-          // console.log(result);
           if (result?.statusCode === 200 && result?.success === true) {
             refetch();
             Swal.fire({
               title: "Deleted!",
-              text: `${item?.role_name} role has been deleted!`,
+              text: `${item?.role_name} role has been Deleted!`,
               icon: "success",
             });
           } else {
@@ -79,24 +84,27 @@ const StaffRoleTable = ({ user }) => {
       }
     });
   };
-  if (isLoading) {
-    return <h2>loadding...</h2>;
+  if (isLoading || adminLoading) {
+    return <TableLoadingSkeleton />;
   }
   return (
-    <div className=" ">
+    <div className=" max-w-3xl mx-auto">
+      <div className="flex items-center justify-center mt-10">
+        <h2 className="font-bold text-3xl ">Staff Role List</h2>
+      </div>
       {/* Table for showing data */}
       {roleData?.length > 0 ? (
         <div className="mt-10 overflow-x-auto shadow-md">
           <table className="min-w-full divide-y-2 divide-gray-200 bg-white text-sm">
             <thead className=" bg-[#fff9ee]">
-              <tr className="divide-x divide-gray-300  font-semibold text-center text-white">
-                <th className="whitespace-nowrap p-4  text-white text-center">
+              <tr className="divide-x divide-gray-300  font-semibold text-center ">
+                <th className="whitespace-nowrap p-4   text-center">
                   Role Name
                 </th>
 
                 {(user?.role_id?.role_delete === true ||
                   user?.role_id?.role_update === true) && (
-                  <th className="p-4 text-center text-white">Action</th>
+                  <th className="p-4 text-center ">Action</th>
                 )}
               </tr>
             </thead>
@@ -127,7 +135,7 @@ const StaffRoleTable = ({ user }) => {
                         {user?.role_id?.role_update && (
                           <FiEdit
                             onClick={() => updateStaffModal(item)}
-                            className="cursor-pointer text-primaryColor"
+                            className="cursor-pointer "
                             size={25}
                           />
                         )}

@@ -1,8 +1,10 @@
 "use client";
 import MiniSpinner from "@/components/Skeleton/MiniSpinner";
+import { BASE_URL } from "@/utils/baseURL";
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { RxCross1 } from "react-icons/rx";
+import { toast } from "react-toastify";
 
 const CreateZone = ({ setZoneCreateModal, user, refetch }) => {
   const [loading, setLoading] = useState(false);
@@ -14,9 +16,43 @@ const CreateZone = ({ setZoneCreateModal, user, refetch }) => {
     formState: { errors },
   } = useForm();
 
-  const handleDataPost = (data) => {
-    console.log(data);
-    return;
+  const handleDataPost = async (data) => {
+    setLoading(true);
+    try {
+      const response = await fetch(`${BASE_URL}/zone`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      const result = await response.json();
+      if (result?.statusCode === 200 && result?.success === true) {
+        toast.success(
+          result?.message ? result?.message : "Zone created successfully",
+          {
+            autoClose: 1000,
+          }
+        );
+        refetch();
+        setLoading(false);
+        setZoneCreateModal(false);
+      } else {
+        toast.error(result?.message || "Something went wrong", {
+          autoClose: 1000,
+        });
+        setLoading(false);
+      }
+    } catch (error) {
+      toast.error(error?.message, {
+        autoClose: 1000,
+      });
+      setLoading(false);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -46,15 +82,15 @@ const CreateZone = ({ setZoneCreateModal, user, refetch }) => {
               </label>
 
               <input
-                {...register("zone", {
+                {...register("zone_name", {
                   required: "zone name is required",
                 })}
                 type="text"
                 placeholder="ZONE NAME"
                 className="mt-2 w-full rounded-md border-gray-200 shadow-sm sm:text-sm p-2 border-2"
               />
-              {errors?.zone && (
-                <p className="text-red-600">{errors.zone?.message}</p>
+              {errors?.zone_name && (
+                <p className="text-red-600">{errors.zone_name?.message}</p>
               )}
             </div>
             <div className="mt-4 grid grid-cols-2 gap-4">
@@ -81,15 +117,12 @@ const CreateZone = ({ setZoneCreateModal, user, refetch }) => {
                 </label>
 
                 <input
-                  {...register("delivery_charge", {
+                  {...register("zone_delivery_charge", {
                     required: "Delivery is required",
                     validate: (value) => {
                       if (value < 1) {
                         return "Delivery charge must be greater than 0";
                       }
-                      // else if (value > 100) {
-                      //   return 'Serial must be less then 100'
-                      // }
                     },
                   })}
                   type="number"
@@ -97,9 +130,9 @@ const CreateZone = ({ setZoneCreateModal, user, refetch }) => {
                   placeholder="TYPE NUMBER"
                   className="mt-2 w-full rounded-md border-gray-200 shadow-sm sm:text-sm p-2 border-2"
                 />
-                {errors.delivery_charge && (
+                {errors.zone_delivery_charge && (
                   <p className="text-red-600">
-                    {errors.delivery_charge?.message}
+                    {errors.zone_delivery_charge?.message}
                   </p>
                 )}
               </div>
@@ -107,7 +140,7 @@ const CreateZone = ({ setZoneCreateModal, user, refetch }) => {
 
             <div className="flex gap-8 mt-4 justify-end">
               {loading == true ? (
-                <div className="px-10 py-2 flex items-center justify-center  bg-btnBgColor text-btnTextColor rounded">
+                <div className="px-10 py-2 flex items-center justify-center   rounded">
                   <MiniSpinner />
                 </div>
               ) : (

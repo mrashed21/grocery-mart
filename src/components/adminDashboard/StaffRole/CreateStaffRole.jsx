@@ -3,9 +3,11 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
 import MiniSpinner from "@/components/Skeleton/MiniSpinner";
+import { AdminAuthContext } from "@/context/AdminProvider";
 import permissionsData from "@/data/permissionData";
+import { BASE_URL } from "@/utils/baseURL";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useContext, useState } from "react";
 
 const CreateStaffRole = () => {
   const {
@@ -15,14 +17,10 @@ const CreateStaffRole = () => {
     formState: { errors },
     watch,
   } = useForm();
-  // const { user } = useContext(AuthContext);
-  // const token = getCookie(authKey);
-
-  // console.log(roleData);
 
   const [loading, setLoading] = useState(false);
-  const user = false;
-  // Watch all fields to apply conditional styles
+  const admin = useContext(AdminAuthContext);
+  const user = admin?.admin;
   const watchAllFields = watch();
   const navigate = useRouter();
   // Add role permission
@@ -39,6 +37,7 @@ const CreateStaffRole = () => {
           data[permission?.type_value] || false;
       });
     });
+
     try {
       const response = await fetch(`${BASE_URL}/role`, {
         method: "POST",
@@ -48,6 +47,7 @@ const CreateStaffRole = () => {
         credentials: "include",
         body: JSON.stringify(sendData),
       });
+
       const result = await response.json();
       if (result?.statusCode === 200 && result?.success === true) {
         toast.success(result?.message || "Role created successfully", {
@@ -57,7 +57,6 @@ const CreateStaffRole = () => {
         setLoading(false);
 
         reset();
-        navigate("/staff-role");
       } else {
         toast.error(result?.message || "Something went wrong", {
           autoClose: 1000,
@@ -150,23 +149,25 @@ const CreateStaffRole = () => {
             </div>
           </div>
 
-          <div className="flex justify-end mt-6 gap-4">
-            {loading ? (
-              <button
-                type="button"
-                className="px-6 py-2 text-white transition-colors duration-300 transform bg-primaryColor cursor-pointer rounded-xl "
-              >
-                <MiniSpinner />
-              </button>
-            ) : (
-              <button
-                type="submit"
-                className="rounded-[8px] py-[10px] px-[18px] bg-btnBgColor hover:bg-btnHoverColor  transform hover:translate-y-[-2px] transition duration-200 text-btnTextColor text-sm cursor-pointer"
-              >
-                Submit
-              </button>
-            )}
-          </div>
+          {user?.role_id?.product_create && (
+            <div className="flex justify-end mt-6 gap-4">
+              {loading ? (
+                <button
+                  type="button"
+                  className="px-6 py-2 text-white transition-colors duration-300 transform bg-primaryColor cursor-pointer rounded-xl "
+                >
+                  <MiniSpinner />
+                </button>
+              ) : (
+                <button
+                  type="submit"
+                  className="rounded-[8px] py-[10px] px-[18px] bg-[#084C4E] hover:bg-[#3b6768] transform hover:translate-y-[-2px] transition duration-200 text-white text-sm cursor-pointer"
+                >
+                  Submit
+                </button>
+              )}
+            </div>
+          )}
         </form>
       </div>
     </div>

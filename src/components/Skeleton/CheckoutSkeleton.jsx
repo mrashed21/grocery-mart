@@ -1,55 +1,49 @@
-// components/skeletons/CheckoutSkeleton.jsx
 "use client";
 
 import Skeleton from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css"; // Ensure CSS is imported
+import "react-loading-skeleton/dist/skeleton.css";
 
 const CheckoutSkeleton = () => {
   return (
     <div className="bg-white rounded-lg shadow-sm p-4 animate-pulse">
-      {/* Delivery Information Section Skeleton */}
       <div className="mb-6">
-        <Skeleton width="60%" height={24} className="mb-4" />{" "}
-        {/* Title: Delivery Information */}
+        <Skeleton width="60%" height={24} className="mb-4" />
+
         <div className="space-y-3">
-          <Skeleton height={40} className="rounded-md" /> {/* Name input */}
+          <Skeleton height={40} className="rounded-md" />
           <div className="flex gap-2">
-            <Skeleton width="30%" height={40} className="rounded-md" />{" "}
-            {/* Country code dropdown */}
-            <Skeleton width="70%" height={40} className="rounded-md" />{" "}
-            {/* Phone number input */}
+            <Skeleton width="30%" height={40} className="rounded-md" />
+
+            <Skeleton width="70%" height={40} className="rounded-md" />
           </div>
-          <Skeleton height={40} className="rounded-md" /> {/* Zone dropdown */}
-          <Skeleton height={80} className="rounded-md" />{" "}
-          {/* Address textarea */}
+          <Skeleton height={40} className="rounded-md" />
+          <Skeleton height={80} className="rounded-md" />
         </div>
       </div>
 
-      {/* Order Summary Section Skeleton */}
       <div>
-        <Skeleton width="50%" height={24} className="mb-4" />{" "}
-        {/* Title: Order Summary */}
+        <Skeleton width="50%" height={24} className="mb-4" />
+
         <div className="space-y-2 text-sm">
           <div className="flex justify-between items-center">
-            <Skeleton width="40%" height={16} /> {/* Product Price label */}
-            <Skeleton width="30%" height={16} /> {/* Product Price value */}
+            <Skeleton width="40%" height={16} />
+            <Skeleton width="30%" height={16} />
           </div>
           <div className="flex justify-between items-center">
-            <Skeleton width="40%" height={16} /> {/* Discount label */}
-            <Skeleton width="30%" height={16} /> {/* Discount value */}
+            <Skeleton width="40%" height={16} />
+            <Skeleton width="30%" height={16} />
           </div>
           <div className="flex justify-between items-center">
-            <Skeleton width="40%" height={16} /> {/* Delivery Charge label */}
-            <Skeleton width="30%" height={16} /> {/* Delivery Charge value */}
+            <Skeleton width="40%" height={16} />
+            <Skeleton width="30%" height={16} />
           </div>
           <hr className="my-3 border-gray-200" />
           <div className="flex justify-between items-center font-bold">
-            <Skeleton width="40%" height={20} /> {/* Total label */}
-            <Skeleton width="30%" height={20} /> {/* Total value */}
+            <Skeleton width="40%" height={20} />
+            <Skeleton width="30%" height={20} />
           </div>
         </div>
-        <Skeleton height={48} className="mt-6 rounded-lg" />{" "}
-        {/* Place Order Button */}
+        <Skeleton height={48} className="mt-6 rounded-lg" />
       </div>
     </div>
   );

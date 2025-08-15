@@ -1,10 +1,12 @@
-"use client"
+"use client";
 
 import NoDataFound from "@/components/common/NoDataFound";
 import Pagination from "@/components/shared/Pagination/Pagination";
 import TableLoadingSkeleton from "@/components/Skeleton/TableLoadingSkeleton";
 import { BASE_URL } from "@/utils/baseURL";
 import { useEffect, useState } from "react";
+import { FiEdit } from "react-icons/fi";
+import { MdDeleteForever } from "react-icons/md";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 import UpdateBanner from "./UpdateBanner";
@@ -19,10 +21,10 @@ const BannerTable = ({
   refetch,
   isLoading,
   user,
+  adminLoading,
 }) => {
   const [serialNumber, setSerialNumber] = useState();
-  const [showBannerUpdateModal, setShowBannerUpdateModal] =
-    useState(false);
+  const [showBannerUpdateModal, setShowBannerUpdateModal] = useState(false);
   const [getBannerUpdateData, setGetBannerUpdateData] = useState({});
 
   useEffect(() => {
@@ -45,9 +47,8 @@ const BannerTable = ({
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!",
+      confirmButtonText: "Yes, Delete it!",
     }).then(async (result) => {
-      console.log(result);
       if (result.isConfirmed) {
         const sendData = {
           _id: banner?._id,
@@ -67,7 +68,7 @@ const BannerTable = ({
             }
           );
           const result = await response.json();
-          // console.log(result);
+
           if (result?.statusCode === 200 && result?.success === true) {
             refetch();
             Swal.fire({
@@ -161,89 +162,117 @@ const BannerTable = ({
 
   return (
     <>
-      {isLoading ? (
+      {isLoading || adminLoading ? (
         <TableLoadingSkeleton />
       ) : (
         <div>
           {banners?.data?.length > 0 ? (
-            <div className="mt-6 shadow-lg">
-              <div className="overflow-x-auto">
-                <table className="min-w-full text-sm">
+            <div className="mt-6 shadow-lg rounded-xl border border-gray-200">
+              <div className="overflow-x-auto rounded-xl">
+                <table className="min-w-full text-sm border border-gray-200 rounded-xl overflow-hidden border-collapse">
                   <thead className="ltr:text-left rtl:text-right">
-                    <tr className="divide-x divide-gray-300  font-semibold text-center">
-                      <td className="whitespace-nowrap p-4 ">SL No</td>
-
-                      <td className="whitespace-nowrap p-4 ">Banner Image</td>
-                      <td className="whitespace-nowrap p-4 ">Banner Path</td>
-                      <td className="whitespace-nowrap p-4 ">
+                    <tr className=" font-semibold text-center">
+                      <td className="whitespace-nowrap p-4 border border-gray-200">
+                        SL No
+                      </td>
+                      <td className="whitespace-nowrap p-4 border border-gray-200">
+                        Banner Image
+                      </td>
+                      <td className="whitespace-nowrap p-4 border border-gray-200">
+                        Banner Path
+                      </td>
+                      <td className="whitespace-nowrap p-4 border border-gray-200">
                         Banner Serial No
                       </td>
-
-                      <td className="whitespace-nowrap p-4 ">Banner Status</td>
+                      <td className="whitespace-nowrap p-4 border border-gray-200">
+                        Banner Status
+                      </td>
 
                       {(user?.role_id?.banner_delete === true ||
                         user?.role_id?.banner_update === true) && (
-                        <td className="whitespace-nowrap p-4 ">Action</td>
+                        <td className="whitespace-nowrap p-4 border border-gray-200">
+                          Action
+                        </td>
                       )}
                     </tr>
                   </thead>
 
-                  <tbody className="">
+                  <tbody>
                     {banners?.data?.map((banner, i) => (
                       <tr
                         key={banner?._id}
                         className={`text-center ${
-                          i % 2 === 0 ? "bg-secondary-50" : "bg-secondary-100"
+                          i % 2 === 0 ? "bg-amber-50" : "bg-white"
                         } hover:bg-blue-100`}
                       >
-                        <td className="whitespace-nowrap py-1.5 font-medium text-primaryColor">
+                        <td className="whitespace-nowrap py-1.5 font-medium  border border-gray-200">
                           {serialNumber + i + 1}
                         </td>
-                        <td className="whitespace-nowrap py-1.5 text-primaryColor flex justify-center">
+                        <td className="whitespace-nowrap py-1.5 flex justify-center border-t border-gray-200">
                           <img
                             className="w-[44px] h-[44px] rounded-[8px]"
                             src={banner?.banner_image}
                             alt=""
                           />
                         </td>
-                        <td className="whitespace-nowrap py-1.5 font-medium text-primaryColor">
-                          {banner?.banner_path}
+                        <td className="whitespace-nowrap py-1.5 font-medium  border border-gray-200">
+                          {banner?.banner_path || "N/A"}
                         </td>
-                        <td className="whitespace-nowrap py-1.5 font-medium text-primaryColor">
+                        <td className="whitespace-nowrap py-1.5 font-medium  border border-gray-200">
                           {banner?.banner_serial}
                         </td>
 
-                        <td className="whitespace-nowrap py-1.5 ">
-                          {banner?.banner_status === "active" ? (
-                            <button
-                              className="bg-green-500 text-white px-[10px] py-[4px] rounded-[8px] cursor-pointer"
-                              onClick={() =>
-                                handleBannerActiveStatus(
-                                  banner?._id,
-                                  banner?.banner_status ? "in-active" : "active"
-                                )
-                              }
-                            >
-                              <span>Active</span>
-                            </button>
+                        <td className="whitespace-nowrap py-1.5 border border-gray-200">
+                          {user?.role_id?.banner_update === true ? (
+                            <>
+                              {banner?.banner_status === "active" ? (
+                                <button
+                                  className="bg-green-500 text-white px-[10px] py-[4px] rounded-[8px] cursor-pointer"
+                                  onClick={() =>
+                                    handleBannerActiveStatus(
+                                      banner?._id,
+                                      banner?.banner_status
+                                        ? "in-active"
+                                        : "active"
+                                    )
+                                  }
+                                >
+                                  <span>Active</span>
+                                </button>
+                              ) : (
+                                <button
+                                  className="bg-red-500 text-white font-semibold px-[10px] py-[4px] rounded-[8px] cursor-pointer"
+                                  onClick={() =>
+                                    handleBannerInActiveStatus(
+                                      banner?._id,
+                                      banner?.banner_status
+                                        ? "active"
+                                        : "in-active"
+                                    )
+                                  }
+                                >
+                                  <span>In-Active</span>
+                                </button>
+                              )}
+                            </>
                           ) : (
-                            <button
-                              className="bg-red-500 text-white font-semibold px-[10px] py-[4px] rounded-[8px] cursor-pointer"
-                              onClick={() =>
-                                handleBannerInActiveStatus(
-                                  banner?._id,
-                                  banner?.banner_status ? "active" : "in-active"
-                                )
-                              }
-                            >
-                              <span>In-Active</span>
-                            </button>
+                            <>
+                              {banner?.banner_status === "active" ? (
+                                <span className="bg-green-500 text-white px-[10px] py-[4px] rounded-[8px] ">
+                                  <span>Active</span>
+                                </span>
+                              ) : (
+                                <span className="bg-red-500 text-white font-semibold px-[10px] py-[4px] rounded-[8px] ">
+                                  <span>In-Active</span>
+                                </span>
+                              )}
+                            </>
                           )}
                         </td>
 
                         {(user?.role_id?.banner_delete === true ||
                           user?.role_id?.banner_update === true) && (
-                          <td className="whitespace-nowrap py-1.5 px-2 text-primaryColor">
+                          <td className="whitespace-nowrap py-1.5 px-2  border border-gray-200">
                             <>
                               {user?.role_id?.banner_delete && (
                                 <button
@@ -266,7 +295,7 @@ const BannerTable = ({
                                 >
                                   <FiEdit
                                     size={25}
-                                    className="cursor-pointer text-primaryColor "
+                                    className="cursor-pointer "
                                   />
                                 </button>
                               )}

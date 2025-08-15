@@ -1,5 +1,6 @@
-"use client"
+"use client";
 import MiniSpinner from "@/components/Skeleton/MiniSpinner";
+import { BASE_URL } from "@/utils/baseURL";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
@@ -14,8 +15,6 @@ const SoftwareInformation = ({ refetch, getInitialCurrencyData }) => {
 
     let logo;
     let favicon;
-    let home_background_image;
-    let home_slider_image;
     if (data?.logo?.[0]) {
       const logoUpload = await ImageUploader(data?.logo?.[0]);
       logo = logoUpload[0];
@@ -24,28 +23,10 @@ const SoftwareInformation = ({ refetch, getInitialCurrencyData }) => {
       const faviconUpload = await ImageUploader(data?.favicon?.[0]);
       favicon = faviconUpload[0];
     }
-    if (data?.home_background_image?.[0]) {
-      const home_background_imageUpload = await ImageUploader(
-        data?.home_background_image?.[0]
-      );
-      home_background_image = home_background_imageUpload[0];
-    }
-    if (data?.home_slider_image?.[0]) {
-      const home_slider_imageUpload = await ImageUploader(
-        data?.home_slider_image?.[0]
-      );
-      home_slider_image = home_slider_imageUpload[0];
-    }
+
     const sendData = {
       logo: logo || getInitialCurrencyData?.logo,
       favicon: favicon || getInitialCurrencyData?.favicon,
-      home_background_image:
-        home_background_image || getInitialCurrencyData?.home_background_image,
-      home_background_title:
-        data?.home_background_title ||
-        getInitialCurrencyData?.home_background_title,
-      home_slider_image:
-        home_slider_image || getInitialCurrencyData?.home_slider_image,
       title: data?.title || getInitialCurrencyData?.title,
       contact: data?.contact || getInitialCurrencyData?.contact,
       email: data?.email || getInitialCurrencyData?.email,
@@ -104,7 +85,7 @@ const SoftwareInformation = ({ refetch, getInitialCurrencyData }) => {
               id="logo"
               type="file"
               accept="image/*"
-              className="mt-2 w-full file:bg-secondaryNavBarColor file:border-none file:text-white rounded-md border-gray-200 shadow-sm sm:text-sm p-2 border-2 file:rounded cursor-pointer"
+              className="mt-2 w-full file:bg-secondaryNavBarColor file:border-none file:text-red-500 rounded-md border-gray-200 shadow-sm sm:text-sm p-2 border-2 file:rounded cursor-pointer"
             />
           </div>
           <div>
@@ -128,7 +109,7 @@ const SoftwareInformation = ({ refetch, getInitialCurrencyData }) => {
               id="favicon"
               type="file"
               accept="image/*"
-              className="mt-2 w-full file:bg-secondaryNavBarColor file:border-none file:text-white rounded-md border-gray-200 shadow-sm sm:text-sm p-2 border-2 file:rounded cursor-pointer"
+              className="mt-2 w-full file:bg-secondaryNavBarColor file:border-none file:text-red-500 rounded-md border-gray-200 shadow-sm sm:text-sm p-2 border-2 file:rounded cursor-pointer"
             />
           </div>
 
@@ -192,87 +173,24 @@ const SoftwareInformation = ({ refetch, getInitialCurrencyData }) => {
               className="mt-2 w-full rounded-md border-gray-200 shadow-sm sm:text-sm p-2 border-2"
             />
           </div>
-          <div>
-            <label
-              className="block text-xs font-medium text-gray-700"
-              htmlFor="home_background_image"
-            >
-              Home Background Image
-            </label>
-            <input
-              {...register("home_background_image", {
-                validate: (value) => {
-                  if (value && value.length > 0) {
-                    return (
-                      value[0].type.startsWith("image/") ||
-                      "Only image files are allowed"
-                    );
-                  }
-                },
-              })}
-              id="home_background_image"
-              type="file"
-              accept="image/*"
-              className="mt-2 w-full file:bg-secondaryNavBarColor file:border-none file:text-white rounded-md border-gray-200 shadow-sm sm:text-sm p-2 border-2 file:rounded cursor-pointer"
-            />
-          </div>
-          <div className="">
-            <label
-              htmlFor=""
-              className="block text-xs font-medium text-gray-700"
-            >
-              Home Background Title
-            </label>
-            <input
-              {...register("home_background_title")}
-              type="text"
-              defaultValue={getInitialCurrencyData?.home_background_title}
-              placeholder="Enter Home Background Title"
-              className="mt-2 w-full rounded-md border-gray-200 shadow-sm sm:text-sm p-2 border-2"
-            />
-          </div>
-          <div>
-            <label
-              className="block text-xs font-medium text-gray-700"
-              htmlFor="home_slider_image"
-            >
-              Home Slider Image
-            </label>
-            <input
-              {...register("home_slider_image", {
-                validate: (value) => {
-                  if (value && value.length > 0) {
-                    return (
-                      value[0].type.startsWith("image/") ||
-                      "Only image files are allowed"
-                    );
-                  }
-                },
-              })}
-              id="home_slider_image"
-              type="file"
-              accept="image/*"
-              className="mt-2 w-full file:bg-secondaryNavBarColor file:border-none file:text-white rounded-md border-gray-200 shadow-sm sm:text-sm p-2 border-2 file:rounded cursor-pointer"
-            />
-          </div>
         </div>
         <div className="flex gap-6 mt-4 justify-end">
           {loading == true ? (
-            <div className="px-10 py-2 flex items-center justify-center  bg-primaryColor text-white rounded">
+            <div className="px-10 py-2 flex items-center justify-center bg-[#084C4E] text-white rounded">
               <MiniSpinner />
             </div>
           ) : (
             <>
               {getInitialCurrencyData?._id ? (
                 <button
-                  className="px-10 py-2  bg-primaryColor hover:bg-blue-500 duration-200 text-white rounded"
+                  className="rounded-[8px] py-[10px] px-[18px] bg-[#084C4E] text-white  transform hover:translate-y-[-2px] transition duration-200  text-sm cursor-pointer uppercase"
                   type="submit"
                 >
                   Update
                 </button>
               ) : (
                 <button
-                  className="px-10 py-2  bg-primaryColor hover:bg-blue-500 duration-200 text-white rounded"
+                  className="rounded-[8px] py-[10px] px-[18px] bg-[#084C4E] text-white  transform hover:translate-y-[-2px] transition duration-200  text-sm cursor-pointer uppercase"
                   type="submit"
                 >
                   Save

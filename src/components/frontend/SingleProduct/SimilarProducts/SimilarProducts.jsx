@@ -1,70 +1,83 @@
 "use client";
+import { useSimilarProduct } from "@/lib/getSimilarProducts";
+import {
+  addToCart,
+  decrementQuantity,
+  incrementQuantity,
+} from "@/redux/feature/cart/cartSlice";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
 import ProductCard from "../../Home/AllProducts/ProductCard";
-import productData from "./../../../../../public/productData.json";
 
-const SimilarProducts = () => {
-  const INITIAL_DISPLAY_COUNT = 5;
-
+const SimilarProducts = ({ slug }) => {
+  const dispatch = useDispatch();
   const [filteredProducts, setFilteredProducts] = useState([]);
-  const [displayCount, setDisplayCount] = useState(INITIAL_DISPLAY_COUNT);
-  const [isLoading, setIsLoading] = useState(false);
-  const [cart, setCart] = useState({});
+  const { data: similarProduct = [], isLoading } = useSimilarProduct({
+    slug,
+  });
+
+  const cart = useSelector((state) => state.grocery_mart.products);
 
   useEffect(() => {
-    setFilteredProducts(productData);
-  }, []);
+    if (similarProduct?.length) {
+      setFilteredProducts(similarProduct);
+    }
+  }, [similarProduct]);
 
-  const addToCart = (productId) => {
-    setCart((prevCart) => ({
-      ...prevCart,
-      [productId]: (prevCart[productId] || 0) + 1,
-    }));
+  const getCartQuantity = (productId) => {
+    const item = cart.find((p) => p.productId === productId);
+    return item?.quantity || 0;
   };
 
-  const incrementQuantity = (productId) => {
-    setCart((prevCart) => ({
-      ...prevCart,
-      [productId]: prevCart[productId] + 1,
-    }));
-  };
-
-  const decrementQuantity = (productId) => {
-    setCart((prevCart) => {
-      const newQuantity = (prevCart[productId] || 0) - 1;
-      if (newQuantity <= 0) {
-        const { [productId]: _, ...rest } = prevCart;
-        return rest;
-      }
-      return {
-        ...prevCart,
-        [productId]: newQuantity,
-      };
+  const handleAddToCart = (product) => {
+    toast.success(` ${product?.product_name} added to your bag`, {
+      autoClose: 2000,
     });
+
+    dispatch(addToCart({ productId: product?._id, quantity: 1 }));
+  };
+
+  const handleIncrement = (productId, product_quantity) => {
+    const currentQty = getCartQuantity(productId);
+    if (currentQty >= product_quantity) {
+      toast.error("Maximum stock limit reached", {
+        autoClose: 2000,
+      });
+      return;
+    }
+
+    dispatch(incrementQuantity({ productId, product_quantity }));
+  };
+
+  const handleDecrement = (productId) => {
+    dispatch(decrementQuantity({ productId }));
   };
 
   return (
-    <div>
+    <section>
       <h2 className="text-xl lg:text-[38px] text-[#3A3A3AFA] font-bold font-nunito mb-3">
         Similar Products
       </h2>
       {/* product card */}
 
-      <div className=" grid grid-cols-2 lg:grid-cols-5 gap-2 lg:gap-5 ">
-        {filteredProducts.slice(0, displayCount).map((product) => (
-          <Link href={`/product/${product?.slug}`} key={product.id}>
+      <section className=" grid grid-cols-2 lg:grid-cols-5 gap-2 lg:gap-5 ">
+        {filteredProducts.slice(0, 5).map((product) => (
+          <Link href={`/product/${product?.product_slug}`} key={product._id}>
             <ProductCard
               product={product}
-              cartQuantity={cart[product.id] || 0}
-              onAddToCart={addToCart}
-              onIncrement={incrementQuantity}
-              onDecrement={decrementQuantity}
+              cartQuantity={getCartQuantity(product._id)}
+              onAddToCart={handleAddToCart}
+              onIncrement={() =>
+                handleIncrement(product._id, product?.product_quantity)
+              }
+              onDecrement={() => handleDecrement(product._id)}
             />
           </Link>
         ))}
-      </div>
-    </div>
+      </section>
+    </section>
   );
 };
 

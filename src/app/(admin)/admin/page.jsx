@@ -1,11 +1,11 @@
-import AdminCategory from "@/components/adminDashboard/AdminCategory/AdminCategory";
-
+import Dasboard from "@/components/adminDashboard/Dashboard/Dasboard";
+export async function generateMetadata() {
+  return {
+    title: "Admin Dashboard",
+  };
+}
 const AdminHome = () => {
-  return (
-    <div >
-      <AdminCategory />
-    </div>
-  );
+  return <Dasboard />;
 };
 
 export default AdminHome;

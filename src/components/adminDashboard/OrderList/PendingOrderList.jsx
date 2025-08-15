@@ -1,16 +1,21 @@
-"use client";
+"use client";//
 
+import { AdminAuthContext } from "@/context/AdminProvider";
+import useDebounced from "@/hooks/useDebounced";
+import { useAllStaff } from "@/lib/getStaffData";
+import { BASE_URL } from "@/utils/baseURL";
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import OrderTable from "./OrderTable";
 
-const OrderList = () => {
+const PendingOrderList = () => {
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchValue, setSearchValue] = useState("");
-  const user = false;
-  const loading = true;
+  const { admin, adminLoading } = useContext(AdminAuthContext);
+  const user = admin;
+
   //handle item search function....
   const handleSearchValue = (value) => {
     setSearchValue(value);
@@ -18,24 +23,43 @@ const OrderList = () => {
     setPage(1);
   };
 
+  const searchText = useDebounced({ searchQuery: searchValue, delay: 500 });
+  useEffect(() => {
+    setSearchTerm(searchText);
+  }, [searchText]);
+
+  let isSuperAdmin = false;
+  // Decide API endpoint based on role
+  if (user?.role_id?.order_show && OTP ) {
+    isSuperAdmin = true; // assign, not compare
+  } else if (user?.role_id?.assign_staff_order_show) {
+    isSuperAdmin = false;
+  }
+
+  const apiUrl = isSuperAdmin
+    ? `${BASE_URL}/order/dashboard?order_status=pending&page=${page}&limit=${limit}&searchTerm=${searchTerm}`
+    : `${BASE_URL}/order/assign_staff_order?assign_staff_id=${user?._id}&order_status=pending&page=${page}&limit=${limit}&searchTerm=${searchTerm}`;
+
+  // Fetch orders
   const {
     data: ordersData,
     isLoading,
     refetch,
   } = useQuery({
-    queryKey: [
-      `/api/v1/order/dashboard?order_status=pending&page=${page}&limit=${limit}&searchTerm=${searchTerm}`,
-    ],
+    queryKey: [apiUrl],
     queryFn: async () => {
-      const res = await fetch(
-        `${BASE_URL}/order/dashboard?order_status=pending&page=${page}&limit=${limit}&searchTerm=${searchTerm}`,
-        {
-          credentials: "include",
-        }
-      );
+      const res = await fetch(apiUrl, { credentials: "include" });
       const data = await res.json();
       return data;
     },
+    enabled: !!user?._id, // wait for user data
+  });
+
+  // Fetch staff list (only for admin use)
+  const { data: staffData, isLoading: isLoadingStaff } = useAllStaff({
+    page: 1,
+    limit: 9999,
+    searchTerm: "",
   });
 
   return (
@@ -45,9 +69,8 @@ const OrderList = () => {
           <div>
             <h1 className="text-2xl">Pending Order List</h1>
           </div>
-          <div></div>
         </div>
-        <div className="mt-3 flex justify-end">
+        <div className=" flex justify-end">
           <input
             type="text"
             defaultValue={searchTerm}
@@ -67,7 +90,9 @@ const OrderList = () => {
           isLoading={isLoading}
           user={user}
           totalData={ordersData?.totalData}
-          loading={loading}
+          adminLoading={adminLoading}
+          staffData={staffData?.data}
+          isLoadingStaff={isLoadingStaff}
         />
 
         {/* add all ReSeller modal component */}
@@ -76,4 +101,4 @@ const OrderList = () => {
   );
 };
 
-export default OrderList;
+export default PendingOrderList;

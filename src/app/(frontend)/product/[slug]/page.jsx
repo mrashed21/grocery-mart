@@ -1,40 +1,49 @@
 import Contain from "@/components/common/Contain";
 import SingleProductWrapper from "@/components/frontend/SingleProduct/SimilarProducts/SingleProductWrapper";
-import productData from "./../../../../../public/productData.json";
+
+import { BASE_URL } from "@/utils/baseURL";
 
 export async function generateMetadata({ params }) {
-  const { slug } = params;
-  const product = productData.find((p) => p.slug === slug);
+  const { slug } = await params;
 
+  const productDataResponse = await fetch(`${BASE_URL}/product/${slug}`, {
+    next: { revalidate: 30 },
+  });
+
+
+  // Convert the response to JSON
+  const productData = await productDataResponse.json();
   return {
-    title: ` ${product?.name} | Details` || "Product Name",
-    description: product?.description || "Product Description",
+    title: productData?.data?.product_name || "product Name",
+    description: productData?.data?.meta_description || "product Description",
     openGraph: {
       type: "article",
-      title: product?.name,
-      description: product?.description,
-      // url: `https://amarworld.com.bd/product/${slug}`,
-      // images: [
-      //   {
-      //     url: product?.image,
-      //     alt: product?.name,
-      //   },
-      // ],
+      title: productData?.data?.product_name,
+      description: productData?.data?.meta_description,
+      url: `https://amarworld.com.bd/${slug}`,
+      images: [
+        {
+          url: productData?.data?.main_image,
+          alt: productData?.data?.product_name,
+        },
+      ],
     },
-    // metadataBase: new URL("https://amarworld.com.bd/"),
-    authors: [{ name: "Grocery Mart" }],
+    metadataBase: new URL("https://amarworld.com.bd/"),
+    author: {
+      name: "Amar World",
+    },
   };
 }
 
-export default function SingleProductPage({ params }) {
-  const { slug } = params;
-  const product = productData.find((p) => p.slug === slug);
+export default async function SingleProductPage({ params }) {
+  const { slug } = await params;
+  // const product = productData.find((p) => p.slug === slug);
 
   return (
     <Contain>
-      <div className="py-5">
-        <SingleProductWrapper product={product} />
-      </div>
+      <main className="py-5">
+        <SingleProductWrapper slug={slug} />
+      </main>
     </Contain>
   );
 }

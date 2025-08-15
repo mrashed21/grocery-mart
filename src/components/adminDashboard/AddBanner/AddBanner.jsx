@@ -1,13 +1,16 @@
 "use client";
 
-import { useState } from "react";
-import AddBannerModal from "./AddBannerModal";
-import ShowBanner from "./ShowBanner";
+import { AdminAuthContext } from "@/context/AdminProvider";
+import { BASE_URL } from "@/utils/baseURL";
 import { useQuery } from "@tanstack/react-query";
+import { useContext, useState } from "react";
+import AddBannerModal from "./AddBannerModal";
 import BannerTable from "./BannerTable";
+import ShowBanner from "./ShowBanner";
 
 const AddBanner = () => {
-  const user = false;
+  const{ admin,adminLoading} = useContext(AdminAuthContext);
+  const user = admin;
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [openBannerCreateModal, setOpenBannerCreateModal] = useState(false);
@@ -48,13 +51,13 @@ const AddBanner = () => {
     <div className="py-6 px-1">
       <div className="flex justify-between mt-6">
         <div>
-          <h1 className="text-2xl text-primaryColor uppercase">Banner</h1>
+          <h1 className="text-2xl  uppercase">Banner</h1>
         </div>
         {user?.role_id?.banner_create === true && (
           <div>
             <button
               type="button"
-              className="rounded-[8px] py-[10px] px-[14px] bg-btnBgColor hover:bg-btnHoverColor  transform hover:translate-y-[-2px] transition duration-200 text-btnTextColor text-sm cursor-pointer uppercase"
+              className="rounded-[8px] py-[10px] px-[14px]  transform hover:translate-y-[-2px] transition duration-200 text-white bg-[#084C4E] text-sm cursor-pointer uppercase"
               onClick={() => setOpenBannerCreateModal(true)}
             >
               Create Banner
@@ -80,6 +83,7 @@ const AddBanner = () => {
           refetch={refetch}
           isLoading={isLoading}
           user={user}
+          adminLoading={adminLoading}
         />
       </div>
 

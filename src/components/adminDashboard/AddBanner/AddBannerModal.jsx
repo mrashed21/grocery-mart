@@ -1,7 +1,8 @@
 "use client"
 
 import MiniSpinner from "@/components/Skeleton/MiniSpinner";
-import { useState } from "react";
+import { BASE_URL } from "@/utils/baseURL";
+import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { RiImageAddFill } from "react-icons/ri";
 import { RxCross1 } from "react-icons/rx";
@@ -85,14 +86,14 @@ const AddBannerModal = ({ setOpenBannerCreateModal, refetch }) => {
           <div className="relative overflow-hidden text-left bg-white rounded-lg shadow-xl w-[650px] p-6 max-h-[100vh] overflow-y-auto scrollbar-thin uppercase">
             <div className="flex items-center justify-between mt-4">
               <h3
-                className="sm:text-[26px] font-bold text-primaryColor"
+                className="sm:text-[26px] font-bold "
                 id="modal-title "
               >
                 Create Banner
               </h3>
               <button
                 type="button"
-                className="btn text-crossBtnHoverColor  p-1 absolute right-3 rounded-full top-3 hover:bg-crossBtnHoverColor hover:text-crossBtnHovertextColor cursor-pointer transition-all duration-300"
+                className="btn bg-red-500 text-white hover:bg-red-600 cursor-pointer p-1 absolute right-3 rounded-full top-3 transition-all duration-300"
                 onClick={() => setOpenBannerCreateModal(false)}
               >
                 {" "}
@@ -100,11 +101,11 @@ const AddBannerModal = ({ setOpenBannerCreateModal, refetch }) => {
               </button>
             </div>
 
-            <hr className="mt-2 mb-6" />
+            <hr className="mt-2 mb-6 border-t border-gray-200" />
 
             <form onSubmit={handleSubmit(handleDataPost)} className="">
               <div>
-                <label className="block text-xs font-medium text-primaryColor">
+                <label className="block text-xs font-medium ">
                   Banner Path
                 </label>
 
@@ -117,7 +118,7 @@ const AddBannerModal = ({ setOpenBannerCreateModal, refetch }) => {
               </div>
               <div className="mt-4 grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-medium text-primaryColor">
+                  <label className="block text-xs font-medium ">
                     Banner Status <span className="text-red-500">*</span>
                   </label>
                   <select
@@ -138,7 +139,7 @@ const AddBannerModal = ({ setOpenBannerCreateModal, refetch }) => {
                 <div>
                   <label
                     htmlFor="UserEmail"
-                    className="block text-xs font-medium text-primaryColor"
+                    className="block text-xs font-medium"
                   >
                     Banner Serial <span className="text-red-500">*</span>
                   </label>
@@ -167,7 +168,7 @@ const AddBannerModal = ({ setOpenBannerCreateModal, refetch }) => {
                 </div>
               </div>
               <div className="mt-4">
-                <label className="block text-xs font-medium text-primaryColor">
+                <label className="block text-xs font-medium">
                   Upload Brand Image
                 </label>
                 {imagePreview ? (
@@ -216,7 +217,7 @@ const AddBannerModal = ({ setOpenBannerCreateModal, refetch }) => {
                   type="file"
                   ref={imageInputRef} // Attach ref to input
                   id="banner_image"
-                  className="mt-2  sm:text-sm p-0.5 file:cursor-pointer file:bg-primaryColor file:text-white file:border-none file:rounded file:px-2 file:py-1.5"
+                  className="mt-2  sm:text-sm p-0.5 file:cursor-pointer file:bg-[#084C4E] file:text-white file:border-none file:rounded file:px-2 file:py-1.5"
                   onChange={handleImageChange}
                 />
                 <p className="text-xs text-[#C9CACA]  mt-1 text-end">
@@ -231,12 +232,12 @@ const AddBannerModal = ({ setOpenBannerCreateModal, refetch }) => {
 
               <div className="flex gap-8 mt-4 justify-end">
                 {loading == true ? (
-                  <div className="px-10 py-2 flex items-center justify-center  bg-btnBgColor text-btnTextColor rounded">
+                  <div className="px-10 py-2 flex items-center justify-center   rounded">
                     <MiniSpinner />
                   </div>
                 ) : (
                   <button
-                    className="rounded-[8px] py-[10px] px-[18px] bg-btnBgColor hover:bg-btnHoverColor  transform hover:translate-y-[-2px] transition duration-200 text-btnTextColor text-sm cursor-pointer uppercase"
+                    className="rounded-[8px] py-[10px] px-[18px] bg-[#084C4E] hover:bg-[#274647]  transform hover:translate-y-[-2px] transition duration-200 text-white text-sm cursor-pointer uppercase"
                     type="submit"
                   >
                     Create Banner

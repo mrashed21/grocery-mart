@@ -1,6 +1,7 @@
 "use client";
-// import { useUserInfoQuery } from "@/redux/feature/auth/authApi";
-// import { BASE_URL } from "@/utils/baseURL";
+import MiniSpinner from "@/components/Skeleton/MiniSpinner";
+import { useUserInfoQuery } from "@/redux/feature/auth/authApi";
+import { BASE_URL } from "@/utils/baseURL";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { CiEdit } from "react-icons/ci";
@@ -11,27 +12,24 @@ const UserAccountPassword = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
-
+  const [isLoading, setIsLoading] = useState(false);
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
   } = useForm();
-  const [isLoading, setIsLoading] = useState(false);
-  //   const {
-  //     data: userInfo,
-  //     isLoading: userGetLoading,
-  //     refetch,
-  //   } = useUserInfoQuery();
+  const {
+    data: userInfo,
+    isLoading: userGetLoading,
+    refetch,
+  } = useUserInfoQuery();
 
   const handleCancel = () => {
     setIsEditMode(false);
     reset();
   };
 
-  const userInfo = false;
-  const userGetLoading = false;
   const handleUserPasswordChange = async (data) => {
     setIsLoading(true);
     if (data?.user_current_password !== data?.user_new_password) {
@@ -55,12 +53,9 @@ const UserAccountPassword = () => {
     });
     const result = await response.json();
     if (result?.statusCode === 200 && result?.success === true) {
-      toast.success(
-        result?.message ? result?.message : "Password update successfully",
-        {
-          autoClose: 1000,
-        }
-      );
+      toast.success("Password update successfully", {
+        autoClose: 1000,
+      });
       setIsLoading(false);
       setIsEditMode(false);
       reset();
@@ -97,12 +92,17 @@ const UserAccountPassword = () => {
               >
                 Cancel
               </button>
-              <button
-                type="submit"
-                className="text-white bg-gradient-to-l from-[#084C4F] to-[#5E8B8C] px-3 py-1 rounded cursor-pointer"
-              >
-                Save
-              </button>
+
+              {isLoading ? (
+                <MiniSpinner />
+              ) : (
+                <button
+                  type="submit"
+                  className="text-white bg-gradient-to-l from-[#084C4F] to-[#5E8B8C] px-3 py-1 rounded cursor-pointer"
+                >
+                  Save
+                </button>
+              )}
             </div>
           )}
         </div>

@@ -77,6 +77,7 @@ const UserAuthModal = ({ setIsUserAuthOpen }) => {
                   <Login
                     setIsLoginShow={setIsLoginShow}
                     setIsForgotPasswordOpen={setIsForgotPasswordOpen}
+                    setIsUserAuthOpen={setIsUserAuthOpen}
                   />
                 ) : (
                   <SignUp setIsLoginShow={setIsLoginShow} />

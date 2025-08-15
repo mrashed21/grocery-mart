@@ -1,5 +1,9 @@
 "use client";
 import MiniSpinner from "@/components/Skeleton/MiniSpinner";
+import {
+  useChangePasswordMutation,
+  useResendOtpMutation,
+} from "@/redux/feature/auth/authApi";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -13,7 +17,6 @@ const OtpVerifyModal = ({
   user_name,
   setIsChangePasswordOpen,
   setIsForgotPasswordOpen,
-  setIsUserLoginOpen,
 }) => {
   const [login_credentials, setLogin_credentials] = useState(user_phone);
   //   const [user_name, setUser_name] = useState("");
@@ -22,7 +25,7 @@ const OtpVerifyModal = ({
   const [OTPinput, setOTPinput] = useState(["", "", "", ""]);
   const [disable, setDisable] = useState(true);
   const [isPasswordShow, setPasswordShow] = useState(false);
-
+  const [otpLoading, setOtpLoading] = useState(false);
   const {
     register,
     handleSubmit,
@@ -31,10 +34,9 @@ const OtpVerifyModal = ({
   } = useForm();
   const router = useRouter();
 
-  //   const [verify, { isLoading }] = useChangePasswordMutation();
-  const verify = false;
-  //   const [resendOtp] = useResendOtpMutation();
-  const resendOtp = false;
+  const [verify, { isLoading }] = useChangePasswordMutation();
+
+  const [resendOtp] = useResendOtpMutation();
 
   const handleUpdatePassword = async (data) => {
     try {
@@ -64,17 +66,20 @@ const OtpVerifyModal = ({
         });
         setIsChangePasswordOpen(false);
         setIsForgotPasswordOpen(false);
-        setIsUserLoginOpen(true);
+        // setIsUserLoginOpen(true);
       } else if (res?.error?.status === 400) {
         toast.error(res?.error?.data?.message);
       }
     } catch (error) {
       console.error("OTP verification error", error);
       toast.error("An error occurred during verification");
+      console.log(error);
+    } finally {
     }
   };
 
   const handleResend = async () => {
+    setOtpLoading(true);
     try {
       if (disable) return;
       if (!login_credentials) {
@@ -143,16 +148,16 @@ const OtpVerifyModal = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
       <div className="relative overflow-hidden text-left bg-white rounded-lg shadow-xl w-full sm:w-[700px] max-h-[100vh] overflow-y-auto scrollbar-thin uppercase">
-        <div className="bg-[#e4e0e1]">
+        <div className="bg-[#084C4E]">
           <p
-            className="sm:text-[20px] text-center py-4 font-bold"
+            className="sm:text-[20px] text-center py-4 font-bold text-white font-nunito"
             id="modal-title"
           >
             Change Your Password
           </p>
           <button
             type="button"
-            className="btn text-white  p-1 absolute right-2 rounded-full top-2 bg-black border-2 border-white cursor-pointer transition-all duration-300"
+            className="btn   p-1 absolute right-2 rounded-full top-2 bg-white border-2 border-white cursor-pointer transition-all duration-300"
             onClick={() => setIsChangePasswordOpen(false)}
           >
             {" "}
@@ -163,7 +168,7 @@ const OtpVerifyModal = ({
         <div className="flex justify-center items-center bg-gray-50">
           <div className="px-6 pt-5 pb-9  rounded-lg">
             <div className="mx-auto flex flex-col space-y-4">
-              <div className="flex flex-col items-center justify-center text-center">
+              <div className="flex flex-col items-center justify-center text-center font-semibold font-nunito">
                 <p className="text-gray-600">
                   We have sent a code to {user_phone}
                 </p>
@@ -231,7 +236,7 @@ const OtpVerifyModal = ({
                   <div>
                     <button
                       type="submit"
-                      className="w-full py-3 px-4 rounded-lg  font-medium transition duration-200 flex items-center justify-center cursor-pointer border"
+                      className="w-full py-3 px-4 rounded-lg  font-medium transition duration-200 flex items-center justify-center cursor-pointer border bg-[#084C4E] text-white"
                       disabled={isLoading}
                     >
                       {isLoading ? <MiniSpinner /> : "Change Password"}
@@ -243,17 +248,21 @@ const OtpVerifyModal = ({
               <div className="flex flex-col space-y-5">
                 <div className="flex flex-col md:flex-row items-center justify-center text-center text-sm font-medium space-x-1 text-gray-500">
                   <p>Did not receive code?</p>
-                  <button
-                    className={`${
-                      disable
-                        ? "text-gray-400 cursor-not-allowed"
-                        : "text-blue-600 hover:underline cursor-pointer"
-                    }`}
-                    onClick={handleResend}
-                    disabled={disable}
-                  >
-                    {disable ? `Resend OTP in ${timerCount}s` : "Resend OTP"}
-                  </button>
+                  {otpLoading ? (
+                    <MiniSpinner />
+                  ) : (
+                    <button
+                      className={`${
+                        disable
+                          ? "text-gray-400 cursor-not-allowed"
+                          : "text-red-500 font-bold  hover:underline cursor-pointer"
+                      }`}
+                      onClick={handleResend}
+                      disabled={disable}
+                    >
+                      {disable ? `Resend OTP in ${timerCount}s` : "Resend OTP"}
+                    </button>
+                  )}
                 </div>
               </div>
             </div>

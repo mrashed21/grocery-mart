@@ -1,17 +1,16 @@
 "use client";
-
 import { BASE_URL } from "@/utils/baseURL";
 import { createContext, useEffect, useState } from "react";
 
-export const AuthContextUser = createContext();
+export const AdminAuthContext = createContext();
 
-const AuthProviderUser = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+const AdminProvider = ({ children }) => {
+  const [admin, setAdmin] = useState(null);
+  const [adminLoading, setAdminLoading] = useState(true);
 
   const fetchUserData = async () => {
     try {
-      const response = await fetch(`${BASE_URL}/user`, {
+      const response = await fetch(`${BASE_URL}/admin_reg_log`, {
         method: "GET",
         headers: {
           "content-type": "application/json",
@@ -26,15 +25,14 @@ const AuthProviderUser = ({ children }) => {
       const data = await response.json();
 
       if (data?.statusCode === 200 && data?.success === true) {
-        setUser(data?.data);
+        setAdmin(data?.data);
       } else {
         throw new Error("Invalid response format");
       }
     } catch (error) {
-      // console.error("Error fetching user data:", error);
       console.log(error);
     } finally {
-      setLoading(false);
+      setAdminLoading(false);
     }
   };
 
@@ -42,16 +40,16 @@ const AuthProviderUser = ({ children }) => {
     fetchUserData();
   }, []);
 
-  //console.log(user);
-
   const info = {
-    user,
-    loading,
+    admin,
+    adminLoading,
   };
 
   return (
-    <AuthContextUser.Provider value={info}>{children}</AuthContextUser.Provider>
+    <AdminAuthContext.Provider value={info}>
+      {children}
+    </AdminAuthContext.Provider>
   );
 };
 
-export default AuthProviderUser;
+export default AdminProvider;

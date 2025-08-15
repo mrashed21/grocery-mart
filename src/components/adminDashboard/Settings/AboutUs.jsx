@@ -1,13 +1,16 @@
 "use client";
 import MiniSpinner from "@/components/Skeleton/MiniSpinner";
 import { BASE_URL } from "@/utils/baseURL";
+import dynamic from "next/dynamic";
 import { useState } from "react";
-import ReactQuill from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
 import { toast } from "react-toastify";
+// import ReactQuill from "react-quill-new";
+const ReactQuill = dynamic(() => import("react-quill-new"), {
+  ssr: false,
+});
 
 const AboutUs = ({ refetch, getInitialCurrencyData }) => {
-
   const [loading, setLoading] = useState(false);
   const [returnPolicyLoading, setReturnPolicyLoading] = useState(false);
   const [privacyPolicyLoading, setPrivacyPolicyLoading] = useState(false);
@@ -367,12 +370,12 @@ const AboutUs = ({ refetch, getInitialCurrencyData }) => {
       <ReactQuill theme="snow" value={about_us} onChange={setAboutUs} />
       <div className="mt-2 flex items-center justify-end">
         {loading == true ? (
-          <div className="px-10 py-2 flex items-center justify-center  bg-primaryColor text-white rounded">
+          <div className="rounded-[8px] py-[10px] px-[18px] bg-[#084C4E] text-white  cursor-not-allowed w-24 flex items-center justify-center">
             <MiniSpinner />
           </div>
         ) : (
           <button
-            className="px-10 py-2  bg-primaryColor hover:bg-blue-500 duration-200 text-white rounded"
+            className="rounded-[8px] py-[10px] px-[18px] bg-[#084C4E] text-white  transform hover:translate-y-[-2px] transition duration-200  text-sm cursor-pointer uppercase"
             type="submit"
             onClick={() => handleAboutUsPost()}
           >
@@ -382,7 +385,7 @@ const AboutUs = ({ refetch, getInitialCurrencyData }) => {
       </div>
       {/*Return Policy Info */}
       <h4 className="font-semibold text-[20px] mt-4">Return Policy</h4>
-      <hr className="mt-2 mb-4" />
+     <hr className="mt-2 mb-4 border-t border-gray-300" />
       <ReactQuill
         theme="snow"
         value={return_policy}
@@ -390,12 +393,12 @@ const AboutUs = ({ refetch, getInitialCurrencyData }) => {
       />
       <div className="mt-2 flex items-center justify-end">
         {returnPolicyLoading == true ? (
-          <div className="px-10 py-2 flex items-center justify-center  bg-primaryColor text-white rounded">
+          <div className="rounded-[8px] py-[10px] px-[18px] bg-[#084C4E] text-white  cursor-not-allowed w-24 flex items-center justify-center">
             <MiniSpinner />
           </div>
         ) : (
           <button
-            className="px-10 py-2   hover:bg-blue-500 duration-200 text-white rounded"
+            className="rounded-[8px] py-[10px] px-[18px] bg-[#084C4E] text-white  transform hover:translate-y-[-2px] transition duration-200  text-sm cursor-pointer uppercase"
             type="submit"
             onClick={() => handleReturnPolicyPost()}
           >
@@ -405,7 +408,7 @@ const AboutUs = ({ refetch, getInitialCurrencyData }) => {
       </div>
       {/*Privacy Policy Info */}
       <h4 className="font-semibold text-[20px] mt-4">Privacy Policy</h4>
-      <hr className="mt-2 mb-4" />
+     <hr className="mt-2 mb-4 border-t border-gray-300" />
       <ReactQuill
         theme="snow"
         value={privacy_policy}
@@ -413,12 +416,12 @@ const AboutUs = ({ refetch, getInitialCurrencyData }) => {
       />
       <div className="mt-2 flex items-center justify-end">
         {privacyPolicyLoading == true ? (
-          <div className="px-10 py-2 flex items-center justify-center  bg-primaryColor text-white rounded">
+          <div className="rounded-[8px] py-[10px] px-[18px] bg-[#084C4E] text-white  cursor-not-allowed w-24 flex items-center justify-center">
             <MiniSpinner />
           </div>
         ) : (
           <button
-            className="px-10 py-2  bg-primaryColor hover:bg-blue-500 duration-200 text-white rounded"
+            className="rounded-[8px] py-[10px] px-[18px] bg-[#084C4E] text-white  transform hover:translate-y-[-2px] transition duration-200  text-sm cursor-pointer uppercase"
             type="submit"
             onClick={() => handlePrivacyPolicyPost()}
           >
@@ -428,7 +431,7 @@ const AboutUs = ({ refetch, getInitialCurrencyData }) => {
       </div>
       {/*Refund Policy Policy Info */}
       <h4 className="font-semibold text-[20px] mt-4">Refund Policy</h4>
-      <hr className="mt-2 mb-4" />
+     <hr className="mt-2 mb-4 border-t border-gray-300" />
       <ReactQuill
         theme="snow"
         value={refund_policy}
@@ -436,12 +439,12 @@ const AboutUs = ({ refetch, getInitialCurrencyData }) => {
       />
       <div className="mt-2 flex items-center justify-end">
         {refundPolicyLoading == true ? (
-          <div className="px-10 py-2 flex items-center justify-center  bg-primaryColor text-white rounded">
+          <div className="rounded-[8px] py-[10px] px-[18px] bg-[#084C4E] text-white  cursor-not-allowed w-24 flex items-center justify-center">
             <MiniSpinner />
           </div>
         ) : (
           <button
-            className="px-10 py-2  bg-primaryColor hover:bg-blue-500 duration-200 text-white rounded"
+            className="rounded-[8px] py-[10px] px-[18px] bg-[#084C4E] text-white  transform hover:translate-y-[-2px] transition duration-200  text-sm cursor-pointer uppercase"
             type="submit"
             onClick={() => handleRefundPolicyPost()}
           >
@@ -451,7 +454,7 @@ const AboutUs = ({ refetch, getInitialCurrencyData }) => {
       </div>
       {/*Cancellation Policy Policy Info */}
       <h4 className="font-semibold text-[20px] mt-4">Cancellation Policy</h4>
-      <hr className="mt-2 mb-4" />
+     <hr className="mt-2 mb-4 border-t border-gray-300" />
       <ReactQuill
         theme="snow"
         value={cancellation_policy}
@@ -459,12 +462,12 @@ const AboutUs = ({ refetch, getInitialCurrencyData }) => {
       />
       <div className="mt-2 flex items-center justify-end">
         {cancelPolicyLoading == true ? (
-          <div className="px-10 py-2 flex items-center justify-center  bg-primaryColor text-white rounded">
+          <div className="rounded-[8px] py-[10px] px-[18px] bg-[#084C4E] text-white  cursor-not-allowed w-24 flex items-center justify-center">
             <MiniSpinner />
           </div>
         ) : (
           <button
-            className="px-10 py-2  bg-primaryColor hover:bg-blue-500 duration-200 text-white rounded"
+            className="rounded-[8px] py-[10px] px-[18px] bg-[#084C4E] text-white  transform hover:translate-y-[-2px] transition duration-200  text-sm cursor-pointer uppercase"
             type="submit"
             onClick={() => handleCancellationPolicyPost()}
           >
@@ -474,7 +477,7 @@ const AboutUs = ({ refetch, getInitialCurrencyData }) => {
       </div>
       {/* terms_condition Policy Policy Info */}
       <h4 className="font-semibold text-[20px] mt-4">Terms And Condition</h4>
-      <hr className="mt-2 mb-4" />
+      <hr className="mt-2 mb-4 border-t border-gray-300" />
       <ReactQuill
         theme="snow"
         value={terms_condition}
@@ -482,12 +485,12 @@ const AboutUs = ({ refetch, getInitialCurrencyData }) => {
       />
       <div className="mt-2 flex items-center justify-end">
         {termsPolicyLoading == true ? (
-          <div className="px-10 py-2 flex items-center justify-center  bg-primaryColor text-white rounded">
+          <div className="rounded-[8px] py-[10px] px-[18px] bg-[#084C4E] text-white  cursor-not-allowed w-24 flex items-center justify-center">
             <MiniSpinner />
           </div>
         ) : (
           <button
-            className="px-10 py-2  bg-primaryColor hover:bg-blue-500 duration-200 text-white rounded"
+            className="rounded-[8px] py-[10px] px-[18px] bg-[#084C4E] text-white  transform hover:translate-y-[-2px] transition duration-200  text-sm cursor-pointer uppercase"
             type="submit"
             onClick={() => handleTermsAndConditionPost()}
           >
@@ -498,7 +501,7 @@ const AboutUs = ({ refetch, getInitialCurrencyData }) => {
 
       {/* shipping_info Policy Policy Info */}
       <h4 className="font-semibold text-[20px] mt-4">Shipping Information</h4>
-      <hr className="mt-2 mb-4" />
+      <hr className="mt-2 mb-4 border-t border-gray-300" />
       <ReactQuill
         theme="snow"
         value={shipping_info}
@@ -506,12 +509,12 @@ const AboutUs = ({ refetch, getInitialCurrencyData }) => {
       />
       <div className="mt-2 flex items-center justify-end">
         {shippingPolicyLoading == true ? (
-          <div className="px-10 py-2 flex items-center justify-center  bg-primaryColor text-white rounded">
+          <div className="rounded-[8px] py-[10px] px-[18px] bg-[#084C4E] text-white  cursor-not-allowed w-24 flex items-center justify-center">
             <MiniSpinner />
           </div>
         ) : (
           <button
-            className="px-10 py-2  bg-primaryColor hover:bg-blue-500 duration-200 text-white rounded"
+            className="rounded-[8px] py-[10px] px-[18px] bg-[#084C4E] text-white  transform hover:translate-y-[-2px] transition duration-200  text-sm cursor-pointer uppercase"
             type="submit"
             onClick={() => handleShippingPost()}
           >

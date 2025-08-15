@@ -1,14 +1,24 @@
 "use client";
-import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
-import CustomersTable from "./CustomersTable";
+import { AdminAuthContext } from "@/context/AdminProvider";
+import useDebounced from "@/hooks/useDebounced";
 import { BASE_URL } from "@/utils/baseURL";
+import { useQuery } from "@tanstack/react-query";
+import { useContext, useEffect, useState } from "react";
+import CustomersTable from "./CustomersTable";
+
 const CustomerList = () => {
-  const user = false;
+  const {admin,adminLoading} = useContext(AdminAuthContext);
+  const user = admin;
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchValue, setSearchValue] = useState("");
+
+  const searchText = useDebounced({ searchQuery: searchValue, delay: 500 });
+  useEffect(() => {
+    setSearchTerm(searchText);
+  }, [searchText]);
+
   // Fetch Review data
   const {
     data: customers = [],
@@ -53,7 +63,7 @@ const CustomerList = () => {
     <div className="py-6 px-1">
       <div>
         <div className="flex justify-between mt-6">
-          <h1 className="text-2xl text-primaryColor uppercase">Customer</h1>
+          <h1 className="text-2xl  uppercase">Customer</h1>
         </div>
         <div className="mt-3">
           <input
@@ -78,6 +88,7 @@ const CustomerList = () => {
           refetch={refetch}
           isLoading={isLoading}
           user={user}
+          adminLoading={adminLoading}
         />
       </div>
     </div>

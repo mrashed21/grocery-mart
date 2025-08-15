@@ -1,37 +1,36 @@
-
-import { FaChevronLeft, FaChevronRight } from 'react-icons/fa'
-import { useState } from 'react'
+import { useState } from "react";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
 const Pagination = ({ limit, page, setPage, setLimit, totalData }) => {
-  const lastPage = Math.ceil(totalData / limit)
-  const maxPageButtons = 5 // Maximum number of pages to show in pagination
-  const [jumpPage, setJumpPage] = useState('')
+  const lastPage = Math.ceil(totalData / limit);
+  const maxPageButtons = 5; // Maximum number of pages to show in pagination
+  const [jumpPage, setJumpPage] = useState("");
 
   const handleRowsChange = (event) => {
-    setPage(1)
-    setLimit(parseInt(event.target.value, 10))
-  }
+    setPage(1);
+    setLimit(parseInt(event.target.value, 10));
+  };
 
   const handlePageClick = (pageNumber) => {
-    setPage(pageNumber)
-  }
+    setPage(pageNumber);
+  };
 
   const handlePageJump = (event) => {
-    event.preventDefault()
-    const pageNumber = Math.max(1, Math.min(lastPage, parseInt(jumpPage, 10)))
+    event.preventDefault();
+    const pageNumber = Math.max(1, Math.min(lastPage, parseInt(jumpPage, 10)));
     if (!isNaN(pageNumber)) {
-      setPage(pageNumber)
-      setJumpPage('')
+      setPage(pageNumber);
+      setJumpPage("");
     }
-  }
+  };
 
   const getPageButtons = () => {
-    const pageButtons = []
-    let startPage = Math.max(1, page - Math.floor(maxPageButtons / 2))
-    let endPage = Math.min(lastPage, startPage + maxPageButtons - 1)
+    const pageButtons = [];
+    let startPage = Math.max(1, page - Math.floor(maxPageButtons / 2));
+    let endPage = Math.min(lastPage, startPage + maxPageButtons - 1);
 
     if (endPage - startPage < maxPageButtons - 1) {
-      startPage = Math.max(1, endPage - maxPageButtons + 1)
+      startPage = Math.max(1, endPage - maxPageButtons + 1);
     }
 
     for (let i = startPage; i <= endPage; i++) {
@@ -40,10 +39,10 @@ const Pagination = ({ limit, page, setPage, setLimit, totalData }) => {
           key={i}
           onClick={() => handlePageClick(i)}
           type="button"
-          className={`border  px-1.5 py-1 mx-[1px] sm:mx-1 sm:px-2 sm:py-1.5 md:py-2 md:px-3 rounded-md ${
+          className={`border  px-1.5 py-1 mx-[1px] sm:mx-1 sm:px-2 sm:py-1.5 md:py-2 md:px-3 rounded-md cursor-pointer ${
             page === i
-              ? "bg-primaryColor text-white"
-              : "bg-white text-black hover:bg-primaryColor hover:text-white"
+              ? "bg-[#084C4E] text-white"
+              : "bg-white text-black hover:bg-[#084C4E] hover:text-white"
           }`}
         >
           {i}
@@ -51,8 +50,8 @@ const Pagination = ({ limit, page, setPage, setLimit, totalData }) => {
       );
     }
 
-    return pageButtons
-  }
+    return pageButtons;
+  };
 
   return (
     <div className="flex justify-end sm:text-sm gap-y-2 text-[10px] my-6 flex-wrap">
@@ -80,10 +79,8 @@ const Pagination = ({ limit, page, setPage, setLimit, totalData }) => {
         onClick={page > 1 ? () => setPage(page - 1) : null}
         disabled={page === 1}
         type="button"
-        className={`border flex items-center justify-center  px-1.5 py-1 mx-[1px] sm:mx-1 sm:px-2 sm:py-1.5 md:py-2 md:px-3 capitalize bg-white rounded-md ${
-          page === 1
-            ? "text-primaryColor"
-            : "hover:bg-primaryColor text-primaryColor hover:text-white"
+        className={`border flex items-center justify-center  px-1.5 py-1 mx-[1px] sm:mx-1 sm:px-2 sm:py-1.5 md:py-2 md:px-3 capitalize bg-white rounded-md cursor-pointer ${
+          page === 1 ? "text-[#084C4E]" : " hover:bg-[#084C4E] hover:text-white"
         }`}
       >
         <FaChevronLeft />
@@ -127,10 +124,10 @@ const Pagination = ({ limit, page, setPage, setLimit, totalData }) => {
         onClick={page < lastPage ? () => setPage(page + 1) : null}
         disabled={page === lastPage}
         type="button"
-        className={`border flex items-center justify-center  px-1.5 py-1 mx-[1px] sm:mx-1 sm:px-2 sm:py-1.5 md:py-2 md:px-3 capitalize bg-white rounded-md ${
+        className={`border flex items-center justify-center  px-1.5 py-1 mx-[1px] sm:mx-1 sm:px-2 sm:py-1.5 md:py-2 md:px-3 capitalize bg-white rounded-md cursor-pointer ${
           page === lastPage
-            ? "text-primaryColor"
-            : "hover:bg-primaryColor text-primaryColor hover:text-white"
+            ? "text-[#084C4E]"
+            : " hover:bg-[#084C4E] hover:text-white"
         }`}
       >
         <FaChevronRight />
@@ -146,7 +143,8 @@ const Pagination = ({ limit, page, setPage, setLimit, totalData }) => {
             Go to page:
           </label>
           <input
-            type="number" onWheel={(e) => e.target.blur()}
+            type="number"
+            onWheel={(e) => e.target.blur()}
             id="page_jump"
             value={jumpPage}
             placeholder="jump to page"
@@ -157,7 +155,7 @@ const Pagination = ({ limit, page, setPage, setLimit, totalData }) => {
           />
           <button
             type="submit"
-            className="px-3 py-1 bg-primaryColor text-white rounded-md hover:bg-primaryDark"
+            className="px-3 py-1   rounded-md "
           >
             Go
           </button>
@@ -165,6 +163,6 @@ const Pagination = ({ limit, page, setPage, setLimit, totalData }) => {
       )}
     </div>
   );
-}
+};
 
-export default Pagination
+export default Pagination;

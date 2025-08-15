@@ -1,8 +1,7 @@
 "use client";
-
 import Link from "next/link";
 
-export default function NotFound() {
+const NotFoundPage = () => {
   return (
     <div className="min-h-screen flex items-center justify-center font-nunito bg-[#084C4E] text-white">
       <div className="text-center px-6 py-12 max-w-md rounded-2xl shadow-xl bg-[#5E8B8C]">
@@ -20,4 +19,6 @@ export default function NotFound() {
       </div>
     </div>
   );
-}
+};
+
+export default NotFoundPage;

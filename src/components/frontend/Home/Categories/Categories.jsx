@@ -1,4 +1,7 @@
 "use client";
+import Contain from "@/components/common/Contain";
+import CategorySkeleton from "@/components/Skeleton/CategorySkeleton";
+import { useRef } from "react";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
@@ -11,77 +14,18 @@ import {
 } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 
-import Contain from "@/components/common/Contain";
-import CategorySkeleton from "@/components/Skeleton/CategorySkeleton";
-import { useRef, useState } from "react";
-import ProductSearch from "../ProductSearch/ProductSearch";
-
-const Categories = ({ onCategorySelect, selectedCategory }) => {
-  // Fetch category data
-  //   const { data: categoryTypes = [], isLoading } = useQuery({
-  //     queryKey: [`/api/v1/category`],
-  //     queryFn: async () => {
-  //       try {
-  //         const res = await fetch(`${BASE_URL}/category`, {
-  //           credentials: "include",
-  //         });
-
-  //         if (!res.ok) {
-  //           const errorData = await res.text();
-  //           throw new Error(
-  //             `Error: ${res.status} ${res.statusText} - ${errorData}`
-  //           );
-  //         }
-
-  //         const data = await res.json();
-  //         return data;
-  //       } catch (error) {
-  //         console.error("Fetch error:", error);
-  //         throw error;
-  //       }
-  //     },
-  //   });
-  const [loading, isLoading] = useState(false);
+const Categories = ({
+  onCategorySelect,
+  selectedCategory,
+  categoryTypes,
+  isLoading,
+}) => {
   const swiperRef = useRef(null);
-  const [activeIndex, setActiveIndex] = useState(0);
+  // Fetch category data
 
-  const categoryData = [
-    {
-      id: 1,
-      name: "All Products",
-      image: "https://i.ibb.co/ccWPNqC8/image-2954.png",
-    },
-    {
-      id: 2,
-      name: "Vegetables",
-      image: "https://i.ibb.co/Cpbqfgkg/image-2865.png",
-    },
-    {
-      id: 3,
-      name: "Fruits",
-      image: "https://i.ibb.co/hJ4C5ZKG/image-2866.png",
-    },
-    {
-      id: 4,
-      name: "Fish",
-      image: "https://i.ibb.co/CKQp28tb/image-2873.png",
-    },
-    {
-      id: 5,
-      name: "Meat",
-      image: "https://i.ibb.co/twWMK876/image-2875.png",
-    },
-    {
-      id: 6,
-      name: "Bakery",
-      image: "https://i.ibb.co/cS0xztq0/image-2896.png",
-    },
-  ];
-
-  const totalSlides = categoryData.length;
   return (
     <Contain>
-      <div className="lg:mb-8">
+      <section className="lg:mb-8">
         {/* start category section */}
         <div>
           <h2 className="text-xl lg:text-4xl text-[#084C4E] font-nunito font-semibold my-3 lg:my-10">
@@ -89,8 +33,8 @@ const Categories = ({ onCategorySelect, selectedCategory }) => {
           </h2>
         </div>
 
-        <div className="sm:mx-10 relative mb-2 lg:mb-10">
-          {!isLoading ? (
+        <section className="sm:mx-10 relative mb-2 lg:mb-10">
+          {isLoading ? (
             <CategorySkeleton />
           ) : (
             <div className="relative">
@@ -105,7 +49,6 @@ const Categories = ({ onCategorySelect, selectedCategory }) => {
               {/* Swiper */}
               <Swiper
                 onSwiper={(swiper) => (swiperRef.current = swiper)}
-                onSlideChange={(swiper) => setActiveIndex(swiper.activeIndex)}
                 breakpoints={{
                   0: { slidesPerView: 4, spaceBetween: 10 },
                   768: { slidesPerView: 4, spaceBetween: 15 },
@@ -120,25 +63,25 @@ const Categories = ({ onCategorySelect, selectedCategory }) => {
                 modules={[Navigation, Pagination, Mousewheel, Keyboard]}
                 className="mySwiper"
               >
-                {categoryData.map((category, i) => (
-                  <SwiperSlide key={`${category.name}-${i}`}>
+                {categoryTypes?.data?.map((category, i) => (
+                  <SwiperSlide key={`${category._id}`}>
                     <div
-                      onClick={() => onCategorySelect(category.name)}
+                      onClick={() => onCategorySelect(category?.category_name)}
                       className={`cursor-pointer rounded-lg shadow border w-[80px] lg:w-auto ${
-                        selectedCategory === category.name
+                        selectedCategory === category?.category_name
                           ? "border-[#FF6B4F] border-2"
                           : "border-[#00000014]"
                       }`}
                     >
                       <div className="h-[80px] lg:h-[150px]">
                         <img
-                          src={category.image}
+                          src={category?.category_image}
                           alt={`Category ${i}`}
                           className="w-full h-full rounded-md"
                         />
                       </div>
                       <div className="bg-[#D9D9D94D] py-0.5 lg:py-3.5 w-full text-[#084C4E] text-center text-[12px] lg:text-base lg:font-bold transition-all duration-300 ">
-                        {category.name}
+                        {category?.category_name}
                       </div>
                     </div>
                   </SwiperSlide>
@@ -146,8 +89,8 @@ const Categories = ({ onCategorySelect, selectedCategory }) => {
               </Swiper>
             </div>
           )}
-        </div>
-      </div>
+        </section>
+      </section>
     </Contain>
   );
 };

@@ -1,11 +1,12 @@
-import StaffRoleTable from "@/components/adminDashboard/StaffRole/StaffRoleTable";
+import AllStaff from "@/components/adminDashboard/StaffRole/AllStaff";
 
+export async function generateMetadata() {
+  return {
+    title: "Staff List",
+  };
+}
 const StaffListPage = () => {
-  return (
-    <div>
-      <StaffRoleTable />
-    </div>
-  );
+  return <AllStaff />;
 };
 
 export default StaffListPage;

@@ -9,22 +9,12 @@ const CategorySkeleton = () => {
           key={i}
           className="relative h-[120px] sm:h-[230px] rounded-md overflow-hidden"
         >
-          {/* Image Skeleton */}
-          <Skeleton
-            height="100%"
-            width="100%"
-            className="rounded-md"
-            // baseColor=""
-            // highlightColor="#e2d3c2"
-          />
+          <Skeleton height="100%" width="100%" className="rounded-md" />
 
-          {/* Button Skeleton */}
           <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-[100px] sm:w-[180px]">
             <Skeleton
               height={35}
               className="rounded-md"
-              // baseColor="#a98153"
-              //highlightColor="#e2d3"
               style={{
                 borderRadius: "0.375rem",
               }}

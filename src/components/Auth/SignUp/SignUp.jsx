@@ -1,4 +1,6 @@
 import MiniSpinner from "@/components/Skeleton/MiniSpinner";
+import useGetZone from "@/lib/getZone";
+import { useUserRegistrationMutation } from "@/redux/feature/auth/authApi";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { LuEye, LuEyeOff } from "react-icons/lu";
@@ -8,13 +10,16 @@ import PhoneInput, {
 } from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import Select from "react-select";
+import { toast } from "react-toastify";
 
 const SignUp = ({ setIsLoginShow }) => {
   const [user_phone, setUser_phone] = useState("");
   const [showSignPassword, setShowSignPassword] = useState(false);
-  //   const [userRegistration, { isLoading }] = useUserRegistrationMutation();
-  const userRegistration = false;
-  const isLoading = false;
+  const [selectedZone, setSelectedZone] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [userRegistration] = useUserRegistrationMutation();
+  const { data: zoneData = [], isLoading } = useGetZone();
+
   const {
     register,
     handleSubmit,
@@ -24,6 +29,7 @@ const SignUp = ({ setIsLoginShow }) => {
 
   const handleRegister = async (data) => {
     try {
+      setLoading(true);
       if (!user_phone) {
         toast.error("Phone is required!", { position: "top-center" });
         return;
@@ -38,8 +44,11 @@ const SignUp = ({ setIsLoginShow }) => {
 
       const sendData = {
         user_name: data?.user_name,
-        user_phone,
+        user_phone: user_phone,
         user_password: data?.user_password,
+        user_address: data?.user_address,
+        user_zone_id: selectedZone?._id,
+        user_status: "active",
       };
 
       const res = await userRegistration(sendData);
@@ -50,6 +59,7 @@ const SignUp = ({ setIsLoginShow }) => {
         toast.success("Register successfully. Now please login.", {
           position: "top-center",
         });
+        setIsLoginShow(true);
       } else {
         toast.error(res?.error?.data?.message || "Registration failed.");
         setUser_phone("");
@@ -57,6 +67,9 @@ const SignUp = ({ setIsLoginShow }) => {
       }
     } catch (error) {
       toast.error("Something went wrong!");
+    } finally {
+      setLoading(false);
+      setSelectedZone(null);
     }
   };
 
@@ -82,7 +95,6 @@ const SignUp = ({ setIsLoginShow }) => {
           {...register("user_name", { required: "Name is required" })}
           className=" w-full rounded-md border border-gray-200 bg-white px-2 py-1 text-black focus:outline-0"
           name="user_name"
-          autoComplete="new-username"
         />
         {errors.user_name && (
           <p className="text-red-500 text-sm mt-1">
@@ -137,7 +149,7 @@ const SignUp = ({ setIsLoginShow }) => {
           <button
             type="button"
             onClick={() => setShowSignPassword(!showSignPassword)}
-            className="absolute right-3 top-3 text-xl text-[#C7C7C7] cursor-pointer"
+            className="absolute right-3 top-2 text-xl text-[#C7C7C7] cursor-pointer"
           >
             {showSignPassword ? <LuEye /> : <LuEyeOff />}
           </button>
@@ -157,6 +169,12 @@ const SignUp = ({ setIsLoginShow }) => {
           <Select
             id="zone"
             name="zone"
+            options={zoneData?.data}
+            isClearable
+            value={selectedZone}
+            onChange={(selected) => setSelectedZone(selected)}
+            getOptionLabel={(x) => x?.zone_name}
+            getOptionValue={(x) => x?._id}
             aria-label="Select a Zone"
             menuPortalTarget={document.body}
             styles={{
@@ -211,8 +229,26 @@ const SignUp = ({ setIsLoginShow }) => {
             }}
           />
         </div>
+
+        <div className="">
+          {/* address Field */}
+          <label
+            htmlFor="user_address"
+            className=" text-[#3A3A3A] cursor-pointer"
+          >
+            Address
+          </label>
+          <input
+            id="user_address"
+            type="text"
+            placeholder="Road Na -02, House No -52"
+            {...register("user_address")}
+            className=" w-full rounded-md border border-gray-200 bg-white px-2 py-1 text-black focus:outline-0"
+            name="user_address"
+          />
+        </div>
         {/* Submit Button */}
-        {isLoading === true ? (
+        {loading === true ? (
           <button className="uppercase bg-[#084C4E] text-white rounded px-10 py-1 cursor-pointer">
             <MiniSpinner />
           </button>

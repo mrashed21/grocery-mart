@@ -1,12 +1,11 @@
 "use client";
 
+import LoaderOverlay from "@/components/Skeleton/LoaderOverlay";
 import { BASE_URL } from "@/utils/baseURL";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import AllSiteSetting from "./AllSiteSetting";
-import CurrencySymbol from "./CurrencySymbol";
 import PhoneCredential from "./PhoneCredential";
-import ShippingConFiguration from "./ShippingConFiguration";
 
 const Settings = () => {
   const [activeNavButton, setActiveNavButton] = useState("SiteSetting");
@@ -82,16 +81,17 @@ const Settings = () => {
   });
 
   if (authLoading || currencyLoading) {
-    return <h1>Loading...</h1>;
+    return <LoaderOverlay />;
   }
 
   return (
     <div>
       <div className="flex flex-wrap  gap-4 mt-8">
         <button
-          className={` duration-200   p-2 font-medium   text-sm sm:text-base ${
-            activeNavButton == "SiteSetting" &&
-            "border-t-[4px]  border-blue-900"
+          className={`duration-200 p-2 font-medium text-sm sm:text-base border-2 border-gray-200 rounded cursor-pointer ${
+            activeNavButton === "SiteSetting"
+              ? "bg-[#084C4E] text-white text-sm rounded-lg border-none px-5"
+              : "bg-gray-100"
           }`}
           onClick={() => handleNavButtonClick("SiteSetting")}
         >
@@ -99,41 +99,45 @@ const Settings = () => {
         </button>
 
         <button
-          className={` duration-200  text- p-2 font-medium   text-sm sm:text-base  ${
-            activeNavButton == "phoneCredential" &&
-            "border-t-[4px]  border-blue-900"
+          className={`duration-200 p-2 font-medium text-sm sm:text-base border-2 border-gray-200 rounded cursor-pointer ${
+            activeNavButton === "phoneCredential"
+              ? "bg-[#084C4E] text-white text-sm rounded-lg border-none px-5"
+              : "bg-gray-100"
           }`}
           onClick={() => handleNavButtonClick("phoneCredential")}
         >
           OTP By Phone Credential
         </button>
-        <button
-          className={` duration-200  p-2 font-medium   text-sm sm:text-base  ${
-            activeNavButton == "Currency Configuration" &&
-            "border-t-[4px]  border-blue-900"
+
+        {/* <button
+          className={`duration-200 p-2 font-medium text-sm sm:text-base border-2 border-gray-200 rounded cursor-pointer ${
+            activeNavButton === "Currency Configuration"
+              ? "bg-[#084C4E] text-white text-sm rounded-lg border-none px-5"
+              : "bg-gray-100"
           }`}
           onClick={() => handleNavButtonClick("Currency Configuration")}
         >
           Currency Symbol
         </button>
         <button
-          className={` duration-200 p-2 font-medium   text-sm sm:text-base  ${
-            activeNavButton == "ShippingConfiguration" &&
-            "border-t-[4px]  border-blue-900"
+          className={`duration-200 p-2 font-medium text-sm sm:text-base border-2 border-gray-200 rounded cursor-pointer ${
+            activeNavButton === "ShippingConfiguration"
+              ? "bg-[#084C4E] text-white text-sm rounded-lg border-none px-5"
+              : "bg-gray-100"
           }`}
           onClick={() => handleNavButtonClick("ShippingConfiguration")}
         >
           Shipping Configuration
-        </button>
+        </button> */}
       </div>
 
       <div className="mt-6 min-w-[1050px]">
-        {activeNavButton == "Currency Configuration" && (
+        {/* {activeNavButton == "Currency Configuration" && (
           <CurrencySymbol
             refetch={currencyRefetch}
             getInitialCurrencyData={getInitialCurrencyData?.data[0]}
           />
-        )}
+        )} */}
 
         {activeNavButton == "phoneCredential" && (
           <PhoneCredential
@@ -141,12 +145,12 @@ const Settings = () => {
             initialAuthenticationData={getInitialAuthenticationData?.data[0]}
           />
         )}
-        {activeNavButton == "ShippingConfiguration" && (
+        {/* {activeNavButton == "ShippingConfiguration" && (
           <ShippingConFiguration
             refetch={currencyRefetch}
             getInitialCurrencyData={getInitialCurrencyData?.data[0]}
           />
-        )}
+        )} */}
         {activeNavButton == "SiteSetting" && (
           <AllSiteSetting
             refetch={currencyRefetch}

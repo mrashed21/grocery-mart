@@ -1,22 +1,28 @@
 "use client";
+import { useAllProducts } from "@/lib/getAllProducts";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import productData from "./../../../../public/productData.json";
 
 const MobileCart = () => {
   const [cartItems, setCartItems] = useState([]);
+  const [limit, setLimit] = useState(20);
+  const [page, setpage] = useState(1);
+
+  const { data: productData = [], isloading } = useAllProducts({
+    limit,
+    page,
+  });
+
   useEffect(() => {
     const syncCart = () => {
       try {
         const cart = JSON.parse(localStorage.getItem("grocery_mart")) || {};
         const productsInCart = cart.products || [];
-
-        // Merge productData with cart quantity
         const merged = productsInCart
           .filter((item) => item.quantity > 0)
           .map((cartItem) => {
-            const product = productData.find(
-              (p) => p.id === cartItem.productId
+            const product = productData?.data?.find(
+              (p) => p._id === cartItem.productId
             );
             if (!product) return null;
 
@@ -25,7 +31,7 @@ const MobileCart = () => {
               quantity: cartItem.quantity,
             };
           })
-          .filter(Boolean); // Remove nulls
+          .filter(Boolean);
 
         setCartItems(merged);
       } catch (error) {
@@ -42,11 +48,11 @@ const MobileCart = () => {
       window.removeEventListener("localStorageUpdated", syncCart);
       window.removeEventListener("storage", syncCart);
     };
-  }, []);
+  }, [productData]);
 
   const totalPrice = useMemo(() => {
     return cartItems.reduce((total, item) => {
-      const itemPrice = item.discountedPrice || item.price;
+      const itemPrice = item.product_discount_price || item.product_price;
       return total + itemPrice * item.quantity;
     }, 0);
   }, [cartItems]);

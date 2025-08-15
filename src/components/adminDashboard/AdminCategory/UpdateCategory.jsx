@@ -1,11 +1,12 @@
+"use client";
+import MiniSpinner from "@/components/Skeleton/MiniSpinner";
+import { BASE_URL } from "@/utils/baseURL";
+import { generateSlug } from "@/utils/genarateSlug";
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { RiImageAddFill } from "react-icons/ri";
 import { RxCross1 } from "react-icons/rx";
 import { toast } from "react-toastify";
-import MiniSpinner from "../../shared/MiniSpinner/MiniSpinner";
-import { BASE_URL } from "../../utils/baseURL";
-import { generateSlug } from "../../utils/generateSlug";
 
 const UpdateCategory = ({
   setCategoryUpdateModal,
@@ -107,15 +108,12 @@ const UpdateCategory = ({
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 bg-opacity-50 p-2">
           <div className="relative overflow-hidden text-left bg-white rounded-lg shadow-xl w-[650px] p-6 max-h-[100vh] overflow-y-auto scrollbar-thin uppercase">
             <div className="flex items-center justify-between mt-4">
-              <h3
-                className="sm:text-[26px] font-bold text-primaryColor"
-                id="modal-title "
-              >
+              <h3 className="sm:text-[26px] font-bold " id="modal-title ">
                 Update Category
               </h3>
               <button
                 type="button"
-                className="btn text-crossBtnHoverColor  p-1 absolute right-3 rounded-full top-3 hover:bg-crossBtnHoverColor hover:text-crossBtnHovertextColor cursor-pointer transition-all duration-300"
+                className=" p-1 absolute right-3 rounded-full top-3 bg-red-500 text-white hover:bg-red-600 cursor-pointer transition-all duration-300"
                 onClick={() => setCategoryUpdateModal(false)}
               >
                 {" "}
@@ -123,11 +121,11 @@ const UpdateCategory = ({
               </button>
             </div>
 
-            <hr className="mt-2 mb-6" />
+            <hr className="mt-2 mb-6 border-t border-gray-200" />
 
             <form onSubmit={handleSubmit(handleDataPost)} className="">
               <div>
-                <label className="block text-xs font-medium text-primaryColor">
+                <label className="block text-xs font-medium ">
                   Category Name <span className="text-red-500">*</span>
                 </label>
 
@@ -148,23 +146,23 @@ const UpdateCategory = ({
               </div>
               <div className="mt-4 grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-medium text-primaryColor">
+                  <label className="block text-xs font-medium">
                     Category Status
                   </label>
-                  {/* <select
+                  <select
                     {...register("category_status")}
                     defaultValue={categoryUpdateData?.category_status}
                     className="mt-2 rounded-md border-gray-200 shadow-sm sm:text-sm p-2 border-2 w-full"
                   >
                     <option value="active">Active</option>
                     <option value="in-active">In-Active</option>
-                  </select> */}
-                  <p className="mt-2 rounded-md border-gray-200 shadow-sm sm:text-sm p-2 border-2 w-full">
+                  </select>
+                  {/* <p className="mt-2 rounded-md border-gray-200 shadow-sm sm:text-sm p-2 border-2 w-full">
                     {categoryUpdateData?.category_status}
-                  </p>
+                  </p> */}
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-primaryColor">
+                  <label className="block text-xs font-medium ">
                     Category serial <span className="text-red-500">*</span>
                   </label>
 
@@ -192,59 +190,9 @@ const UpdateCategory = ({
                     </p>
                   )}
                 </div>
-                <div>
-                  <label className="block text-xs font-medium text-primaryColor">
-                    Category Header Show
-                  </label>
-                  <div className="whitespace-nowrap px-4 py-2">
-                    <label
-                      htmlFor="Toggle3"
-                      className="inline-flex items-center space-x-4 cursor-pointer dark:text-gray-800"
-                    >
-                      <span className="relative mt-2">
-                        <input
-                          id="Toggle3"
-                          type="checkbox"
-                          defaultChecked={
-                            categoryUpdateData?.category_header_show
-                          }
-                          className="hidden peer "
-                          {...register("category_header_show")}
-                        />
-                        <div className="w-10 h-4 rounded-full shadow bg-slate-400 peer-checked:bg-btnHoverColor "></div>
-                        <div className="absolute left-0 w-6 h-6 rounded-full shadow -inset-y-1 peer-checked:right-0 peer-checked:left-auto peer-checked:bg-primaryColor bg-btnHoverColor"></div>
-                      </span>
-                    </label>
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-xs font-medium text-primaryColor">
-                    Category Browse Show
-                  </label>
-                  <div className="whitespace-nowrap px-4 py-2 ">
-                    <label
-                      htmlFor="Toggle4"
-                      className="inline-flex items-center space-x-4 cursor-pointer"
-                    >
-                      <span className="relative mt-2">
-                        <input
-                          id="Toggle4"
-                          type="checkbox"
-                          className="hidden peer"
-                          defaultChecked={
-                            categoryUpdateData?.category_browse_show
-                          }
-                          {...register("category_browse_show")}
-                        />
-                        <div className="w-10 h-4 rounded-full shadow bg-slate-400 peer-checked:bg-btnHoverColor "></div>
-                        <div className="absolute left-0 w-6 h-6 rounded-full shadow -inset-y-1 peer-checked:right-0 peer-checked:left-auto peer-checked:bg-primaryColor bg-btnHoverColor"></div>
-                      </span>
-                    </label>
-                  </div>
-                </div>
               </div>
-              <div className="mt-2">
-                <label className="block text-xs font-medium text-primaryColor">
+              <div className="mt-5 ">
+                <label className="block text-xs font-medium ">
                   Upload Category Image
                 </label>
                 {imagePreview ? (
@@ -292,7 +240,7 @@ const UpdateCategory = ({
                   type="file"
                   ref={imageInputRef} // Attach ref to input
                   id="category_image"
-                  className="mt-2  sm:text-sm p-0.5 file:cursor-pointer file:bg-primaryColor file:text-white file:border-none file:rounded file:px-2 file:py-1.5"
+                  className="mt-2  sm:text-sm p-0.5 file:cursor-pointer file:bg-[#084C4E] file:text-white file:border-none file:rounded file:px-2 file:py-1.5"
                   onChange={handleImageChange}
                 />
                 <p className="text-xs text-[#C9CACA]  mt-1 text-end">
@@ -303,12 +251,12 @@ const UpdateCategory = ({
 
               <div className="flex gap-8 mt-4 justify-end">
                 {loading == true ? (
-                  <div className="px-10 py-2 flex items-center justify-center  bg-btnBgColor text-btnTextColor rounded">
+                  <div className="px-10 py-2 flex items-center justify-center  bg-[#084C4E] text-white rounded">
                     <MiniSpinner />
                   </div>
                 ) : (
                   <button
-                    className="rounded-[8px] py-[10px] px-[18px] bg-btnBgColor hover:bg-btnHoverColor  transform hover:translate-y-[-2px] transition duration-200 text-btnTextColor text-sm cursor-pointer uppercase"
+                    className="rounded-[8px] py-[10px] px-[18px] bg-[#084C4E] hover:bg-[#284749] transform hover:translate-y-[-2px] transition duration-200 text-white text-sm cursor-pointer uppercase"
                     type="submit"
                   >
                     Update Category

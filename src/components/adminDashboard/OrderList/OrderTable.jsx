@@ -1,12 +1,13 @@
-"use client"
+"use client";
 import { FaRegEye } from "react-icons/fa";
 import { toast } from "react-toastify";
 
-import { GoEye } from "react-icons/go";
-import { useEffect, useState } from "react";
+import Pagination from "@/components/shared/Pagination/Pagination";
 import TableLoadingSkeleton from "@/components/Skeleton/TableLoadingSkeleton";
+import { BASE_URL } from "@/utils/baseURL";
+import { DateFormat } from "@/utils/DateFormate";
 import Link from "next/link";
-
+import { useEffect, useState } from "react";
 
 const OrderTable = ({
   ordersData,
@@ -17,234 +18,305 @@ const OrderTable = ({
   isLoading,
   totalData,
   user,
-  loading,
+  adminLoading,
   refetch,
+  staffData,
+  isLoadingStaff,
 }) => {
   const [serialNumber, setSerialNumber] = useState();
-  const [buttonloading, setButtonLoading] = useState(false);
+  const [prevStatuses, setPrevStatuses] = useState({});
+
+  // OTP Modal States
+  const [showOtpModal, setShowOtpModal] = useState(false);
+  const [currentOrderId, setCurrentOrderId] = useState(null);
+  const [currentOrderProducts, setCurrentOrderProducts] = useState(null);
+  const [otp, setOtp] = useState(["", "", "", ""]);
+  const [otpLoading, setOtpLoading] = useState(false);
 
   useEffect(() => {
     const newSerialNumber = (page - 1) * limit;
     setSerialNumber(newSerialNumber);
   }, [page, limit]);
 
-  //   handle order status
-  const handleOrderStatus = async (order_status, _id, order_products) => {
+  // Handle OTP input change
+  const handleOtpChange = (index, value) => {
+    if (value.length <= 1) {
+      const newOtp = [...otp];
+      newOtp[index] = value;
+      setOtp(newOtp);
+      if (value && index < 3) {
+        const nextInput = document.getElementById(`otp-${index + 1}`);
+        if (nextInput) nextInput.focus();
+      }
+    }
+  };
+
+  const handleOtpKeyDown = (index, e) => {
+    if (e.key === "Backspace" && !otp[index] && index > 0) {
+      const prevInput = document.getElementById(`otp-${index - 1}`);
+      if (prevInput) prevInput.focus();
+    }
+  };
+
+  const resetOtpModal = (restoreStatus = true) => {
+    if (restoreStatus && currentOrderId && prevStatuses[currentOrderId]) {
+      // Restore previous dropdown value instantly
+      const updated = ordersData.map((order) =>
+        order._id === currentOrderId
+          ? { ...order, order_status: prevStatuses[currentOrderId] }
+          : order
+      );
+    }
+    setShowOtpModal(false);
+    setCurrentOrderId(null);
+    setCurrentOrderProducts(null);
+    setOtp(["", "", "", ""]);
+    setOtpLoading(false);
+  };
+
+  // Send OTP and open modal
+  const requestOtpForDelivery = async (orderId, userName, userPhone) => {
+    const sendData = {
+      _id: orderId,
+      send_delivered_otp: true,
+      user_name: userName,
+      user_phone: userPhone,
+    };
+
+    try {
+      const res = await fetch(`${BASE_URL}/order`, {
+        method: "PATCH",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(sendData),
+      });
+
+      const data = await res.json();
+      if (data?.success) {
+        toast.success("OTP sent successfully", { autoClose: 1000 });
+        setCurrentOrderId(orderId);
+        setShowOtpModal(true);
+      } else {
+        toast.error(data?.message || "Failed to send OTP", { autoClose: 1000 });
+        resetOtpModal(true);
+      }
+    } catch (err) {
+      toast.error(err?.message || "OTP request failed", { autoClose: 1000 });
+      resetOtpModal(true);
+    }
+  };
+
+  // Verify OTP and update delivery status
+  const verifyOtpAndDeliver = async () => {
+    const enteredOtp = otp.join("");
+    if (enteredOtp.length !== 4) {
+      return toast.error("Enter complete 4-digit OTP", { autoClose: 1000 });
+    }
+
+    try {
+      setOtpLoading(true);
+
+      const payload = {
+        _id: currentOrderId,
+        order_status: "delivered",
+        order_updated_by: user?._id,
+        order_products: currentOrderProducts?.order_products?.map((item) => ({
+          order_product_id: item?.order_product_id,
+          order_product_price: item?.order_product_price,
+          order_product_quantity: item?.order_product_quantity,
+        })),
+        delivered_otp: enteredOtp,
+        staff_delivery: true,
+      };
+
+      // return;
+      const res = await fetch(`${BASE_URL}/order`, {
+        method: "PATCH",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await res.json();
+      if (data?.success) {
+        toast.success(data?.message || "Order delivered successfully", {
+          autoClose: 1000,
+        });
+        resetOtpModal(false);
+        refetch();
+      } else {
+        toast.error(data?.message || "Invalid OTP", { autoClose: 1000 });
+        // resetOtpModal(true);
+        setOtpLoading(false);
+      }
+    } catch (err) {
+      toast.error(err?.message || "Failed to verify OTP", { autoClose: 1000 });
+      // resetOtpModal(true);
+      setOtpLoading(false);
+    } finally {
+      // setOtpLoading(false);
+      setOtpLoading(false);
+    }
+  };
+
+  // Generic status update for non-delivered statuses
+  const updateOrderStatus = async (order_status, _id, order_products) => {
     try {
       const sendData = {
         _id: _id,
         order_status: order_status,
         order_updated_by: user?._id,
       };
-      if (order_status === "processing") {
-        const today =
-          new Date().toISOString().split("T")[0] +
-          " " +
-          new Date().toLocaleTimeString();
-        sendData.processing_time = today;
-      }
-      if (order_status === "shipped") {
-        const today =
-          new Date().toISOString().split("T")[0] +
-          " " +
-          new Date().toLocaleTimeString();
-        sendData.shipped_time = today;
-      }
-      if (order_status === "delivered") {
-        const today =
-          new Date().toISOString().split("T")[0] +
-          " " +
-          new Date().toLocaleTimeString();
-        sendData.delivered_time = today;
-        sendData.order_products = order_products;
-      }
-      if (order_status === "cancel") {
-        const today =
-          new Date().toISOString().split("T")[0] +
-          " " +
-          new Date().toLocaleTimeString();
-        sendData.cancel_time = today;
-        // sendData.order_products = order_products;
-      }
-      if (order_status === "return") {
-        const today =
-          new Date().toISOString().split("T")[0] +
-          " " +
-          new Date().toLocaleTimeString();
-        sendData.return_time = today;
-      }
+      const today = `${
+        new Date().toISOString().split("T")[0]
+      } ${new Date().toLocaleTimeString()}`;
+      if (order_status === "assigned") sendData.assigned_time = today;
+      if (order_status === "shipped") sendData.shipped_time = today;
+      if (order_status === "cancel") sendData.cancel_time = today;
+      if (order_status === "return") sendData.return_time = today;
+
       const response = await fetch(`${BASE_URL}/order`, {
         method: "PATCH",
         credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(sendData),
       });
+
       const result = await response.json();
-      if (result?.statusCode === 200 && result?.success === true) {
-        toast.success(
-          result?.message ? result?.message : "Status Update successfully",
-          {
-            autoClose: 1000,
-          }
-        );
-        refetch();
+      if (result?.success) {
+        toast.success(result?.message || "Status updated successfully", {
+          autoClose: 1000,
+        });
       } else {
         toast.error(result?.message || "Something went wrong", {
           autoClose: 1000,
         });
-        refetch();
+        resetOtpModal(true);
       }
     } catch (error) {
-      toast.error(error?.message, {
-        autoClose: 1000,
-      });
-      refetch();
+      toast.error(error?.message, { autoClose: 1000 });
+      resetOtpModal(true);
     } finally {
       refetch();
     }
   };
 
-  const handleOrderSendSteadFast = async (order) => {
-    Swal.fire({
-      title: "Are you sure?",
-      text: `You want to send this order to SteadFast?`,
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, send it!",
-    }).then(async (result) => {
-      if (!result.isConfirmed) return;
+  // // Main order status handler
+  // const handleOrderStatus = (
+  //   status,
+  //   id,
+  //   products,
+  //   prevStatus,
+  //   userName,
+  //   userPhone
+  // ) => {
+  //   setPrevStatuses((prev) => ({ ...prev, [id]: prevStatus }));
+  //   if (status === "delivered") {
+  //     requestOtpForDelivery(id, products, userName, userPhone);
+  //   } else {
+  //     updateOrderStatus(status, id, products);
+  //   }
+  // };
 
-      try {
-        setButtonLoading(true);
+  // Main order status handler
+  const handleOrderStatus = (
+    status,
+    id,
+    products,
+    prevStatus,
+    userName,
+    userPhone
+  ) => {
+    setPrevStatuses((prev) => ({ ...prev, [id]: prevStatus }));
 
-        // Prepare order data
-        const data = {
-          invoice: order?.invoice_id,
-          recipient_name: order?.customer_id?.user_name || "N/A",
-          recipient_address: `${order?.billing_address}, ${order?.billing_district}, ${order?.billing_division}, ${order?.billing_country}`,
-          recipient_phone: order?.customer_phone || "",
-          cod_amount: order?.grand_total_amount,
-          note: "",
-        };
-
-        // Send order to SteadFast API
-        const response = await fetch(
-          `https://portal.packzy.com/api/v1/create_order`,
-          {
-            method: "POST",
-            headers: {
-              // "Api-Key": "tc9iiq867dde8fnf4vjutvrbnpan5jfx",
-              // "Secret-Key": "sfecxdfb3epe74fbu8v4pokf",
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-          }
-        );
-        // dada garments
-        // api-key: tc9iiq867dde8fnf4vjutvrbnpan5jfx
-        // secret-key: sfecxdfb3epe74fbu8v4pokf
-        // Maheya garments
-        // api-key: bsnadn4lsrdhuhjilbx04cgyj2srqrsa
-        // secret-key: uhyoxpeacu8r2pxdgak3eb60
-        // Aiman garments
-        // api-key: imb5c4ev2itixc7hrjmoqnkfu7hehkpx
-        // secret-key: alqvzcx6pwzytla4sehgubev
-
-        // Parse API response
-        const result = await response.json();
-
-        if (result?.status !== 200 || !result?.consignment?.tracking_code) {
-          throw new Error("Failed to send order to SteadFast.");
-        }
-
-        // Prepare order update data
-        const sendData = {
-          _id: order?._id,
-          order_status: "processing",
-          order_updated_by: user?._id,
-          tracking_code: result?.consignment?.tracking_code,
-          consignment_id: result?.consignment?.consignment_id,
-        };
-
-        // Update order status
-        const updateResponse = await fetch(`${BASE_URL}/order`, {
-          method: "PATCH",
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(sendData),
-        });
-
-        const updateResult = await updateResponse.json();
-
-        if (
-          updateResult?.statusCode === 200 &&
-          updateResult?.success === true
-        ) {
-          Swal.fire({
-            title: "Sent!",
-            text: "Order has been sent to SteadFast.",
-            icon: "success",
-          });
-        } else {
-          throw new Error("Failed to update order status.");
-        }
-      } catch (error) {
-        Swal.fire({
-          title: "Error!",
-          text: error.message || "Something went wrong.",
-          icon: "error",
-        });
-        toast.error(error.message, { autoClose: 1000 });
-      } finally {
-        setButtonLoading(false);
-        refetch();
+    if (status === "delivered") {
+      if (user?.role_id?.order_show && user?.role_id?.admin_create) {
+        updateOrderStatus(status, id, products);
+      } else {
+        requestOtpForDelivery(id, userName, userPhone);
+        setCurrentOrderProducts(products);
       }
-    });
+    } else {
+      updateOrderStatus(status, id, products);
+    }
   };
 
-  if (loading) {
-    return <TableLoadingSkeleton />;
-  }
+  // handle assign staff (unchanged)
+  const handleOrderStaff = async (staffPayload, orderId, orderProducts) => {
+    const { staff_id, order_status } = staffPayload;
+
+    try {
+      const sendData = {
+        _id: orderId,
+        order_status: order_status,
+        assign_staff_id: staff_id,
+      };
+
+      const todayDateTime = `${
+        new Date().toISOString().split("T")[0]
+      } ${new Date().toLocaleTimeString()}`;
+      if (order_status === "processing")
+        sendData.processing_time = todayDateTime;
+      if (order_status === "shipped") sendData.shipped_time = todayDateTime;
+      if (order_status === "delivered") {
+        sendData.delivered_time = todayDateTime;
+        sendData.order_products = orderProducts;
+      }
+      if (order_status === "cancel") sendData.cancel_time = todayDateTime;
+      if (order_status === "return") sendData.return_time = todayDateTime;
+
+      const response = await fetch(`${BASE_URL}/order`, {
+        method: "PATCH",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(sendData),
+      });
+
+      const result = await response.json();
+      if (result?.success) {
+        toast.success(result?.message || "Status updated successfully", {
+          autoClose: 1000,
+        });
+      } else {
+        toast.error(result?.message || "Something went wrong", {
+          autoClose: 1000,
+        });
+      }
+    } catch (error) {
+      toast.error(error?.message, { autoClose: 1000 });
+    } finally {
+      refetch();
+    }
+  };
 
   return (
     <>
-      {isLoading || loading ? (
+      {isLoading || adminLoading ? (
         <TableLoadingSkeleton />
       ) : (
-        <div className="">
-          {/* Make the table wrapper horizontally scrollable */}
-          <div className="mt-5 overflow-x-auto shadow-md">
-            <table className="min-w-full divide-y-2 divide-gray-200 bg-white text-sm ">
-              <thead className="bg-[#fff9ee]">
-                <tr className="divide-x divide-gray-300  font-semibold text-center text-white">
-                  <td className="whitespace-nowrap p-4 ">SL No</td>
-                  <td className="whitespace-nowrap p-4 ">Date</td>
-                  {/* <td className="whitespace-nowrap p-4 ">Print</td>
-                  <td className="whitespace-nowrap p-4 ">CN-ID</td> */}
-                  <td className="whitespace-nowrap p-4 ">Invoice No</td>
-                  <td className="whitespace-nowrap p-4 ">Customer Name</td>
-                  <td className="whitespace-nowrap p-4 ">Customer Phone</td>
-                  {user?.role_id?.order_update === true && (
-                    <td className="whitespace-nowrap p-4 ">Order Status</td>
+        <div>
+          <div className="mt-5 overflow-x-auto scrollbar-thin shadow-md">
+            <table className="min-w-full divide-y-2 divide-gray-200 bg-white text-sm">
+              <thead>
+                <tr className="divide-x divide-gray-300 font-semibold text-center">
+                  <td className="whitespace-nowrap p-4">SL No</td>
+                  <td className="whitespace-nowrap p-4">Date</td>
+                  <td className="whitespace-nowrap p-4">Invoice No</td>
+                  <td className="whitespace-nowrap p-4">Customer Name</td>
+                  <td className="whitespace-nowrap p-4">Customer Phone</td>
+                  {user?.role_id?.order_update && (
+                    <td className="whitespace-nowrap p-4">Order Status</td>
                   )}
-                  {user?.role_id?.order_update === true && (
-                    <td className="whitespace-nowrap p-4 ">Send SteadFast</td>
+                  {user?.role_id?.order_update && (
+                    <td className="whitespace-nowrap p-4">Assign Staff</td>
                   )}
-                  <td className="whitespace-nowrap p-4 ">Total Amount</td>
-                  <td className="whitespace-nowrap p-4 ">Discount Amount</td>
-                  <td className="whitespace-nowrap p-4 ">Shipping Cost</td>
-                  <td className="whitespace-nowrap p-4 ">Grand Total Amount</td>
-                  <td className="whitespace-nowrap p-4 ">Shipping Location</td>
-                  <td className="whitespace-nowrap p-4 ">Division</td>
-                  <td className="whitespace-nowrap p-4 ">District</td>
-                  <td className="whitespace-nowrap p-4 ">Address</td>
-                  <td className="whitespace-nowrap p-4 ">View Details</td>
+                  <td className="whitespace-nowrap p-4">Total Amount</td>
+                  <td className="whitespace-nowrap p-4">Discount Amount</td>
+                  <td className="whitespace-nowrap p-4">Shipping Cost</td>
+                  <td className="whitespace-nowrap p-4">Grand Total Amount</td>
+                  <td className="whitespace-nowrap p-4">Zone</td>
+                  <td className="whitespace-nowrap p-4">Address</td>
+                  <td className="whitespace-nowrap p-4">View Details</td>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200 text-center">
@@ -252,166 +324,141 @@ const OrderTable = ({
                   <tr
                     key={order?._id}
                     className={`divide-x divide-gray-200 ${
-                      index % 2 === 0 ? "bg-white" : "bg-tableRowBGColor"
+                      index % 2 === 0 ? "bg-amber-50" : "bg-white"
                     }`}
                   >
                     <td className="whitespace-nowrap p-3">
-                      {" "}
                       {serialNumber + index + 1}
                     </td>
                     <td className="whitespace-nowrap p-3">
                       {DateFormat(order?.createdAt)}
                     </td>
-                    {/* <td className="whitespace-nowrap p-3">
-                      <button
-                        onClick={() => handlePrintClick(order)}
-                        className="flex items-center justify-center text-gray-800 hover:text-blue-700"
-                      >
-                        <FaPrint />
-                        <span className="ml-2">Print</span>
-                      </button>
-                    </td>
-                    <td className="whitespace-nowrap p-3">
-                      {" "}
-                      {order?.consignment_id || "--"}
-                    </td> */}
                     <td className="whitespace-nowrap p-3">
                       <Link
-                        href={`/all-order-info/${order?._id}`}
+                        href={`/admin/order-info/${order?._id}`}
                         className="underline font-medium text-blue-600"
                       >
                         {order?.invoice_id}
                       </Link>
                     </td>
-                    <td className="whitespace-nowrap p-3">
-                      {" "}
-                      {order?.customer_id?.user_name}
+                    <td className="whitespace-nowrap p-3 capitalize">
+                      {order?.user_id?.user_name || "-"}
                     </td>
                     <td className="whitespace-nowrap p-3">
-                      {" "}
-                      {order?.customer_phone}
+                      {order?.user_phone}
                     </td>
-                    {/* <td className="whitespace-nowrap p-3">
-                      {" "}
-                      {order?.order_status}
-                    </td> */}
-                    {user?.role_id?.order_update === true &&
-                      order?.order_status == "pending" && (
-                        <td className="whitespace-nowrap p-1">
+
+                    {user?.role_id?.order_update && (
+                      <td className="whitespace-nowrap p-1">
+                        <select
+                          onChange={(e) =>
+                            handleOrderStatus(
+                              e.target.value,
+                              order?._id,
+                              order?.order_products,
+                              order?.order_status,
+                              order?.user_id?.user_name,
+                              order?.user_phone,
+                              setCurrentOrderProducts(order)
+                            )
+                          }
+                          value={order?.order_status}
+                          className="block w-full px-1 py-1 text-gray-700 bg-white border border-gray-200 rounded-xl cursor-pointer capitalize"
+                        >
+                          <option value={order?.order_status}>
+                            {order?.order_status}
+                          </option>
+                          {order?.order_status === "pending" && (
+                            <>
+                              <option value="shipped">Shipped</option>
+                              <option value="delivered">Delivered</option>
+                              <option value="cancel">Cancel</option>
+                            </>
+                          )}
+                          {order?.order_status === "assigned" && (
+                            <>
+                              <option value="shipped">Shipped</option>
+                              <option value="cancel">Cancel</option>
+                            </>
+                          )}
+                          {order?.order_status === "shipped" && (
+                            <>
+                              <option value="delivered">Delivered</option>
+                              <option value="return">Return</option>
+                            </>
+                          )}
+                        </select>
+                      </td>
+                    )}
+
+                    {user?.role_id?.order_update && (
+                      <td className="whitespace-nowrap p-3">
+                        {user?.role_id?.admin_delete &&
+                        (order?.order_status === "pending" ||
+                          order?.order_status === "assigned") ? (
                           <select
+                            value={order?.assign_staff_id?._id || ""}
                             onChange={(e) =>
-                              handleOrderStatus(
-                                e.target.value,
+                              handleOrderStaff(
+                                {
+                                  staff_id: e.target.value,
+                                  order_status: "assigned",
+                                },
                                 order?._id,
                                 order?.order_products
                               )
                             }
-                            id="order_status"
-                            className="block w-full px-1 py-1 text-gray-700 bg-white border border-gray-200 rounded-xl cursor-pointer"
+                            className="block w-full px-1 py-1 text-gray-700 bg-white border border-gray-200 cursor-pointer rounded capitalize"
                           >
-                            <option selected value={order?.order_status}>
-                              {order?.order_status}
+                            <option value="" disabled>
+                              Select Staff
                             </option>
-                            {order?.order_status !== "pending" &&
-                              order?.order_status !== "processing" &&
-                              order?.order_status !== "shipped" &&
-                              order?.order_status !== "delivered" &&
-                              order?.order_status !== "cancel" &&
-                              order?.order_status !== "return" && (
-                                <option value="pending">Pending</option>
-                              )}
-                            {/* {order?.order_status == "pending" && (
-                            <option value="processing">Processing</option>
-                          )} */}
-                            {/* {order?.order_status == "processing" && (
-                            <option value="shipped">Shipped</option>
-                          )} */}
-                            {(order?.order_status == "shipped" ||
-                              order?.order_status == "pending") && (
-                              <option value="delivered">Delivered</option>
-                            )}
-                            {order?.order_status !== "cancel" &&
-                              order?.order_status !== "return" &&
-                              order?.order_status !== "delivered" && (
-                                <option value="cancel">Cancel</option>
-                              )}
-                            {/* {(order?.order_status == "pending" ||
-                            order?.order_status == "processing") && (
-                            <option value="return">Return</option>
-                          )} */}
-                            {/* {order?.order_status == "delivered" && (
-                            <option value="return">Return</option>
-                          )} */}
+                            {!isLoadingStaff &&
+                              staffData?.map((staff) => (
+                                <option key={staff._id} value={staff._id}>
+                                  {staff.admin_name}
+                                </option>
+                              ))}
                           </select>
-                        </td>
-                      )}
-                    <td className="whitespace-nowrap p-4">
-                      {buttonloading ? (
-                        <MiniSpinner />
-                      ) : (
-                        user?.role_id?.order_update === true &&
-                        order?.order_status == "pending" && (
-                          <div>
-                            <button
-                              className="h-[40px] rounded-[8px] py-[10px] px-[14px] bg-red-500 hover:bg-red-400 duration-200  text-white text-sm"
-                              onClick={() => handleOrderSendSteadFast(order)}
-                            >
-                              Send SteadFast
-                            </button>
-                          </div>
-                        )
-                      )}
-                    </td>
+                        ) : (
+                          <span>
+                            {order?.assign_staff_id?.admin_name || "-"}
+                          </span>
+                        )}
+                      </td>
+                    )}
 
                     <td className="whitespace-nowrap p-3">
-                      {" "}
                       {order?.sub_total_amount}
                     </td>
                     <td className="whitespace-nowrap p-3">
-                      {" "}
                       {order?.discount_amount}
                     </td>
                     <td className="whitespace-nowrap p-3">
-                      {" "}
                       {order?.shipping_cost}
                     </td>
                     <td className="whitespace-nowrap p-3">
-                      {" "}
                       {order?.grand_total_amount}
                     </td>
                     <td className="whitespace-nowrap p-3">
-                      {" "}
-                      {order?.shipping_location}
+                      {order?.zone_id?.zone_name}
                     </td>
                     <td className="whitespace-nowrap p-3">
-                      {" "}
-                      {order?.billing_division}
+                      {order?.shipping_address}
                     </td>
-                    <td className="whitespace-nowrap p-3">
-                      {" "}
-                      {order?.billing_district}
-                    </td>
-                    <td className="whitespace-nowrap p-3">
-                      {" "}
-                      {order?.billing_address}
-                    </td>
-
                     <td className="whitespace-nowrap flex justify-center items-center p-4">
-                      <div>
-                        <Link
-                          href={`/all-order-info/${order?._id}`}
-                          className=" text-gray-500 hover:text-gray-900"
-                        >
-                          <FaRegEye size={23} />
-                        </Link>
-                      </div>
+                      <Link
+                        href={`/admin/order-info/${order?._id}`}
+                        className="text-gray-500 hover:text-gray-900"
+                      >
+                        <FaRegEye size={23} />
+                      </Link>
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
-          {/* pagination */}
           {totalData > 10 && (
             <Pagination
               page={page}
@@ -421,6 +468,53 @@ const OrderTable = ({
               totalData={totalData}
             />
           )}
+        </div>
+      )}
+
+      {/* OTP Modal */}
+      {showOtpModal && (
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-96 max-w-md mx-4">
+            <div className="text-center mb-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                Enter Delivery OTP
+              </h3>
+              <p className="text-sm text-gray-600">
+                Please enter the 4-digit OTP to confirm delivery
+              </p>
+            </div>
+            <div className="flex justify-center space-x-2 mb-6">
+              {otp.map((digit, index) => (
+                <input
+                  key={index}
+                  id={`otp-${index}`}
+                  type="text"
+                  maxLength="1"
+                  value={digit}
+                  onChange={(e) => handleOtpChange(index, e.target.value)}
+                  onKeyDown={(e) => handleOtpKeyDown(index, e)}
+                  className="w-12 h-12 text-center text-lg font-semibold border-2 border-gray-300 rounded-md focus:border-blue-500 focus:outline-none"
+                  placeholder="0"
+                />
+              ))}
+            </div>
+            <div className="flex space-x-3">
+              <button
+                onClick={() => resetOtpModal(true)}
+                disabled={otpLoading}
+                className="flex-1 px-4 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 disabled:opacity-50 cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={verifyOtpAndDeliver}
+                disabled={otpLoading || otp.join("").length !== 4}
+                className="flex-1 px-4 py-2 text-white bg-[#084C4E] rounded-md hover:bg-[#053536] focus:outline-none focus:ring-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+              >
+                {otpLoading ? "Verifying..." : "Submit"}
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </>

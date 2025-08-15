@@ -2,7 +2,6 @@ import Contain from "@/components/common/Contain";
 import CheckOut from "@/components/frontend/CheckOut/CheckOut";
 
 export async function generateMetadata() {
-  
   return {
     title: "Checkout | Grocery Mart",
     // description: product?.description || "Product Description",
@@ -23,15 +22,13 @@ export async function generateMetadata() {
   };
 }
 
-
 const CheckOutPage = () => {
   return (
-
-    <div>
+    <main>
       <Contain>
         <CheckOut />
       </Contain>
-    </div>
+    </main>
   );
 };
 

@@ -1,4 +1,6 @@
 import MiniSpinner from "@/components/Skeleton/MiniSpinner";
+import { BASE_URL } from "@/utils/baseURL";
+import { generateSlug } from "@/utils/genarateSlug";
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { RiImageAddFill } from "react-icons/ri";
@@ -34,7 +36,6 @@ const AddCategory = ({ setCategoryCreateModal, user, refetch }) => {
   //Image preview....
 
   const handleDataPost = async (data) => {
-    console.log(data);
     setLoading(true);
     try {
       const category_slug = generateSlug(data?.category_name);
@@ -58,7 +59,6 @@ const AddCategory = ({ setCategoryCreateModal, user, refetch }) => {
       });
 
       const result = await response.json(); // Optional: to get response
-      console.log(result);
 
       if (result?.statusCode === 200 && result?.success === true) {
         toast.success(
@@ -96,7 +96,7 @@ const AddCategory = ({ setCategoryCreateModal, user, refetch }) => {
             </h3>
             <button
               type="button"
-              className="btn  p-1 absolute right-3 rounded-full top-3 cursor-pointer transition-all duration-300"
+              className="p-1 absolute right-3 rounded-full top-3 bg-red-500 text-white hover:bg-red-600 cursor-pointer transition-all duration-300"
               onClick={() => setCategoryCreateModal(false)}
             >
               {" "}
@@ -175,7 +175,7 @@ const AddCategory = ({ setCategoryCreateModal, user, refetch }) => {
             </div>
 
             <div className="mt-5">
-              <label className="block text-xs font-medium text-primaryColor">
+              <label className="block text-xs font-medium ">
                 Upload Category Image
               </label>
               {imagePreview ? (
@@ -224,7 +224,7 @@ const AddCategory = ({ setCategoryCreateModal, user, refetch }) => {
                 type="file"
                 ref={imageInputRef} // Attach ref to input
                 id="category_image"
-                className="mt-2  sm:text-sm p-0.5 file:cursor-pointer file:bg-gray-400 file:text-white file:border-none file:rounded file:px-2 file:py-1.5"
+                className="mt-2  sm:text-sm p-0.5 file:cursor-pointer file:bg-[#084C4E] file:text-white file:border-none file:rounded file:px-2 file:py-1.5"
                 onChange={handleImageChange}
               />
               <p className="text-xs text-[#C9CACA]  mt-1 text-end">
@@ -239,7 +239,7 @@ const AddCategory = ({ setCategoryCreateModal, user, refetch }) => {
 
             <div className="flex gap-8 mt-4 justify-end">
               {loading == true ? (
-                <div className="px-10 py-2 flex items-center justify-center  bg-btnBgColor text-btnTextColor rounded">
+                <div className="px-10 py-2 flex items-center justify-center  rounded">
                   <MiniSpinner />
                 </div>
               ) : (

@@ -1,12 +1,17 @@
 "use client";
 import MiniSpinner from "@/components/Skeleton/MiniSpinner";
+import { useAllProducts } from "@/lib/getAllProducts";
+import { useUserInfoQuery } from "@/redux/feature/auth/authApi";
+import { allRemoveFromCart } from "@/redux/feature/cart/cartSlice";
+import { BASE_URL } from "@/utils/baseURL";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { SlArrowRight } from "react-icons/sl";
 import { isValidPhoneNumber } from "react-phone-number-input";
+import { useDispatch } from "react-redux";
+import { toast } from "react-toastify";
 import DeliveryInformation from "../Home/ProductCheckOut/DevliveryInformation";
-import productData from "./../../../../public/productData.json";
 import CheckOutTable from "./CheckOutTable";
 
 const CheckOut = () => {
@@ -15,12 +20,35 @@ const CheckOut = () => {
     handleSubmit,
     formState: { errors },
     setValue,
+    reset,
   } = useForm();
-
-  const userInfo = false;
-  const isLoding = false;
-  const shippingCharge = 80;
+  const { data: userInfo, isLoding } = useUserInfoQuery();
+  const [loading, setLoading] = useState(false);
   const [cartItems, setCartItems] = useState([]);
+  const [limit, setLimit] = useState(20);
+  const [page, setpage] = useState(1);
+  const [selectedZone, setSelectedZone] = useState(null);
+  const [localCustomerPhone, setLocalCustomerPhone] = useState("");
+  const dispatch = useDispatch();
+
+  const shippingCharge = selectedZone?.zone_delivery_charge || 0;
+  const { data: productData = [], isloading } = useAllProducts({
+    limit,
+    page,
+  });
+  useEffect(() => {
+    if (userInfo?.data?.user_phone) {
+      setLocalCustomerPhone(userInfo.data.user_phone);
+    }
+  }, [userInfo]);
+
+  useEffect(() => {
+    if (userInfo?.data) {
+      setValue("user_name", userInfo.data.user_name);
+      setValue("user_phone", userInfo.data.user_phone);
+      setValue("shipping_address", userInfo.data.user_address);
+    }
+  }, [userInfo, setValue]);
 
   useEffect(() => {
     const syncCart = () => {
@@ -30,8 +58,8 @@ const CheckOut = () => {
         const merged = productsInCart
           .filter((item) => item.quantity > 0)
           .map((cartItem) => {
-            const product = productData.find(
-              (p) => p.id === cartItem.productId
+            const product = productData?.data?.find(
+              (p) => p._id === cartItem.productId
             );
             if (!product) return null;
 
@@ -57,53 +85,61 @@ const CheckOut = () => {
       window.removeEventListener("localStorageUpdated", syncCart);
       window.removeEventListener("storage", syncCart);
     };
-  }, []);
+  }, [productData]);
 
   const totalPrice = useMemo(() => {
     return cartItems.reduce((total, item) => {
-      const itemPrice = item.discountedPrice || item.price;
+      const itemPrice = item.product_discount_price || item.product_price;
       return total + itemPrice * item.quantity;
     }, 0);
   }, [cartItems]);
 
   const grandToal = totalPrice + shippingCharge;
 
+  const handleRemoveAll = () => {
+    dispatch(allRemoveFromCart());
+    localStorage.removeItem("grocery_mart");
+    setCartItems([]);
+  };
+
   //data post function
   const handleDataPost = async (data) => {
-    const today =
-      new Date().toISOString().split("T")[0] +
-      " " +
-      new Date().toLocaleTimeString();
-
     // Validate phone number if it's coming from react-hook-form
-    if (data.customer_phone && !isValidPhoneNumber(data.customer_phone)) {
+    if (!localCustomerPhone) {
+      return toast.error("Please enter phone number.");
+    }
+    if (localCustomerPhone && !isValidPhoneNumber(localCustomerPhone)) {
       return toast.error("Please enter a valid phone number.");
     }
+    if (!selectedZone) {
+      return toast.error("Please Select Zone.");
+    }
+
     const sendData = {
-      ...data,
       order_status: "pending",
-      pending_time: today,
-      billing_country: "Bangladesh",
-      order_product: [
-        cartItems.map((item) => ({
-          product_name: item?.name,
-          product_id: item?.id,
-          produxt_price: item?.discountedPrice || item?.price,
-          product_quantity: item?.quantity,
-        })),
-      ],
-      sub_total_amount: totalPrice ? totalPrice : 0,
+      sub_total_amount: parseInt(totalPrice ? totalPrice?.toFixed(2) : 0),
       discount_amount: 0,
-      shipping_cost: parseInt(shippingCharge) || 0,
-      grand_total_amount: grandToal ? grandToal : 0,
+      shipping_cost: parseInt(shippingCharge?.toFixed(2)) || 0,
+      grand_total_amount: parseInt(grandToal ? grandToal?.toFixed(2) : 0),
+      zone_id: selectedZone?._id,
+      shipping_address: data?.shipping_address,
+      user_id: userInfo?.data?._id,
+      user_name: userInfo?.data.user_name || data?.user_name,
+      user_phone: userInfo?.data.user_phone || localCustomerPhone,
+      order_products: cartItems?.map((item) => ({
+        order_product_id: item?._id,
+        order_product_price: parseInt(
+          item?.product_discount_price || item?.product_price
+        ),
+        order_product_quantity: item?.quantity,
+      })),
     };
     if (userInfo?.data?._id) {
-      sendData.customer_id = userInfo?.data?._id;
+      sendData.user_id = userInfo?.data?._id;
     } else {
       sendData.need_user_create = true;
     }
-    console.log(sendData);
-    return;
+
     setLoading(true);
     try {
       const response = await fetch(`${BASE_URL}/order`, {
@@ -116,7 +152,6 @@ const CheckOut = () => {
       const result = await response.json();
 
       if (result?.statusCode === 200 && result?.success === true) {
-        navigate.push("/orders/order-success");
         toast.success(
           result?.message ? result?.message : "Order created successfully",
           {
@@ -124,6 +159,13 @@ const CheckOut = () => {
           }
         );
         setLoading(false);
+        if (!userInfo) {
+          reset();
+          setLocalCustomerPhone("");
+          setSelectedZone("");
+        }
+
+        handleRemoveAll();
       } else {
         toast.error(result?.message || "Something went wrong", {
           autoClose: 1000,
@@ -138,8 +180,8 @@ const CheckOut = () => {
   };
 
   return (
-    <div>
-      <div className="lg:my-5">
+    <main>
+      <section className="lg:my-5">
         <h2 className="flex mb-2">
           <Link href={"/"} className="flex items-center">
             Home
@@ -149,12 +191,12 @@ const CheckOut = () => {
             Cart
           </Link>
         </h2>
-      </div>
+      </section>
       <form onSubmit={handleSubmit(handleDataPost)}>
-        <div className="lg:grid grid-cols-3 gap-10">
+        <section className="lg:grid grid-cols-3 gap-10">
           <div className="col-span-2">
             <div className="mb-5">
-              <CheckOutTable cartItems={cartItems} />
+              <CheckOutTable cartItems={cartItems} isloading={isloading} />
             </div>
 
             <div className="w-full lg:w-fit flex">
@@ -166,15 +208,19 @@ const CheckOut = () => {
               </Link>
             </div>
           </div>
-          <div className="col-span-1 mt-5">
+          <section className="col-span-1 mt-5">
             <DeliveryInformation
               register={register}
               userInfo={userInfo}
               errors={errors}
               setValue={setValue}
+              setSelectedZone={setSelectedZone}
+              selectedZone={selectedZone}
+              setLocalCustomerPhone={setLocalCustomerPhone}
+              localCustomerPhone={localCustomerPhone}
             />
 
-            <div className="py-6 font-nunito">
+            <section className="py-6 font-nunito">
               <div className=" p-4 bg-[#F4F6F880] rounded-md shadow-md">
                 <p className="text-xl font-medium border-b-2 pb-1.5 border-gray-200">
                   Order Summary
@@ -187,36 +233,43 @@ const CheckOut = () => {
                     <p className="text-sm text-[#000000CC]">Delivery Charge</p>
                   </div>
                   <div className="flex flex-col text-end space-y-1">
-                    <p className="fo">৳ {totalPrice}</p>
+                    <p className="fo">৳ {totalPrice?.toFixed(2)}</p>
                     <p className="">৳ 0</p>
-                    <p className="">৳{shippingCharge}</p>
+                    <p className="">৳{shippingCharge?.toFixed(2)}</p>
                   </div>
                 </div>
 
                 <div className="flex justify-between mt-4">
                   <p className="text-base font-bold">Total</p>
-                  <p className="font-bold text-[#000000CC]">৳ {grandToal}</p>
+                  <p className="font-bold text-[#000000CC]">
+                    ৳ {grandToal?.toFixed(2)}
+                  </p>
                 </div>
               </div>
               <div className="flex py-4 gap-2 mt-4">
-                {isLoding == true ? (
-                  <div className="px-10 py-2 flex items-center justify-center bg-primary text-white rounded">
+                {loading == true ? (
+                  <div className="px-10 py-2 flex items-center justify-center bg-[#5E8B8C] text-white rounded">
                     <MiniSpinner />
                   </div>
                 ) : (
                   <button
-                    className="w-full text-white text-sm sm:text-base font-bold px-4 lg:px-7 py-2 rounded bg-[#5E8B8C] shadow-md   hover:shadow-lg hover:scale-105 transition-all duration-300 ease-in-out cursor-pointer"
+                    className={`w-full text-white text-sm sm:text-base font-bold px-4 lg:px-7 py-2 rounded shadow-md transition-all duration-300 ease-in-out ${
+                      cartItems?.length > 0
+                        ? "bg-[#5E8B8C] hover:shadow-lg hover:scale-105 cursor-pointer"
+                        : "bg-gray-400 cursor-not-allowed"
+                    }`}
+                    disabled={cartItems?.length <= 0}
                     type="submit"
                   >
                     Place Order
                   </button>
                 )}
               </div>
-            </div>
-          </div>
-        </div>
+            </section>
+          </section>
+        </section>
       </form>
-    </div>
+    </main>
   );
 };
 

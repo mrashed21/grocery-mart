@@ -1,4 +1,6 @@
 "use client";
+import { useUserInfoQuery } from "@/redux/feature/auth/authApi";
+import { BASE_URL } from "@/utils/baseURL";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AiOutlineUser } from "react-icons/ai";
@@ -8,8 +10,8 @@ import { toast } from "react-toastify";
 
 const UserSideBar = () => {
   const pathname = usePathname();
-  // const { data: userInfo, isLoading } = useUserInfoQuery();
-  const userInfo = false;
+  const { data: userInfo, isLoading } = useUserInfoQuery();
+
   const handleLogOut = async () => {
     const response = await fetch(`${BASE_URL}/get_me`, {
       method: "POST",
@@ -116,7 +118,7 @@ const UserSideBar = () => {
                 ${
                   isActive(link.href)
                     ? "bg-[#084C4F] text-white"
-                    : " group-hover:bg-[#084C4F] text-white"
+                    : " group-hover:bg-[#084C4F] group-hover:text-white"
                 }
               `}
                 >

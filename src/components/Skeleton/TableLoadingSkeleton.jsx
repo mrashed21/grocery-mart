@@ -1,5 +1,5 @@
 import Skeleton from "react-loading-skeleton";
-
+import "react-loading-skeleton/dist/skeleton.css";
 const TableLoadingSkeleton = () => {
   return (
     <div className="rounded-lg border border-gray-200 mt-6">
@@ -32,7 +32,7 @@ const TableLoadingSkeleton = () => {
           </thead>
 
           <tbody className="divide-y divide-gray-200 text-center">
-            {/* Creating 5 rows of skeletons as placeholders */}
+         
             {[...Array(10)].map((_, i) => (
               <tr
                 key={i}

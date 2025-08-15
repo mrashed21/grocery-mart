@@ -1,14 +1,19 @@
 "use client";
 import Contain from "@/components/common/Contain";
 import SingleProductDetails from "@/components/frontend/SingleProduct/SingleProductDetails";
+import { useSingleProduct } from "@/lib/getSingleProduct";
 import Link from "next/link";
 import { SlArrowRight } from "react-icons/sl";
 
-const SingleProductWrapper = ({ product }) => {
+const SingleProductWrapper = ({ slug }) => {
+  const { data: singleProduct = [], isLoading: singleProductLoading } =
+    useSingleProduct({
+      slug,
+    });
   return (
     <Contain>
-      <div className="py-5">
-        <div className="lg:my-5">
+      <section className="py-5">
+        <section className="lg:my-5">
           <h2 className="flex mb-2">
             <Link href={"/"} className="flex items-center">
               Home
@@ -22,10 +27,14 @@ const SingleProductWrapper = ({ product }) => {
             </Link>
             <Link href={"/"}>{`${"Category"}`}</Link>
           </h2>
-        </div>
+        </section>
 
-        <SingleProductDetails product={product} />
-      </div>
+        <SingleProductDetails
+          singleProduct={singleProduct}
+          singleProductLoading={singleProductLoading}
+          slug={slug}
+        />
+      </section>
     </Contain>
   );
 };

@@ -1,5 +1,6 @@
 "use client";
 import MiniSpinner from "@/components/Skeleton/MiniSpinner";
+import { BASE_URL } from "@/utils/baseURL";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
@@ -110,121 +111,116 @@ const PhoneCredential = ({ refetch, initialAuthenticationData }) => {
     }
   };
   return (
-    <div>
-      {" "}
-      <div>
-        <div>
-          <div className="relative overflow-hidden text-left bg-white rounded-lg shadow-xl  p-6">
-            <div className=" mt-4">
-              <h3
-                className="text-[26px] font-bold text-gray-800 capitalize"
-                id="modal-title"
+    <div className="w-3xl mx-auto">
+      <div className="relative overflow-hidden text-left bg-white rounded-lg shadow-xl  p-6">
+        <div className=" mt-4">
+          <h3
+            className="text-[26px] font-bold text-gray-800 capitalize"
+            id="modal-title"
+          >
+            OTP By Phone Credential
+          </h3>
+        </div>
+
+        <hr className="mt-2 mb-4 border-t border-gray-300" />
+
+        <form onSubmit={handleSubmit(handleDataPost)} className="">
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label
+                htmlFor=""
+                className="block text-xs font-medium text-gray-700"
               >
-                OTP By Phone Credential
-              </h3>
+                Otp Phone User
+              </label>
+              <input
+                {...register("otp_phone_user")}
+                defaultValue={initialAuthenticationData?.otp_phone_user}
+                type="text"
+                placeholder="Otp Phone User"
+                disabled={!isEditing}
+                className="mt-2 w-full rounded-md border-gray-200 shadow-sm sm:text-sm p-2 border-2"
+              />
             </div>
+            <div>
+              <label
+                htmlFor=""
+                className="block text-xs font-medium text-gray-700"
+              >
+                Otp Phone Password
+              </label>
+              <input
+                {...register("otp_phone_password")}
+                defaultValue={initialAuthenticationData?.otp_phone_password}
+                type="text"
+                disabled={!isEditing}
+                placeholder="Otp Phone Password"
+                className="mt-2 w-full rounded-md border-gray-200 shadow-sm sm:text-sm p-2 border-2"
+              />
+            </div>
+            <div>
+              <label
+                htmlFor=""
+                className="block text-xs font-medium text-gray-700"
+              >
+                Otp Phone Body
+              </label>
+              <input
+                {...register("otp_phone_body")}
+                defaultValue={initialAuthenticationData?.otp_phone_body}
+                type="text"
+                disabled={!isEditing}
+                placeholder="Otp Phone Body"
+                className="mt-2 w-full rounded-md border-gray-200 shadow-sm sm:text-sm p-2 border-2"
+              />
+            </div>
+          </div>
 
-            <hr className="mt-2 mb-6" />
-
-            <form onSubmit={handleSubmit(handleDataPost)} className="">
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label
-                    htmlFor=""
-                    className="block text-xs font-medium text-gray-700"
-                  >
-                    Otp Phone User
-                  </label>
-                  <input
-                    {...register("otp_phone_user")}
-                    defaultValue={initialAuthenticationData?.otp_phone_user}
-                    type="text"
-                    placeholder="Otp Phone User"
-                    disabled={!isEditing}
-                    className="mt-2 w-full rounded-md border-gray-200 shadow-sm sm:text-sm p-2 border-2"
-                  />
-                </div>
-                <div>
-                  <label
-                    htmlFor=""
-                    className="block text-xs font-medium text-gray-700"
-                  >
-                    Otp Phone Password
-                  </label>
-                  <input
-                    {...register("otp_phone_password")}
-                    defaultValue={initialAuthenticationData?.otp_phone_password}
-                    type="text"
-                    disabled={!isEditing}
-                    placeholder="Otp Phone Password"
-                    className="mt-2 w-full rounded-md border-gray-200 shadow-sm sm:text-sm p-2 border-2"
-                  />
-                </div>
-                <div>
-                  <label
-                    htmlFor=""
-                    className="block text-xs font-medium text-gray-700"
-                  >
-                    Otp Phone Body
-                  </label>
-                  <input
-                    {...register("otp_phone_body")}
-                    defaultValue={initialAuthenticationData?.otp_phone_body}
-                    type="text"
-                    disabled={!isEditing}
-                    placeholder="Otp Phone Body"
-                    className="mt-2 w-full rounded-md border-gray-200 shadow-sm sm:text-sm p-2 border-2"
-                  />
-                </div>
-              </div>
-
-              <div className="flex gap-6 mt-6 justify-end">
-                {isEditing === true ? (
+          <div className="flex gap-6 mt-6 justify-end">
+            {isEditing === true ? (
+              <>
+                <button
+                  className="px-10 py-2 border rounded cursor-pointer"
+                  type="button"
+                  onClick={handleCancel}
+                >
+                  Cancel
+                </button>
+                {loading == true ? (
+                  <div className="px-10 py-2 flex items-center justify-center  bg-primaryColor text-white rounded ">
+                    <MiniSpinner />
+                  </div>
+                ) : (
                   <>
-                    <button
-                      className="px-10 py-2 border rounded hover:bg-bgBtnInactive hover:text-btnInactiveColor"
-                      type="button"
-                      onClick={handleCancel}
-                    >
-                      Cancel
-                    </button>
-                    {loading == true ? (
-                      <div className="px-10 py-2 flex items-center justify-center  bg-primaryColor text-white rounded">
-                        <MiniSpinner />
-                      </div>
+                    {initialAuthenticationData?._id ? (
+                      <button
+                        className="rounded-[8px] py-[10px] px-[18px] bg-[#084C4E] text-white  transform hover:translate-y-[-2px] transition duration-200  text-sm cursor-pointer uppercase"
+                        type="submit"
+                      >
+                        Update
+                      </button>
                     ) : (
-                      <>
-                        {initialAuthenticationData?._id ? (
-                          <button
-                            className="px-10 py-2  bg-primaryColor hover:bg-blue-500 duration-200 text-white rounded"
-                            type="submit"
-                          >
-                            Update
-                          </button>
-                        ) : (
-                          <button
-                            className="px-10 py-2  bg-primaryColor hover:bg-blue-500 duration-200 text-white rounded"
-                            type="submit"
-                          >
-                            Create
-                          </button>
-                        )}
-                      </>
+                      <button
+                        className="rounded-[8px] py-[10px] px-[18px] bg-[#084C4E] text-white  transform hover:translate-y-[-2px] transition duration-200  text-sm cursor-pointer uppercase"
+                        type="submit"
+                      >
+                        Create
+                      </button>
                     )}
                   </>
-                ) : (
-                  <button
-                    className="px-10 py-2  bg-primaryColor hover:bg-blue-500 duration-200 text-white rounded"
-                    type="button"
-                    onClick={() => setIsEditing(true)}
-                  >
-                    Edit
-                  </button>
                 )}
-              </div>
-            </form>
+              </>
+            ) : (
+              <button
+                className="rounded-[8px] py-[10px] px-[18px] bg-[#084C4E] text-white  transform hover:translate-y-[-2px] transition duration-200  text-sm cursor-pointer uppercase"
+                type="button"
+                onClick={() => setIsEditing(true)}
+              >
+                Edit
+              </button>
+            )}
           </div>
-        </div>
+        </form>
       </div>
     </div>
   );

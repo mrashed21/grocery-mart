@@ -1,9 +1,10 @@
 "use client";
 import NoDataFound from "@/components/common/NoDataFound";
+import Pagination from "@/components/shared/Pagination/Pagination";
 import TableLoadingSkeleton from "@/components/Skeleton/TableLoadingSkeleton";
 import { useState } from "react";
 import { FiEdit } from "react-icons/fi";
-import { Pagination } from "swiper/modules";
+import CustomerStatusModal from "./CustomerStatusModal";
 
 const CustomersTable = ({
   customers,
@@ -14,14 +15,10 @@ const CustomersTable = ({
   totalData,
   user,
   isLoading,
+  adminLoading,
 }) => {
   const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
   const [customerData, setCustomerData] = useState(false);
-  // const [serialNumber, setSerialNumber] = useState();
-  // useEffect(() => {
-  //   const newSerialNumber = (page - 1) * limit;
-  //   setSerialNumber(newSerialNumber);
-  // }, [page, limit]);
 
   const handleInactiveStatus = (customer) => {
     setCustomerData(customer);
@@ -29,62 +26,61 @@ const CustomersTable = ({
   };
   return (
     <>
-      {isLoading ? (
+      {isLoading || adminLoading ? (
         <TableLoadingSkeleton />
       ) : (
         <div>
           {customers?.data.length > 0 ? (
-            <div className="mt-6 shadow-lg">
-              <div className="overflow-x-auto">
-                <table className="min-w-full text-sm">
+            <div className="mt-6 shadow-lg rounded-xl border border-gray-200">
+              <div className="overflow-x-auto ">
+                <table className="min-w-full text-sm border border-gray-200 rounded-xl overflow-hidden border-collapse">
                   <thead className="ltr:text-left rtl:text-right">
-                    <tr className="divide-x divide-gray-300  font-semibold text-center">
-                      <td className="whitespace-nowrap p-4 ">SL No</td>
+                    <tr className="font-semibold text-center">
+                      <td className="whitespace-nowrap p-4 border border-gray-200">
+                        SL No
+                      </td>
+                      <td className="whitespace-nowrap p-4 border border-gray-200">
+                        Name
+                      </td>
+                      <td className="whitespace-nowrap p-4 border border-gray-200">
+                        Phone
+                      </td>
 
-                      <td className="whitespace-nowrap p-4 "> Name</td>
-                      <td className="whitespace-nowrap p-4 "> phone</td>
-                      {/* <td className="whitespace-nowrap p-4 "> Description</td> */}
-                      {/* <td className="whitespace-nowrap p-4 "> Email</td> */}
+                      <td className="whitespace-nowrap p-4 border border-gray-200">
+                        Status
+                      </td>
 
-                      <td className="whitespace-nowrap p-4 "> Status</td>
-                      {user?.role_id?.customer_update === true && (
-                        <td className="whitespace-nowrap p-4 ">Action</td>
+                      {user?.role_id?.user_update === true && (
+                        <td className="whitespace-nowrap p-4 border border-gray-200">
+                          Action
+                        </td>
                       )}
                     </tr>
                   </thead>
 
-                  <tbody className="">
+                  <tbody>
                     {customers?.data?.map((customer, i) => (
                       <tr
                         key={customer?._id}
                         className={`text-center ${
-                          i % 2 === 0 ? "bg-secondary-50" : "bg-secondary-100"
+                          i % 2 === 0 ? "bg-amber-50" : "bg-white"
                         } hover:bg-blue-100`}
                       >
-                        <td className="whitespace-nowrap py-1.5 font-medium text-primaryColor">
+                        <td className="whitespace-nowrap py-1.5 font-medium  border border-gray-200">
                           {i + 1}
                         </td>
-                        <td className="whitespace-nowrap py-1.5 text-primaryColor ">
-                          {customer?.user_name}
+
+                        <td className="whitespace-nowrap py-1.5  border border-gray-200 capitalize">
+                          {customer?.user_name || "-"}
                         </td>
-                        <td className="whitespace-nowrap py-1.5 font-medium text-primaryColor">
+
+                        <td className="whitespace-nowrap py-1.5 font-medium  border border-gray-200">
                           {customer?.user_phone}
                         </td>
 
-                        {/* <td className="whitespace-nowrap py-1.5 font-medium text-primaryColor">
-                          <button
-                            className="cursor-pointer"
-                            // onClick={handleDescription}
-                          >
-                            <BiShow size={22} />
-                          </button>
-                        </td> */}
-                        {/* <td className="whitespace-nowrap py-1.5 font-medium text-primaryColor">
-                          01700000000
-                        </td> */}
-                        <td className="whitespace-nowrap py-1.5 font-medium text-primaryColor capitalize">
+                        <td className="whitespace-nowrap py-1.5 font-semibold  capitalize border border-gray-200">
                           <p
-                            className={`whitespace-nowrap py-1.5 font-medium ${
+                            className={`${
                               customer?.user_status === "active"
                                 ? "text-green-600"
                                 : customer?.user_status === "in-active"
@@ -96,13 +92,12 @@ const CustomersTable = ({
                           </p>
                         </td>
 
-                        {user?.role_id?.customer_update === true && (
-                          <td className="whitespace-nowrap py-1.5 px-2 text-primaryColor">
-                            {" "}
+                        {user?.role_id?.user_update === true && (
+                          <td className="whitespace-nowrap py-1.5 px-2  border border-gray-200">
                             <button
                               onClick={() => handleInactiveStatus(customer)}
                             >
-                              <FiEdit size={25} className="cursor-pointer " />
+                              <FiEdit size={25} className="cursor-pointer" />
                             </button>
                           </td>
                         )}

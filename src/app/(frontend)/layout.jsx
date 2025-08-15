@@ -5,15 +5,20 @@ import TopNavBar from "@/components/shared/NavBar/TopNavBar";
 
 const MainLayout = ({ children }) => {
   return (
-    <div>
+    <>
       <div className="sticky z-50 -top-2">
         <TopNavBar />
       </div>
-      <Cart />
-      <MobileCart />
-      <div className="min-h-screen">{children}</div>
-      <Footer />
-    </div>
+      <section>
+        <Cart />
+        <MobileCart />
+      </section>
+      <main className="min-h-screen">{children}</main>
+      <section>
+        {" "}
+        <Footer />
+      </section>
+    </>
   );
 };
 

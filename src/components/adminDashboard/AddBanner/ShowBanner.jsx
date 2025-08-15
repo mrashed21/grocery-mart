@@ -1,32 +1,20 @@
-// import React from 'react'
-
-// const ShowBanner = () => {
-//   return (
-//     <div>ShowBanner</div>
-//   )
-// }
-
-// export default ShowBanner
-
-
+"use client";
+import { FcNext, FcPrevious } from "react-icons/fc";
 import {
-  Navigation,
-  Scrollbar,
   A11y,
   Autoplay,
   Keyboard,
-  Parallax,
+  Navigation,
   Pagination,
+  Parallax,
+  Scrollbar,
 } from "swiper/modules";
-import { FcNext, FcPrevious } from "react-icons/fc";
 import { Swiper, SwiperSlide } from "swiper/react";
 // Import Swiper styles
+import NoDataFound from "@/components/common/NoDataFound";
+import Link from "next/link";
 import "swiper/css";
 import "swiper/css/bundle";
-import Link from "next/link";
-import NoDataFound from "@/components/common/NoDataFound";
-
-
 
 const ShowBanner = ({ banners }) => {
   return (

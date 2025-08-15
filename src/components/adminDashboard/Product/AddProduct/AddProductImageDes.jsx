@@ -1,11 +1,14 @@
 "use client";
+import dynamic from "next/dynamic";
 import { useRef, useState } from "react";
 import { MdCancel } from "react-icons/md";
 import { PiImagesThin } from "react-icons/pi";
 import { RiImageAddLine } from "react-icons/ri";
-import ReactQuill from "react-quill-new";
+// import ReactQuill from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
-import Select from "react-select";
+const ReactQuill = dynamic(() => import("react-quill-new"), {
+  ssr: false,
+});
 
 const AddProductImageDes = ({
   register,
@@ -18,38 +21,12 @@ const AddProductImageDes = ({
   setDescription,
   setKeywords,
   keywords,
-  setProduct_status,
-  product_status,
-  settrendingProduct,
 }) => {
-  const productStatusOptions = [
-    { value: "active", label: "Active" },
-    { value: "in-active", label: "In-Active" },
-  ];
-
   const fileInputRef = useRef(null);
   const thumbnailInputRef = useRef(null);
-  const sizechartInputRef = useRef(null);
   const [imagePreviews, setImagePreviews] = useState([]);
-  const [sizeChartPreview, setSizeChartPreview] = useState("");
 
   const watchImages = watch("other_images");
-
-  const handleSizeChartChange = (e) => {
-    const file = e.target.files?.[0]; // Safe check for file existence
-    if (file) {
-      setSizeChartPreview(URL.createObjectURL(file));
-      setValue("size_chart", file); // Update React Hook Form value
-    }
-  };
-
-  const removeSizeChart = () => {
-    setSizeChartPreview(null);
-    setValue("size_chart", null); // Reset React Hook Form value
-    if (sizechartInputRef.current) {
-      sizechartInputRef.current.value = ""; // Reset input field
-    }
-  };
 
   const handleThumbnailChange = (e) => {
     const file = e.target.files?.[0]; // Safe check for file existence
@@ -332,51 +309,41 @@ const AddProductImageDes = ({
         <div className=" grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-8 mt-4">
           {/* Product Return */}
           <div className="">
-            <label htmlFor="product_return" className="font-medium">
-              Product Quantity
+            <label htmlFor="product_quantity" className="font-medium">
+              Product Quantity <span className="text-red-500">*</span>
             </label>
             <input
-              {...register("product_return")}
-              id="product_return"
+              {...register("product_quantity", {
+                required: "Product Quantity is required",
+              })}
+              id="product_quantity"
               type="text"
-              placeholder='Enter Quantiy Like "30 kg", "50 Box", "50 Lit" etc.'
+              placeholder='Enter Quantiy Like "30", "50", "50" etc.'
               className="block w-full p-2.5 outline-primaryColor text-gray-800 bg-white border border-gray-300 rounded-lg mt-2"
             />
+            {errors.product_quantity && (
+              <p className="text-red-600">{errors.product_quantity?.message}</p>
+            )}
           </div>
           {/* unit */}
           <div className="">
             <label htmlFor="unit" className="font-medium">
-              Unit
+              Unit <span className="text-red-500">*</span>
             </label>
             <input
-              {...register("unit")}
+              {...register("unit", {
+                required: "Product Unit is required",
+              })}
               id="unit"
               placeholder='Enter Unit Like "1 Pc", "1 Box", "1 kg", "1 Lit" etc.'
               type="text"
               className="block w-full p-2.5 outline-primaryColor text-gray-800 bg-white border border-gray-300 rounded-lg mt-2"
             />
+            {errors.unit && (
+              <p className="text-red-600">{errors.unit?.message}</p>
+            )}
           </div>
-          {/* Supplier Name */}
-          {/* <div className=" space-y-2">
-              <label htmlFor="supplier_name" className="font-medium">
-                Supplier Name
-              </label>
-
-              <Select
-                id="supplier_id"
-                name="supplier_id"
-                isClearable
-                aria-label="Select a Category"
-                options={suppliers?.data}
-                getOptionLabel={(x) => x?.supplier_name}
-                getOptionValue={(x) => x?._id}
-                onChange={(selectedOption) =>
-                  setProduct_supplier_id(selectedOption?._id)
-                }
-              ></Select>
-            </div> */}
         </div>
-      
       </section>
     </div>
   );

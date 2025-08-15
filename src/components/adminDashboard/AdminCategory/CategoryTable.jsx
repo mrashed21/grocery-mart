@@ -1,11 +1,15 @@
+"use client";
 import { useEffect, useState } from "react";
 import { FiEdit } from "react-icons/fi";
 import { MdDeleteForever } from "react-icons/md";
 import { toast } from "react-toastify";
 
-import TableLoadingSkeleton from "@/components/Skeleton/TableLoadingSkeleton";
 import NoDataFound from "@/components/common/NoDataFound";
 import Pagination from "@/components/shared/Pagination/Pagination";
+import TableLoadingSkeleton from "@/components/Skeleton/TableLoadingSkeleton";
+import { BASE_URL } from "@/utils/baseURL";
+import Swal from "sweetalert2";
+import UpdateCategory from "./UpdateCategory";
 
 const CategoryTable = ({
   categoryTypes,
@@ -17,9 +21,9 @@ const CategoryTable = ({
   refetch,
   user,
   isLoading,
+  adminLoading,
 }) => {
   const [serialNumber, setSerialNumber] = useState();
-
   //update Category.....state
   const [categoryUpdateModal, setCategoryUpdateModal] = useState(false);
   const [categoryUpdateData, setCategoryUpdateData] = useState({});
@@ -38,7 +42,7 @@ const CategoryTable = ({
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!",
+      confirmButtonText: "Yes, Delete it!",
     }).then(async (result) => {
       if (result.isConfirmed) {
         const sendData = {
@@ -62,7 +66,7 @@ const CategoryTable = ({
             refetch();
             Swal.fire({
               title: "Deleted!",
-              text: `${category?.category_name} Category has been deleted!`,
+              text: `${category?.category_name} Category has been Deleted!`,
               icon: "success",
             });
           } else {
@@ -78,86 +82,6 @@ const CategoryTable = ({
         }
       }
     });
-  };
-
-  // update feature category show
-  const handleHeaderToggle = async (id, category_header_show) => {
-    try {
-      const data = {
-        _id: id,
-        category_header_show,
-      };
-      const response = await fetch(`${BASE_URL}/category`, {
-        method: "PATCH",
-        headers: {
-          "content-type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify(data),
-      });
-      const result = await response.json();
-      if (result?.statusCode === 200 && result?.success === true) {
-        toast.success(
-          result?.message
-            ? result?.message
-            : " Category Header Show successfully",
-          {
-            autoClose: 1000,
-          }
-        );
-        refetch();
-      } else {
-        toast.error(result?.message || "Something went wrong", {
-          autoClose: 1000,
-        });
-      }
-    } catch (error) {
-      toast.error(error?.message, {
-        autoClose: 1000,
-      });
-    } finally {
-      ("");
-    }
-  };
-
-  // update category Browser status
-  const handleBrowserToggle = async (id, category_browse_show) => {
-    try {
-      const data = {
-        _id: id,
-        category_browse_show,
-      };
-      const response = await fetch(`${BASE_URL}/category`, {
-        method: "PATCH",
-        headers: {
-          "content-type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify(data),
-      });
-      const result = await response.json();
-      if (result?.statusCode === 200 && result?.success === true) {
-        toast.success(
-          result?.message
-            ? result?.message
-            : "Category Browser show successfully",
-          {
-            autoClose: 1000,
-          }
-        );
-        refetch();
-      } else {
-        toast.error(result?.message || "Something went wrong", {
-          autoClose: 1000,
-        });
-      }
-    } catch (error) {
-      toast.error(error?.message, {
-        autoClose: 1000,
-      });
-    } finally {
-      ("");
-    }
   };
 
   //Update category Status..
@@ -237,149 +161,117 @@ const CategoryTable = ({
 
   return (
     <>
-      {isLoading ? (
+      {isLoading || adminLoading ? (
         <TableLoadingSkeleton />
       ) : (
         <div>
           {categoryTypes?.data?.length > 0 ? (
-            <div className="mt-6 shadow-lg">
-              <div className="overflow-x-auto">
-                <table className="min-w-full text-sm">
+            <div className="mt-6 shadow-lg rounded-xl border border-gray-200">
+              <div className="overflow-x-auto rounded-xl">
+                <table className="min-w-full text-sm   overflow-hidden border-collapse">
                   <thead className="ltr:text-left rtl:text-right">
-                    <tr className="divide-x divide-gray-300  font-semibold text-center">
-                      <td className="whitespace-nowrap p-4 ">SL No</td>
-                      <td className="whitespace-nowrap p-4 ">Category Image</td>
-                      <td className="whitespace-nowrap p-4 ">Category Name</td>
-                      <td className="whitespace-nowrap p-4 ">
+                    <tr className=" font-semibold text-center">
+                      <td className="whitespace-nowrap p-4 border border-gray-200">
+                        SL No
+                      </td>
+                      <td className="whitespace-nowrap p-4 border border-gray-200">
+                        Category Image
+                      </td>
+                      <td className="whitespace-nowrap p-4 border border-gray-200">
+                        Category Name
+                      </td>
+                      <td className="whitespace-nowrap p-4 border border-gray-200">
                         Category Serial No
                       </td>
-                      <td className="whitespace-nowrap p-4 ">
-                        Category Browse Show
+                      <td className="whitespace-nowrap p-4 border border-gray-200">
+                        Status
                       </td>
-                      <td className="whitespace-nowrap p-4 ">
-                        Category Header Show
-                      </td>
-                      <td className="whitespace-nowrap p-4 ">Status</td>
 
                       {(user?.role_id?.category_update === true ||
                         user?.role_id?.category_delete === true) && (
-                        <td className="whitespace-nowrap p-4 ">Action</td>
+                        <td className="whitespace-nowrap p-4 border border-gray-200">
+                          Action
+                        </td>
                       )}
                     </tr>
                   </thead>
 
-                  <tbody className="">
+                  <tbody>
                     {categoryTypes?.data?.map((category, i) => (
                       <tr
                         key={category?._id}
                         className={`text-center ${
-                          i % 2 === 0 ? "bg-secondary-50" : "bg-secondary-100"
+                          i % 2 === 0 ? "bg-amber-50" : "bg-white"
                         } hover:bg-blue-100`}
                       >
-                        <td className="whitespace-nowrap py-1.5 font-medium ">
+                        <td className="whitespace-nowrap py-1.5 font-medium border border-gray-200">
                           {serialNumber + i + 1}
                         </td>
-                        <td className="whitespace-nowrap py-1.5  flex justify-center">
+                        <td className="whitespace-nowrap py-1.5 flex justify-center border-t border-gray-200">
                           <img
                             className="w-[44px] h-[44px] rounded-[8px]"
                             src={category?.category_image}
                             alt=""
                           />
                         </td>
-                        <td className="whitespace-nowrap py-1.5 font-medium ">
+                        <td className="whitespace-nowrap py-1.5 font-medium border border-gray-200">
                           {category?.category_name}
                         </td>
-                        <td className="whitespace-nowrap py-1.5 font-medium ">
+                        <td className="whitespace-nowrap py-1.5 font-medium border border-gray-200">
                           {category?.category_serial}
                         </td>
-
-                        <td className="whitespace-nowrap py-1.5 ">
-                          <label
-                            htmlFor={category?._id}
-                            className="inline-flex items-center  cursor-pointer "
-                          >
-                            <span className="relative">
-                              <input
-                                id={category?._id}
-                                type="checkbox"
-                                className="hidden peer"
-                                checked={category?.category_browse_show} // Control the toggle state
-                                onChange={() =>
-                                  handleBrowserToggle(
-                                    category?._id,
-                                    category?.category_browse_show
-                                      ? false
-                                      : true
-                                  )
-                                } // Handle toggle
-                              />
-                              <div className="w-10 h-4 rounded-full shadow bg-slate-400 peer-checked:bg-btnHoverColor"></div>
-                              <div className="absolute left-0 w-6 h-6 rounded-full bg-btnHoverColor ring-[1px] shadow-lg  ring-gray-300 -inset-y-1 peer-checked:right-0 peer-checked:left-auto peer-checked:bg-primaryColor "></div>
-                            </span>
-                          </label>
-                        </td>
-                        <td className="whitespace-nowrap py-1.5  text-gray-700">
-                          <label
-                            htmlFor={i}
-                            className="inline-flex items-center space-x-4 cursor-pointer "
-                          >
-                            <span className="relative">
-                              <input
-                                id={i}
-                                type="checkbox"
-                                className="hidden peer"
-                                checked={category?.category_header_show} // Control the toggle state
-                                onChange={() =>
-                                  handleHeaderToggle(
-                                    category?._id,
-                                    category?.category_header_show
-                                      ? false
-                                      : true
-                                  )
-                                } // Handle toggle
-                              />
-                              <div className="w-10 h-4 rounded-full shadow bg-slate-400  peer-checked:bg-btnHoverColor"></div>
-                              <div className="absolute left-0 w-6 h-6 rounded-full -inset-y-1 peer-checked:right-0 peer-checked:left-auto peer-checked:bg-primaryColor bg-btnHoverColor ring-[1px] shadow-lg  ring-gray-300  "></div>
-                            </span>
-                          </label>
-                        </td>
-                        <td className="whitespace-nowrap py-1.5 ">
-                          {category?.category_status === "active" ? (
-                            <button
-                              className="bg-green-500 text-white px-[10px] py-[4px] rounded-[8px] cursor-pointer"
-                              onClick={() =>
-                                handleCategoryActiveStatus(
-                                  category?._id,
-                                  category?.category_status
-                                    ? "in-active"
-                                    : "active"
-                                )
-                              }
-                            >
-                              <span>Active</span>
-                            </button>
+                        <td className="whitespace-nowrap py-1.5 border border-gray-200">
+                          {user?.role_id?.category_update === true ? (
+                            <>
+                              {category?.category_status === "active" ? (
+                                <button
+                                  className="bg-green-500 text-white px-[10px] py-[4px] rounded-[8px] cursor-pointer"
+                                  onClick={() =>
+                                    handleCategoryActiveStatus(
+                                      category?._id,
+                                      category?.category_status
+                                        ? "in-active"
+                                        : "active"
+                                    )
+                                  }
+                                >
+                                  <span>Active</span>
+                                </button>
+                              ) : (
+                                <button
+                                  className="bg-red-500 text-white font-semibold px-[10px] py-[4px] rounded-[8px] cursor-pointer"
+                                  onClick={() =>
+                                    handleCategoryInActiveStatus(
+                                      category?._id,
+                                      category?.category_status
+                                        ? "active"
+                                        : "in-active"
+                                    )
+                                  }
+                                >
+                                  <span>In-Active</span>
+                                </button>
+                              )}
+                            </>
                           ) : (
-                            <button
-                              className="bg-red-500 text-white font-semibold px-[10px] py-[4px] rounded-[8px] cursor-pointer"
-                              onClick={() =>
-                                handleCategoryInActiveStatus(
-                                  category?._id,
-                                  category?.category_status
-                                    ? "active"
-                                    : "in-active"
-                                )
-                              }
-                            >
-                              <span>In-Active</span>
-                            </button>
+                            <>
+                              {category?.category_status === "active" ? (
+                                <span className="bg-green-500 text-white px-[10px] py-[4px] rounded-[8px]">
+                                  <span>Active</span>
+                                </span>
+                              ) : (
+                                <span className="bg-red-500 text-white font-semibold px-[10px] py-[4px] rounded-[8px] ">
+                                  <span>In-Active</span>
+                                </span>
+                              )}
+                            </>
                           )}
                         </td>
-
                         {(user?.role_id?.category_delete === true ||
                           user?.role_id?.category_update === true) && (
-                          <td className="whitespace-nowrap px-4 py-2 ">
+                          <td className="whitespace-nowrap px-4 py-2 border border-gray-200">
                             <>
-                              {user?.role_id?.category_delete && (
+                              {user?.role_id?.category_delete === true && (
                                 <button
                                   onClick={() =>
                                     handleDeleteCategoryTableRow(category)
@@ -387,11 +279,11 @@ const CategoryTable = ({
                                 >
                                   <MdDeleteForever
                                     size={25}
-                                    className="cursor-pointer text-deleteButtonColor"
+                                    className="cursor-pointer text-red-500"
                                   />
                                 </button>
                               )}
-                              {user?.role_id?.category_update && (
+                              {user?.role_id?.category_update === true && (
                                 <button
                                   className="ml-3"
                                   onClick={() =>

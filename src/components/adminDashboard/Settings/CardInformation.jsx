@@ -331,14 +331,14 @@ const CardInformation = ({ refetch, getInitialCurrencyData }) => {
             <>
               {getInitialCurrencyData?._id ? (
                 <button
-                  className="px-10 py-2  bg-primaryColor hover:bg-blue-500 duration-200 text-white rounded"
+                  className="rounded-[8px] py-[10px] px-[18px] bg-[#084C4E] text-white  transform hover:translate-y-[-2px] transition duration-200  text-sm cursor-pointer uppercase"
                   type="submit"
                 >
                   Update
                 </button>
               ) : (
                 <button
-                  className="px-10 py-2  bg-primaryColor hover:bg-blue-500 duration-200 text-white rounded"
+                  className="rounded-[8px] py-[10px] px-[18px] bg-[#084C4E] text-white  transform hover:translate-y-[-2px] transition duration-200  text-sm cursor-pointer uppercase"
                   type="submit"
                 >
                   Save

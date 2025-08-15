@@ -13,15 +13,20 @@ import { RxCross2 } from "react-icons/rx";
 import { SlCheck } from "react-icons/sl";
 import { TbCurrencyTaka } from "react-icons/tb";
 import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
 import ProductCheckout from "../Home/ProductCheckOut/ProductCheckout";
 import SimilarProducts from "./SimilarProducts/SimilarProducts";
 
-const SingleProductDetails = ({ product }) => {
+const SingleProductDetails = ({
+  singleProduct,
+  singleProductLoading,
+  slug,
+}) => {
   const [isDescriptioOpen, setIsDescriptioOpen] = useState(true);
-  const [selectedImage, setSelectedImage] = useState(product?.image);
+  const [selectedImage, setSelectedImage] = useState(singleProduct?.main_image);
   const [quantity, setQuantity] = useState(1);
-
-  const price = product?.discountedPrice || product?.price;
+  const price =
+    singleProduct?.product_discount_price || singleProduct?.product_price;
   const totalPrice = quantity * price;
   const handleDescriptionToggle = () => {
     setIsDescriptioOpen((prev) => !prev);
@@ -30,17 +35,17 @@ const SingleProductDetails = ({ product }) => {
   const dispatch = useDispatch();
 
   const foundCartItem = cartItems.find(
-    (item) => item.productId === product?.id
+    (item) => item.productId === singleProduct?._id
   );
   const isProductInCart = !!foundCartItem;
 
   useEffect(() => {
-    if (product?.image) {
-      setSelectedImage(product.image);
+    if (singleProduct?.main_image) {
+      setSelectedImage(singleProduct?.main_image);
     }
 
     const foundCartItem = cartItems.find(
-      (item) => item.productId === product?.id
+      (item) => item.productId === singleProduct?._id
     );
 
     if (foundCartItem) {
@@ -48,24 +53,51 @@ const SingleProductDetails = ({ product }) => {
     } else {
       setQuantity(1);
     }
-  }, [product, cartItems]);
+  }, [singleProduct, cartItems]);
 
-  const handleAddToCart = (productId) => {
-    dispatch(addToCart({ productId, quantity: 1 }));
+  const handleAddToCart = (product) => {
+    dispatch(addToCart({ productId: product?._id, quantity: 1 }));
+    toast.success(`${product?.product_name} added to your bag`, {
+      autoClose: 2000,
+    });
   };
 
-  const handleRemove = (productId, quantity) => {
-    dispatch(removeFromCart({ productId, product_quantity: quantity }));
+  const handleRemove = (product) => {
+    dispatch(
+      removeFromCart({
+        productId: product?._id,
+        product_quantity: product?.quantity,
+      })
+    );
+    toast.error(`${product?.product_name} removed from your bag`, {
+      autoClose: 2000,
+    });
   };
 
   const handleMainImageClick = (image) => {
     setSelectedImage(image);
   };
 
-  const handleIncrement = (productId) => {
+  const handleIncrement = (productId, product_quantity) => {
     if (isProductInCart) {
-      dispatch(incrementQuantity({ productId, product_quantity: 50 }));
+      const currentQty = foundCartItem?.quantity || 0;
+
+      if (currentQty >= product_quantity) {
+        toast.error("Maximum stock limit reached", {
+          autoClose: 2000,
+        });
+        return;
+      }
+
+      dispatch(incrementQuantity({ productId, product_quantity }));
     } else {
+      const currentQty = quantity || 0;
+      if (currentQty >= product_quantity) {
+        toast.error("Maximum stock limit reached", {
+          autoClose: 2000,
+        });
+        return;
+      }
       setQuantity((prev) => prev + 1);
     }
   };
@@ -79,18 +111,18 @@ const SingleProductDetails = ({ product }) => {
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-12 lg:gap-10">
-      {!product ? (
+    <main className="grid grid-cols-1 lg:grid-cols-12 lg:gap-10">
+      {singleProductLoading ? (
         <div className=" col-span-8 ">
           <CheckoutSkeleton />
         </div>
       ) : (
         <>
-          <div className=" lg:col-span-8">
+          <section className=" lg:col-span-8">
             <div className="flex flex-col lg:flex-row gap-2 font-nunito">
               <div className="">
                 {/* Image or Video preview */}
-                <div className="relative overflow-hidden group w-full">
+                <section className="relative overflow-hidden group w-full">
                   <div className="relative w-full h-full overflow-hidden">
                     <img
                       src={selectedImage}
@@ -98,31 +130,35 @@ const SingleProductDetails = ({ product }) => {
                       className={`w-[420px] h-[280px]  transition-transform duration-300`}
                     />
                   </div>
-                </div>
+                </section>
 
                 {/* Thumbnail list */}
                 <div className="flex flex-row gap-3 overflow-y-auto scrollbar-thin h-[95px] w-full lg:w-[420px] mt-5 p-2">
                   {/* Main image thumbnail */}
                   <img
-                    src={product?.image}
+                    src={singleProduct?.main_image}
                     alt="Main Image"
-                    onClick={() => handleMainImageClick(product?.image)}
+                    onClick={() =>
+                      handleMainImageClick(singleProduct?.main_image)
+                    }
                     className={`h-16 w-16  cursor-pointer rounded ${
-                      selectedImage === product?.image
-                        ? "ring-2 ring-[#977b63]"
+                      selectedImage === singleProduct?.main_image
+                        ? "ring-2 ring-[#FF6B4F]"
                         : ""
                     }`}
                   />
 
                   {/* Other thumbnails */}
-                  {product?.other_image?.map((img, index) => (
+                  {singleProduct?.other_images?.map((img, index) => (
                     <img
                       key={index}
-                      src={img}
+                      src={img?.other_image}
                       alt={`Thumbnail ${index + 1}`}
-                      onClick={() => handleMainImageClick(img)}
+                      onClick={() => handleMainImageClick(img?.other_image)}
                       className={`h-16 w-16 cursor-pointer rounded ${
-                        selectedImage === img ? "ring-2 ring-[#977b63]" : ""
+                        selectedImage === img?.other_image
+                          ? "ring-2 ring-[#FF6B4F]"
+                          : ""
                       }`}
                     />
                   ))}
@@ -130,14 +166,14 @@ const SingleProductDetails = ({ product }) => {
               </div>
 
               {/* details */}
-              <div className="p-4 flex flex-col  ">
+              <section className="p-4 flex flex-col  ">
                 <div className="flex items-center justify-between">
                   <h2 className="text-3xl lg:text-2xl font-bold text-[#3A3A3AFA]">
-                    {product.name}
+                    {singleProduct.product_name}
                   </h2>
                   {/* stock */}
                   <div className="lg:hidden">
-                    {product.stock && product.stock_quantity > 0 ? (
+                    {Number(singleProduct?.product_quantity ?? 0) > 0 ? (
                       <p className="flex items-center gap-1 ">
                         {" "}
                         <span className="p-0.5 rounded-full  text-[#25AE6C] font-bold">
@@ -159,36 +195,40 @@ const SingleProductDetails = ({ product }) => {
 
                 <p className="text-[#3A3A3AFA]  mt-4 mb-2">
                   Product Tags:
-                  <span className=""> {product.category}</span>
+                  <span className="">
+                    {" "}
+                    {singleProduct.category_id?.category_name}
+                  </span>
                 </p>
 
-                <div className="flex justify-between my-2 lg:my-3">
-                  {product.is_offer ? (
+                <section className="flex justify-between my-2 lg:my-3">
+                  {singleProduct?.product_discount_price ? (
                     <div className="flex items-center lg:gap-3">
                       <span className="font-semibold text-[#FF6B4F] lg:text-[18px] flex">
                         <TbCurrencyTaka className=" lg:text-xl" />{" "}
-                        {product.discountedPrice}
+                        {singleProduct?.product_discount_price}
                       </span>
                       <span className="line-through text-[#16161680] flex ">
                         <TbCurrencyTaka className=" lg:text-xl" />{" "}
-                        {product.price}
+                        {singleProduct?.product_price}
                       </span>
                     </div>
                   ) : (
                     <span className="font-semibold text-[#FF6B4F] lg:text-[22px] flex">
-                      <TbCurrencyTaka className=" lg:text-xl" /> {product.price}
+                      <TbCurrencyTaka className=" lg:text-xl" />{" "}
+                      {singleProduct?.product_price}
                     </span>
                   )}
-                </div>
+                </section>
                 {/* quantity */}
                 <p className=" text-[#3A3A3AFA] font-nunito">
                   {" "}
-                  Quantity: {product.quantity}
+                  Quantity: {singleProduct?.product_quantity}
                 </p>
 
                 {/* stock */}
                 <div className="mt-2 hidden lg:flex">
-                  {product.stock && product.stock_quantity > 0 ? (
+                  {Number(singleProduct?.product_quantity ?? 0) > 0 ? (
                     <p className="flex items-center gap-1 ">
                       {" "}
                       <span className="p-0.5 rounded-full  text-[#25AE6C] font-bold">
@@ -207,11 +247,11 @@ const SingleProductDetails = ({ product }) => {
                   )}
                 </div>
 
-                <div className="flex flex-col lg:flex-row items-center w-full gap-2 mt-4">
+                <section className="flex  flex-row items-center w-full gap-2 mt-4">
                   <div className="flex items-center">
                     <button
                       onClick={(e) => {
-                        handleDecrement(product.id);
+                        handleDecrement(singleProduct._id);
                         e.stopPropagation();
                         e.preventDefault();
                       }}
@@ -233,46 +273,59 @@ const SingleProductDetails = ({ product }) => {
 
                     <button
                       onClick={(e) => {
-                        handleIncrement(product.id);
+                        handleIncrement(
+                          singleProduct._id,
+                          singleProduct.product_quantity
+                        );
                         e.stopPropagation();
                         e.preventDefault();
                       }}
-                      className="px-2 py-1 bg-[#084C4EA6] text-white rounded cursor-pointer"
+                      disabled={singleProduct?.product_quantity < 0}
+                      className={`px-2 py-1 text-white rounded ${
+                        singleProduct?.product_quantity <= 0 ||
+                        quantity >= singleProduct?.product_quantity
+                          ? "bg-gray-400 cursor-not-allowed"
+                          : "bg-[#084C4EA6] cursor-pointer"
+                      }`}
                       aria-label="Increase quantity"
                     >
                       <IoAdd className="text-xl" />
                     </button>
                   </div>
 
-                  <div className="mt-2 lg:mt-0">
-                    {isProductInCart ? (
-                      <button
-                        onClick={() => {
-                          handleRemove(product.id, product.quantity);
-                        }}
-                        className=" flex items-center justify-center gap-2 bg-[#FF6B4F]  text-white font-semibold py-1 px-3 shrink-0 rounded-sm transition-colors duration-200 cursor-pointer text-sm"
-                      >
-                        Remove from Bag
-                      </button>
-                    ) : (
-                      <button
-                        onClick={() => {
-                          handleAddToCart(product.id);
-                        }}
-                        className=" flex items-center justify-center gap-2 bg-[#5E8B8C]  text-white font-semibold py-1 px-5 rounded-sm transition-colors duration-200 cursor-pointer  text-sm"
-                      >
-                        Add to Bag
-                      </button>
+                  <section className="">
+                    {singleProduct?.product_quantity > 0 && (
+                      <>
+                        {isProductInCart ? (
+                          <button
+                            onClick={() => {
+                              handleRemove(singleProduct);
+                            }}
+                            className=" flex items-center justify-center gap-2 bg-[#FF6B4F]  text-white font-semibold py-1 px-3 shrink-0 rounded-sm transition-colors duration-200 cursor-pointer text-sm"
+                          >
+                            Remove from Bag
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => {
+                              handleAddToCart(singleProduct);
+                            }}
+                            className=" flex items-center justify-center gap-2 bg-[#5E8B8C]  text-white font-semibold py-1 px-5 rounded-sm transition-colors duration-200 cursor-pointer  text-sm"
+                          >
+                            Add to Bag
+                          </button>
+                        )}
+                      </>
                     )}
-                  </div>
-                </div>
-              </div>
+                  </section>
+                </section>
+              </section>
             </div>
 
             {/* description  */}
 
-            {product.description && (
-              <div className=" mt-5">
+            {singleProduct.description && (
+              <section className=" mt-5">
                 <div
                   onClick={handleDescriptionToggle}
                   className="flex items-center justify-between cursor-pointer"
@@ -286,29 +339,30 @@ const SingleProductDetails = ({ product }) => {
                 </div>
                 <hr className="border-t border-gray-200 my-3" />
                 {isDescriptioOpen && (
-                  <p className="text-[#00000099] font-nunito text-justify">
-                    {product.description}
-                  </p>
+                  <div
+                    className="text-[#00000099] font-nunito text-justify"
+                    dangerouslySetInnerHTML={{
+                      __html: singleProduct?.description,
+                    }}
+                  />
                 )}
-              </div>
+              </section>
             )}
-          </div>
+          </section>
         </>
       )}
       <div className="grid-cols-12 lg:col-span-4 mt-8 lg:mt-0">
         <ProductCheckout
           totalPrice={totalPrice}
-          product={product}
+          singleProduct={singleProduct}
           quantity={quantity}
         />
       </div>
       {/* similar Products */}
-      <div className="lg:col-span-12">
-        <div className="">
-          <SimilarProducts />
-        </div>
-      </div>
-    </div>
+      <section className="lg:col-span-12">
+        <SimilarProducts slug={slug} />
+      </section>
+    </main>
   );
 };
 

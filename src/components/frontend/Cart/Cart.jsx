@@ -1,14 +1,21 @@
 "use client";
+import { useAllProducts } from "@/lib/getAllProducts";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { MdOutlineShoppingBag } from "react-icons/md";
 import { TbCoinTaka } from "react-icons/tb";
-import productData from "./../../../../public/productData.json";
 
 const Cart = () => {
+  const [limit, setLimit] = useState(20);
+  const [page, setpage] = useState(1);
+
+  const { data: productData = [], isloading } = useAllProducts({
+    limit,
+    page,
+  });
 
   const [cartItems, setCartItems] = useState([]);
-
+  
   useEffect(() => {
     const syncCart = () => {
       try {
@@ -17,8 +24,8 @@ const Cart = () => {
         const merged = productsInCart
           .filter((item) => item.quantity > 0)
           .map((cartItem) => {
-            const product = productData.find(
-              (p) => p.id === cartItem.productId
+            const product = productData?.data?.find(
+              (p) => p._id === cartItem.productId
             );
             if (!product) return null;
 
@@ -27,7 +34,7 @@ const Cart = () => {
               quantity: cartItem.quantity,
             };
           })
-          .filter(Boolean); 
+          .filter(Boolean);
 
         setCartItems(merged);
       } catch (error) {
@@ -44,20 +51,18 @@ const Cart = () => {
       window.removeEventListener("localStorageUpdated", syncCart);
       window.removeEventListener("storage", syncCart);
     };
-  }, []);
+  }, [productData]);
 
   const totalPrice = useMemo(() => {
     return cartItems.reduce((total, item) => {
-      const itemPrice = item.discountedPrice || item.price;
+      const itemPrice = item.product_discount_price || item.product_price;
       return total + itemPrice * item.quantity;
     }, 0);
   }, [cartItems]);
 
   return (
     <Link href={"/checkout"}>
-      <div
-        className="fixed right-1 top-1/2 -translate-y-1/2 z-30 hidden lg:block cursor-pointer "
-      >
+      <div className="fixed right-1 top-1/2 -translate-y-1/2 z-30 hidden lg:block cursor-pointer bg-white rounded-md ">
         <div className="bg-[#084C4E] flex flex-col items-center p-1.5 rounded-md">
           <MdOutlineShoppingBag className="text-3xl text-white" />
           <p className="text-white text-sm font-bold">

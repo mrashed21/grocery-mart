@@ -1,8 +1,10 @@
+import MiniSpinner from "@/components/Skeleton/MiniSpinner";
+import permissionsData from "@/data/permissionData";
+import { BASE_URL } from "@/utils/baseURL";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { toast } from "react-toastify";
-import { useState, useEffect, useContext } from "react";
 import { RxCross1 } from "react-icons/rx";
-
+import { toast } from "react-toastify";
 
 const UpDateStaffRole = ({ setUpdateModal, updateModalValue, refetch }) => {
   const {
@@ -16,7 +18,7 @@ const UpDateStaffRole = ({ setUpdateModal, updateModalValue, refetch }) => {
   });
 
   const [loading, setLoading] = useState(false);
-  const  user = false
+  const user = false;
   const watchAllFields = watch();
 
   useEffect(() => {
@@ -74,7 +76,7 @@ const UpDateStaffRole = ({ setUpdateModal, updateModalValue, refetch }) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
-      <div className="relative overflow-hidden text-left bg-white shadow-xl xl:w-[1150px] lg:w-[950px] md:w-[760px] sm:w-[600px] w-[550px] p-6 max-h-[100vh] overflow-y-auto">
+      <div className="relative overflow-hidden text-left bg-white shadow-xl xl:w-[1150px] lg:w-[950px] md:w-[760px] sm:w-[600px] w-[550px] p-6 max-h-[90vh] overflow-y-auto rounded-2xl">
         <div className="flex items-center justify-between">
           <h3
             className="text-[26px] font-bold text-gray-800 capitalize"
@@ -162,12 +164,12 @@ const UpDateStaffRole = ({ setUpdateModal, updateModalValue, refetch }) => {
 
           <div className="flex gap-8 mt-6 justify-end">
             {loading == true ? (
-              <div className="px-10 py-2 flex items-center justify-center  bg-btnBgColor text-btnTextColor rounded">
+              <div className="px-10 py-2 flex items-center justify-center  rounded">
                 <MiniSpinner />
               </div>
             ) : (
               <button
-                className="rounded-[8px] py-[10px] px-[18px] bg-btnBgColor hover:bg-btnHoverColor  transform hover:translate-y-[-2px] transition duration-200 text-btnTextColor text-sm cursor-pointer uppercase"
+                className="rounded-[8px] py-[10px] px-[18px] bg-[#084C4E] hover:bg-[#386a6b] transform hover:translate-y-[-2px] transition duration-200 text-white text-sm cursor-pointer uppercase"
                 type="submit"
               >
                 Update Role

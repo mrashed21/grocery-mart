@@ -1,6 +1,10 @@
 "use client";
+import ImageUploader from "@/components/adminDashboard/Settings/ImageUploader";
 import MiniSpinner from "@/components/Skeleton/MiniSpinner";
-import { useRef, useState } from "react";
+import UserDetailsSkeleton from "@/components/Skeleton/UserDetailsSkeleton";
+import useGetZone from "@/lib/getZone";
+import { BASE_URL } from "@/utils/baseURL";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { CiEdit } from "react-icons/ci";
 import { RiImageAddFill } from "react-icons/ri";
@@ -10,21 +14,39 @@ import "react-phone-number-input/style.css";
 import Select from "react-select";
 import { toast } from "react-toastify";
 
-const UserAccountDetails = () => {
-  //   const {
-  //     data: userInfo,
-  //     isLoading: userGetLoading,
-  //     refetch,
-  //   } = useUserInfoQuery();
-  const userInfo = false;
-  const userGetLoading = false;
+const UserAccountDetails = ({ userInfo, userGetLoading, refetch }) => {
   const [isEditMode, setIsEditMode] = useState(false);
-
   const [isLoading, setIsLoading] = useState(false);
-
+  const [selectedZone, setSelectedZone] = useState(null);
+  const { data: zoneData = [] } = useGetZone();
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm();
   //Image preview....
   const [imagePreview, setImagePreview] = useState(userInfo?.data?.user_image);
   const fileInputRef = useRef(null);
+
+  // Set selected zone when data is available
+  useEffect(() => {
+    if (zoneData?.data && userInfo?.data?.user_zone_id?._id) {
+      const currentZone = zoneData.data.find(
+        (zone) => zone._id === userInfo.data.user_zone_id._id
+      );
+      if (currentZone && !selectedZone) {
+        setSelectedZone(currentZone);
+      }
+    }
+  }, [zoneData?.data, userInfo?.data?.user_zone_id?._id, selectedZone]);
+
+  // Update image preview when userInfo changes
+  useEffect(() => {
+    if (userInfo?.data?.user_image) {
+      setImagePreview(userInfo.data.user_image);
+    }
+  }, [userInfo?.data?.user_image]);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -34,6 +56,7 @@ const UserAccountDetails = () => {
       setValue("user_image", file);
     }
   };
+
   const clearImagePreview = () => {
     setImagePreview(null);
     setValue("user_image", null);
@@ -41,13 +64,6 @@ const UserAccountDetails = () => {
       fileInputRef.current.value = "";
     }
   };
-
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    formState: { errors },
-  } = useForm();
 
   const handleUserDetails = async (data) => {
     setIsLoading(true);
@@ -64,8 +80,7 @@ const UserAccountDetails = () => {
       user_image: user_image || userInfo?.data?.user_image,
       user_name: data?.user_name || userInfo?.data?.user_name,
       user_phone: data?.user_phone || userInfo?.data?.user_phone,
-      user_division: user_division || userInfo?.data?.user_division,
-      user_district: user_district || userInfo?.data?.user_district,
+      user_zone_id: selectedZone?._id || userInfo?.data?.user_zone_id?._id,
       user_address: data?.user_address || userInfo?.data?.user_address,
     };
 
@@ -94,11 +109,19 @@ const UserAccountDetails = () => {
       toast.error(result?.message || "Something went wrong", {
         autoClose: 1000,
       });
+      setIsLoading(false);
     }
   };
 
   const handleCancel = () => {
     setIsEditMode(false);
+    // Reset selected zone to original value
+    if (zoneData?.data && userInfo?.data?.user_zone_id?._id) {
+      const currentZone = zoneData.data.find(
+        (zone) => zone._id === userInfo.data.user_zone_id._id
+      );
+      setSelectedZone(currentZone);
+    }
   };
 
   return (
@@ -106,7 +129,7 @@ const UserAccountDetails = () => {
       <form onSubmit={handleSubmit(handleUserDetails)}>
         {userGetLoading ? (
           <div className="">
-            <h2>Loading......</h2>{" "}
+            <UserDetailsSkeleton />
           </div>
         ) : (
           <>
@@ -179,9 +202,9 @@ const UserAccountDetails = () => {
                   international
                   countryCallingCodeEditable={false}
                   // onChange={setUserPhone}
-                  className={`w-full rounded-md border border-gray-200 px-2 py-2 text-black ${
-                    !isEditMode ? "bg-gray-100 cursor-not-allowed" : "bg-white"
-                  }`}
+                  className={`w-full rounded-md border border-gray-200 px-2 py-2 text-black
+                     bg-gray-100 !cursor-not-allowed
+                  `}
                   placeholder="Enter phone number"
                   // error={
                   //   userPhone
@@ -191,48 +214,80 @@ const UserAccountDetails = () => {
                 />
               </div>
 
-              {/* division */}
-
+              {/* Zone */}
               <div>
-                <label className="text-xs font-medium text-gray-700 flex items-center justify-start gap-1">
+                <label className="text-xs font-medium text-gray-700 flex items-center justify-start">
                   Zone
                 </label>
                 <Select
-                  id="division"
-                  name="division"
+                  id="zone"
+                  name="zone"
                   isDisabled={!isEditMode}
-                  className="mt-1"
-                  aria-label="Select a division"
-                  //   options={divisionOptions}
-                  // defaultValue={{
-                  //   name: user_division,
-                  // }}
-                  //   value={divisionOptions?.find(
-                  //     (opt) => opt?.name === user_division
-                  //   )}
-                  //   getOptionLabel={(x) => x?.name}
-                  //   getOptionValue={(x) => x?.id}
-                  //   onChange={(selectedOption) => {
-                  //     setIsOpenDistrict(false);
-                  //     setDistrict();
-                  //     setDistrictId(selectedOption?.id);
-                  //     setDivision(selectedOption?.name);
-                  //     setTimeout(() => {
-                  //       setIsOpenDistrict(true);
-                  //     }, 100);
-                  //   }}
-                  //   menuPortalTarget={document.body}
-                  //   styles={{
-                  //     menuPortal: (base) => ({
-                  //       ...base,
-                  //       zIndex: 999,
-                  //     }), // Set a high z-index
-                  //   }}
-                ></Select>
+                  options={zoneData?.data || []}
+                  value={selectedZone}
+                  onChange={(selected) => setSelectedZone(selected)}
+                  getOptionLabel={(x) => x?.zone_name}
+                  getOptionValue={(x) => x?._id}
+                  aria-label="Select a Zone"
+                  menuPortalTarget={document.body}
+                  placeholder="Select a zone"
+                  styles={{
+                    control: (base, state) => ({
+                      ...base,
+                      borderColor: state.isFocused
+                        ? "#e5e7eb"
+                        : base.borderColor,
+                      boxShadow: "none",
+                      padding: "2px",
+                      padding: "0px",
+                      borderRadius: "6px",
+                      "&:hover": {
+                        borderColor: "#e5e7eb",
+                      },
+                      outline: "none !important",
+                    }),
+                    input: (base) => ({
+                      ...base,
+                      padding: "0px",
+                      outline: "none !important",
+                      boxShadow: "none !important",
+                    }),
+
+                    indicatorSeparator: (base) => ({
+                      ...base,
+                      display: "none",
+                    }),
+
+                    dropdownIndicator: (base, state) => ({
+                      ...base,
+                      outline: "none !important",
+                      boxShadow: "none !important",
+                    }),
+
+                    option: (base, state) => ({
+                      ...base,
+                      outline: "none !important",
+                      boxShadow: "none !important",
+                      backgroundColor: state.isFocused
+                        ? "#f0f0f0"
+                        : state.isSelected
+                        ? "#0d4a42"
+                        : null,
+                      color: state.isSelected ? "white" : "inherit",
+                      "&:active": {
+                        backgroundColor: "#0d4a42",
+                      },
+                    }),
+                    menuPortal: (base) => ({
+                      ...base,
+                      zIndex: 999,
+                    }),
+                  }}
+                />
               </div>
 
               {/* address */}
-              <div>
+              <div className="-mt-2.5">
                 <label
                   htmlFor="user_address"
                   className="normal-case text-[#4f4f4f] text-sm"
@@ -240,7 +295,9 @@ const UserAccountDetails = () => {
                   Address
                 </label>
                 <input
-                  className=" w-full rounded-md border-gray-200 bg-white px-2 py-2  text-black ps-4 placeholder:text-white-dark text-xl custom-phone-input border "
+                  className={`w-full rounded-md border border-gray-200 px-2 py-2 text-black ${
+                    !isEditMode ? "bg-gray-100 cursor-not-allowed" : "bg-white"
+                  }`}
                   type="text"
                   defaultValue={userInfo?.data?.user_address}
                   disabled={!isEditMode}
@@ -271,7 +328,7 @@ const UserAccountDetails = () => {
                   </div>
                 ) : (
                   isEditMode && (
-                    <div>
+                    <div className="h-32">
                       <label
                         htmlFor="user_image"
                         className="flex items-center gap-2 cursor-pointer text-[#5E8B8C] hover:text-[#084C4F] font-medium"

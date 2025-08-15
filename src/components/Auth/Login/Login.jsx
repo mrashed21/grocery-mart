@@ -1,5 +1,8 @@
 import MiniSpinner from "@/components/Skeleton/MiniSpinner";
-import { useRouter } from "next/navigation";
+import {
+  useUserInfoQuery,
+  useUserLoginMutation,
+} from "@/redux/feature/auth/authApi";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { LuEye, LuEyeOff } from "react-icons/lu";
@@ -9,15 +12,18 @@ import PhoneInput, {
   isValidPhoneNumber,
 } from "react-phone-number-input";
 import "react-phone-number-input/style.css";
+import { toast } from "react-toastify";
 
-const Login = ({ setIsLoginShow, setIsForgotPasswordOpen }) => {
+const Login = ({
+  setIsLoginShow,
+  setIsForgotPasswordOpen,
+  setIsUserAuthOpen,
+}) => {
   const [user_phone, setUser_phone] = useState();
-  const [user_name, setUser_name] = useState("");
   const [showLoginPassword, setShowLoginPassword] = useState(false);
-  //   const [userLogin, { isLoading }] = useUserLoginMutation();
-  const userLogin = false;
-  const isLoading = false;
-  // const [isForgotPasswordOpen, setIsForgotPasswordOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [userLogin] = useUserLoginMutation();
+  const { data: userInfo, refetch: refetchUserInfo } = useUserInfoQuery();
 
   const {
     register: loginRegister,
@@ -25,8 +31,6 @@ const Login = ({ setIsLoginShow, setIsForgotPasswordOpen }) => {
     formState: { errors: loginErrors },
     reset,
   } = useForm();
-
-  const router = useRouter();
 
   const handleLogin = async (data) => {
     try {
@@ -92,7 +96,9 @@ const Login = ({ setIsLoginShow, setIsForgotPasswordOpen }) => {
         user_phone: user_phone,
         user_password: data?.user_password,
       };
+
       const res = await userLogin(sendData);
+
       if (res.data?.statusCode === 200 && res.data?.success === true) {
         if (res.data?.data?.need_password_set == true) {
           // reset();
@@ -111,7 +117,7 @@ const Login = ({ setIsLoginShow, setIsForgotPasswordOpen }) => {
           });
           return;
         }
-        reset();
+        refetchUserInfo();
         toast.success("Login Successfull", {
           position: "top-center",
           autoClose: 2000,
@@ -122,9 +128,8 @@ const Login = ({ setIsLoginShow, setIsForgotPasswordOpen }) => {
           progress: undefined,
           theme: "light",
         });
-        setIsUserLoginOpen(false);
-        router.push("/user-profile");
-
+        reset();
+        setIsUserAuthOpen(false);
         return;
       } else {
         toast.error(res.error.data?.message, {
@@ -136,6 +141,7 @@ const Login = ({ setIsLoginShow, setIsForgotPasswordOpen }) => {
       toast.error("Something went wrong!");
     } finally {
       console.log("done");
+      setIsLoading(false);
     }
   };
   return (
@@ -185,7 +191,7 @@ const Login = ({ setIsLoginShow, setIsForgotPasswordOpen }) => {
             </label>
             <div className="relative">
               <input
-                className="w-full rounded-md border-gray-200 bg-white px-2 py-1 text-black ps-2 placeholder:text-white-dark custom-phone-input border"
+                className="w-full rounded-md border-gray-200 bg-white px-2 py-1 text-black ps-2 placeholder:text-white-dark focus:outline-none custom-phone-input border"
                 id="user_password"
                 type={showLoginPassword ? "text" : "password"}
                 placeholder="Enter your password"
